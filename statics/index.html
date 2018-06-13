@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <title>Annotate image</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+        <script src="js/annotate.js"></script>
+        <style>
+            .badge {
+                font-size: 100%;
+                margin-bottom: .2rem;
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body class="debug">
+
+        <main class="container-fluid">
+        <div id="ui" class="row">
+                <aside id="nav" class="col col-12 col-lg-2">
+                    <h1>Image annotation</h1>
+                    <small class="text-muted">With faded secondary text</small>
+                    <nav>
+                        <button onclick="send()"    class="btn btn-success">Next</button>
+                        <button onclick="reset()" class="btn btn-danger">Reset</button>
+                    </nav>
+                    <p>
+                    Draw rectangle around element, a prompt dialog will appear and you can type a "label". That's all !
+                    </p>
+                    <p>
+                    Click on a label to remove the annotation.
+                    </p>
+                    <p>
+                    When you're done, hit "next" button and a new image will be display.
+                    </p>
+                </aside>
+                <div class="col col-12 col-lg-8 align-items-center justify-content-center">
+                    <div id="annotator" ></div>
+                </div>
+                <aside id="labels" class="col col-12 col-lg-2 pt-1">
+                </aside>
+        </div>
+
+
+
+        <div class="modal fade" id="alert" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                ...
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-action="">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        </main>
+        <script src="./js/server-image.js"></script>
+    </body>
+</html>
