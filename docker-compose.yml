@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+  ui:
+    build: 
+      context: containers/ui
+      args:
+        GID: 1000
+        UID: 1000
+
+    working_dir: /home/node/ui
+    volumes:
+      - ./ui:/home/node/ui
+    command: ng serve --host=0.0.0.0
+    privileged: true
+    ports:
+      - 4200:4200
+
+  api:
+    build:
+      context: ./containers/api
+      args:
+        UID: 1000
+        GID: 1000
+
+    volumes:
+      - ./:/go/src/github.com/smileinnovation/imannotate
+
+    working_dir: /go/src/github.com/smileinnovation/imannotate
+    environment:
+      BIN_APP_PORT: 8000
+    ports:
+      - 3000:3000
+    privileged: true
+

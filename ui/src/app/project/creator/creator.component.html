@@ -1,0 +1,26 @@
+<h2>Create a new project</h2>
+<p>Create a new project</p>
+<form #f="ngForm" (ngSubmit)="create(f)">
+  <div class="form-group">
+    <input
+      class="form-control"
+      type="text"
+      name="name"
+      placeholder="Project name"
+      required
+      [(ngModel)]="project.name" />
+  </div>
+  <div class="form-group">
+    <input
+      class="form-control"
+      type="text"
+      name="provider"
+      placeholder="Image provider"
+      required
+      [(ngModel)]="project.provider" />
+  </div>
+  <div class="form-group">
+    <button class="btn btn-success">Create</button>
+  </div>
+</form>
+<pre>{{project | json}}</pre>

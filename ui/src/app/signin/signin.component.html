@@ -1,0 +1,16 @@
+<div class="container">
+<h1>Signin Imanotate</h1>
+  <input class="form-control"
+    type="text"
+    placeholder="Username"
+    [(ngModel)]="user.username" />
+  <input class="form-control"
+    type="password"
+    placeholder="Password"
+    [(ngModel)]="user.password" >
+  <button class="btn btn-success" (click)="doLogin()">Signin</button>
+  <div class="alert alert-danger" [hidden]="error.error == ''">{{ error.error }}</div>
+</div>
+<pre>
+{{user|json}}
+</pre>
