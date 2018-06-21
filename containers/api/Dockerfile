@@ -3,8 +3,8 @@ FROM golang:1-alpine
 RUN apk add --no-cache git
 RUN go get github.com/codegangsta/gin
 
-ARG GID=1001
-ARG UID=1001
+ARG GID
+ARG UID
 RUN set -xe; \
     addgroup -g $GID gouser; \
     adduser -s /bin/sh -G gouser -u $GID gouser -D; \

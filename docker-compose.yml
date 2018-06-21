@@ -1,12 +1,13 @@
-version: "3"
+version: "2.1"
 
 services:
   ui:
+    extends:
+      file: .user.compose.yml
+      service: base_config
+
     build: 
       context: containers/ui
-      args:
-        GID: 1000
-        UID: 1000
 
     working_dir: /home/node/ui
     volumes:
@@ -17,11 +18,11 @@ services:
       - 4200:4200
 
   api:
+    extends:
+      file: .user.compose.yml
+      service: base_config
     build:
       context: ./containers/api
-      args:
-        UID: 1000
-        GID: 1000
 
     volumes:
       - ./:/go/src/github.com/smileinnovation/imannotate
