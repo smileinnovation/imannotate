@@ -2,4 +2,6 @@
 ./gin-bin
 ./imannotate
 ./vendor
+./vendor/*
 ./out
+./out/*
