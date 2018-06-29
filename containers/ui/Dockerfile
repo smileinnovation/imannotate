@@ -2,6 +2,8 @@ FROM node:10-alpine
 
 RUN npm install -g @angular/cli
 
+RUN apk add --no-cache python git build-base
+
 ARG UID
 ARG GID
 

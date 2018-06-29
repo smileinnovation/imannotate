@@ -1,7 +1,9 @@
 # points on latest 1.x version
 FROM golang:1-alpine
 RUN apk add --no-cache git
-RUN go get github.com/codegangsta/gin
+RUN set -xe; \
+    go get -v github.com/codegangsta/gin; \
+    go get -v github.com/Masterminds/glide
 
 ARG GID
 ARG UID

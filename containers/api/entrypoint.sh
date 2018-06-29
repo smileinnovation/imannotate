@@ -1,10 +1,7 @@
 #!/bin/sh
 echo "----------> WORKING DIR: $PWD"
-echo "---------> Getting packages"
-go get -v ./...
+echo "----------> Getting packages"
+glide install
 
-#echo "---------> Install current project"
-#go install -v ./...
-
-echo "---------> Starting $@ ..."
+echo "----------> Starting $@ ..."
 exec $@
