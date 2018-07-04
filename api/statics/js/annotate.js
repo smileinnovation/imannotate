@@ -2,7 +2,7 @@
 
 class BoundingBox {
 
-    constructor(x, y, w, h){
+    constructor(x, y, w, h) {
         this.label = "";
         this.x = x;
         this.y = y;
@@ -24,7 +24,7 @@ class BoundingBox {
 
 class Annotator {
 
-    constructor(element, aside){
+    constructor(element, aside) {
         this.boxes = [];
         this.canvas = null;
         this.ctx = null;
@@ -32,13 +32,13 @@ class Annotator {
         this.canvasRescale = true;
         this.labelsClasses = [];
 
-        if (typeof(element) === 'string') {
+        if (typeof (element) === 'string') {
             this.element = document.querySelector(element);
         } else {
             this.element = element;
         }
 
-        if (typeof(aside) == 'string') {
+        if (typeof (aside) == 'string') {
             this.aside = document.querySelector(aside);
         } else {
             this.aside = aside;
@@ -57,7 +57,7 @@ class Annotator {
 
             this.aside.addEventListener('mousemove', (evt) => {
                 let target = evt.target;
-                if(!target.hasAttribute('data-label')) {
+                if (!target.hasAttribute('data-label')) {
                     this.resetBoundingBoxesColor();
                     this.clearCanvas();
                     this.drawBoundingBoxes();
@@ -101,13 +101,13 @@ class Annotator {
             canvas.width = "";
             canvas.style.width = "100%";
             canvas.width = canvas.clientWidth;
-            canvas.height = canvas.width/ratio;
+            canvas.height = canvas.width / ratio;
             canvas.style.width = "auto";
             while (document.body.scrollHeight > document.body.offsetHeight) {
                 canvas.height -= document.body.scrollHeight - document.body.offsetHeight;
-                canvas.width   = canvas.height * ratio;
+                canvas.width = canvas.height * ratio;
             }
-        }	
+        }
         this.drawBoundingBoxes();
     }
 
@@ -122,15 +122,15 @@ class Annotator {
         this.element.appendChild(canvas);
         canvas.style.width = "100%";
         canvas.width = canvas.clientWidth;
-        canvas.height = canvas.width/ratio;
+        canvas.height = canvas.width / ratio;
         canvas.style.width = "auto";
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
 
         let x, y = null;
         let down = false;
-        this.canvas.addEventListener('mousedown', (evt) => { 
-            let rect = evt.target.getBoundingClientRect(); 
+        this.canvas.addEventListener('mousedown', (evt) => {
+            let rect = evt.target.getBoundingClientRect();
             x = evt.clientX - rect.left;
             y = evt.clientY - rect.top;
             down = true;
@@ -142,23 +142,23 @@ class Annotator {
             }
             this.clearCanvas();
             this.drawBoundingBoxes();
-            let rect = evt.target.getBoundingClientRect(); 
+            let rect = evt.target.getBoundingClientRect();
             // draw current boxes
             this.drawRect(
-                x, 
+                x,
                 y,
                 (evt.clientX - rect.left - x),
-                (evt.clientY - rect.top  - y));
+                (evt.clientY - rect.top - y));
         });
 
         this.canvas.addEventListener('mouseup', (evt) => {
             down = false;
-            let rect = evt.target.getBoundingClientRect(); 
+            let rect = evt.target.getBoundingClientRect();
 
-            let bx = Math.min(x, evt.clientX - rect.left) / this.canvas.clientWidth, 
-                by = Math.min(y, evt.clientY - rect.top)  / this.canvas.clientHeight,
+            let bx = Math.min(x, evt.clientX - rect.left) / this.canvas.clientWidth,
+                by = Math.min(y, evt.clientY - rect.top) / this.canvas.clientHeight,
                 bw = Math.max(x, evt.clientX - rect.left) / this.canvas.clientWidth,
-                bh = Math.max(y, evt.clientY - rect.top)  / this.canvas.clientHeight;
+                bh = Math.max(y, evt.clientY - rect.top) / this.canvas.clientHeight;
 
             let boxes = new BoundingBox(bx, by, bw, bh);
 
@@ -192,7 +192,7 @@ class Annotator {
     }
 
     addToList(boxes) {
-        if(!this.aside) {
+        if (!this.aside) {
             return;
         }
 
@@ -211,8 +211,8 @@ class Annotator {
     }
 
 
-    resetBoundingBoxesColor(){
-        this.boxes.forEach((b)=>{
+    resetBoundingBoxesColor() {
+        this.boxes.forEach((b) => {
             if (b.old_color) {
                 b.hasAlpha = false;
                 b.color = b.old_color;
@@ -259,17 +259,17 @@ class Annotator {
         this.ctx.fillStyle = box.color;
 
         let textSize = this.ctx.measureText(box.label);
-        let textBoxY = (box.y * this.canvas.clientHeight)-25;
-        let textY    = (box.y * this.canvas.clientHeight)-8;
+        let textBoxY = (box.y * this.canvas.clientHeight) - 25;
+        let textY = (box.y * this.canvas.clientHeight) - 8;
         if (textBoxY < 0) {
             textBoxY += 25;
             textY += 25;
         }
 
         this.ctx.rect(
-            (box.x * this.canvas.clientWidth)-1, 
+            (box.x * this.canvas.clientWidth) - 1,
             textBoxY,
-            textSize.width + 12, 
+            textSize.width + 12,
             25);
 
         this.ctx.fill();
@@ -277,13 +277,13 @@ class Annotator {
         this.ctx.fillStyle = box.textColor;
         this.ctx.fillText(
             box.label,
-            (box.x * this.canvas.clientWidth)+4,
+            (box.x * this.canvas.clientWidth) + 4,
             textY
         );
     }
 
     clearCanvas() {
-        this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height);
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
     drawBoundingBoxes() {
@@ -291,10 +291,10 @@ class Annotator {
         this.ctx.drawImage(this.image, 0, 0, this.canvas.width, this.canvas.height);
         this.boxes.forEach(box => {
             this.drawRect(
-                box.x * this.canvas.clientWidth, 
-                box.y * this.canvas.clientHeight, 
-                (box.width  - box.x) * this.canvas.clientWidth, 
-                (box.height - box.y) * this.canvas.clientHeight, 
+                box.x * this.canvas.clientWidth,
+                box.y * this.canvas.clientHeight,
+                (box.width - box.x) * this.canvas.clientWidth,
+                (box.height - box.y) * this.canvas.clientHeight,
                 box.color);
             this.writeText(box);
         });
@@ -322,7 +322,7 @@ class Annotator {
                 y: box.y,
                 w: box.width,
                 h: box.height,
-            });     
+            });
         });
         return JSON.stringify({
             image: this.image.src,

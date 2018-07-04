@@ -1,0 +1,12 @@
+.miniview {
+  margin-bottom: 1rem;
+}
+
+.tags .badge {
+  margin: .2rem
+}
+
+.owner-icon {
+  float: left;
+  margin: -.2rem .1rem 0 0;
+}

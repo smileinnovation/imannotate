@@ -1,0 +1,18 @@
+<div class="container">
+  <div class="row justify-content-md-center">
+    <div class="col col-md-6">
+      <h1>Signin Imanotate</h1>
+      <form #f="ngForm" (submit)="doLogin">
+        <div class="form-group">
+          <input class="form-control" required type="text" placeholder="Username" [(ngModel)]="user.username" name="username"/>
+        </div>
+        <div class="form-group">
+          <input class="form-control" required type="password" placeholder="Password" [(ngModel)]="user.password" name="password">
+        </div>
+        <button class="btn btn-success" (click)="doLogin()">Signin</button>
+      </form>
+      <div class="alert alert-danger" [hidden]="!error.error">{{ error.error }}</div>
+    </div>
+  </div>
+</div>
+<pre>err: {{ error | json }}</pre>

@@ -34,3 +34,15 @@ services:
       - 3000:3000
     privileged: true
 
+
+  http:
+    image: nginx:alpine
+    volumes:
+      - ./containers/nginx/conf.d:/etc/nginx/conf.d:ro
+    ports:
+      - 8080:80
+    depends_on:
+      - api
+      - ui
+    privileged: true
+

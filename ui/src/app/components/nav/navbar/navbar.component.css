@@ -1,0 +1,24 @@
+.nav-item .material-icons {
+	margin: -0.2em .2em 0 0;
+	position: relative;
+	float: left;
+}
+
+.collapse {
+	margin-top: -100%;
+	transition: margin-top 300ms ease-in-out;
+	display: block;
+}
+.collapse.show {
+	margin-top: 0%;
+}
+
+@media (min-width: 992px) {
+	.collapse {
+		margin-top: 0;
+		transition: none;
+	}
+	.collapse:not(.show) {
+		display: block;
+	}
+}

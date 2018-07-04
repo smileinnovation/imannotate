@@ -1,75 +1,53 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
-	"strings"
 
-	"github.com/smileinnovation/imannotate/api/adapter"
-	"github.com/smileinnovation/imannotate/api/annotation"
-	"github.com/smileinnovation/imannotate/api/providers"
-	"github.com/smileinnovation/imannotate/api/storages"
+	"github.com/gin-gonic/gin"
+	"github.com/smileinnovation/imannotate/api/auth"
+	"github.com/smileinnovation/imannotate/api/project"
+	"github.com/smileinnovation/imannotate/app"
+	"github.com/smileinnovation/imannotate/app/providers"
 )
 
-var imageProvider providers.ImageProvider
-var storage storages.Storage
-
-func Save(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	}
-
-	d := json.NewDecoder(r.Body)
-	m := &annotation.Annotation{}
-	if err := d.Decode(m); err != nil {
-		log.Println(err)
-	}
-	log.Printf("%+v\n", m)
-	log.Println(storage.Save(m))
+func unlisted(c *gin.Context) {
+	c.String(http.StatusNotFound, "Not found")
 }
 
-func NextImage(w http.ResponseWriter, r *http.Request) {
-	if image, err := imageProvider.GetImage(); err != nil {
-		switch err.(type) {
-		case providers.NoMoreFileError:
-			w.WriteHeader(http.StatusNoContent)
-		case providers.FileNotFoundError:
-			w.WriteHeader(http.StatusNotFound)
-		default:
-			w.WriteHeader(http.StatusServiceUnavailable)
-		}
-
-	} else {
-		image = strings.Replace(image, "statics/", "", 1)
-		fmt.Println(image)
-		w.Write([]byte(image))
+func CORS(c *gin.Context) {
+	c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:4200")
+	c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+	if c.Request.Method == "OPTIONS" {
+		fmt.Println("options")
+		c.AbortWithStatus(http.StatusOK)
 	}
 }
 
-func AdaptPage(w http.ResponseWriter, r *http.Request) {
-	if adapter, ok := imageProvider.(adapter.PageAdapter); ok {
-		content, selector := adapter.AdaptPage()
-		c, _ := json.Marshal(map[string]string{
-			"selector": selector,
-			"content":  content,
-		})
-		w.Write(c)
-		return
+func Auth(c *gin.Context) {
+	if err := auth.Allowed(c.Request); err != nil {
+		c.AbortWithStatus(http.StatusUnauthorized)
 	}
+}
 
-	w.WriteHeader(http.StatusNoContent)
+func init() {
+	auth.SetAuthenticator(&providers.DummyAuth{})
+	project.SetProvider(&providers.DummyProject{})
 }
 
 func main() {
-	//imageProvider = providers.NewFileSystemImageProvider("./statics/licenceplates/*/*.jpg")
-	imageProvider = providers.NewQwant("chien%20chat")
-	storage = storages.NewCSVStorage("../out")
-	http.HandleFunc("/send", Save)
-	http.HandleFunc("/next", NextImage)
-	http.HandleFunc("/adaptation", AdaptPage)
-	http.Handle("/", http.FileServer(http.Dir("./")))
-	log.Fatal(http.ListenAndServe(":8000", nil))
+	router := gin.Default()
+
+	router.Use(CORS)
+
+	v1 := router.Group("/api/v1")
+	{
+		v1.POST("/user/signin", app.Login)
+		v1.GET("/project/:name", Auth, app.GetProject)
+		v1.GET("/project/:name/next", Auth, app.GetNextImage)
+		v1.GET("/projects", Auth, app.GetProjects)
+	}
+
+	router.Run(":8000")
 }

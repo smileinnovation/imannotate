@@ -1,0 +1,17 @@
+<div class="col miniview">
+  <div class="card">
+    <img class="card-img-top" src="https://picsum.photos/300/150/?random{{project.name}}">
+    <div class="card-body">
+      <i *ngIf="owner" class="owner-icon material-icons" ngbTooltip="You're the owner">check_circle</i><h5 class="card-title">{{ project.name }}</h5>
+      <i *ngIf="!owner">Project owned by {{ project.owner }}</i>
+      <p class="card-text">{{project.description}}</p>
+      <p class="tags">
+        <span *ngFor="let tag of project.tags" class="badge badge-pill badge-success">{{ tag }}</span>
+      </p>
+      <div class="col">
+        <button *ngIf="owner" class="col-md-6 btn btn-primary btn-sm">Edit</button>
+        <button class="col-md-6 btn btn-success btn-sm" (click)="gotoProject(project)">Annotate</button>
+      </div>
+    </div>
+  </div>
+</div>

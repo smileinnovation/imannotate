@@ -1,0 +1,21 @@
+.badge {
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+#annotator {
+    padding: 0;
+}
+
+:host ::ng-deep .annotate-controls {
+    position: absolute;
+    display: none;
+}
+
+:host ::ng-deep .annotate-controls.visible {
+    display: block;
+}
+
+:host ::ng-deep .annotate-controls .material-icons {
+    font-size: 1rem;
+}

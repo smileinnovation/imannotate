@@ -1,0 +1,41 @@
+<div class="row justify-content-center mt-2">
+  
+  <div class="col-lg-3 col-sm-12">
+      <h2 innerHTML="{{ project.name}}"></h2>
+      <div class="card">
+          <div class="card-body">
+            <p class="card-text" innerHTML="{{ project.description }}"></p>
+          </div>
+      </div>
+      <div class="card pt-2">
+          <div class="card-body">
+            <h5 class="card-title">Instructions</h5>
+            <video src="./assets/ui-cut.webm" loop controls autoplay class="card-img-top"></video>
+            <p class="card-text">
+                Draw selection box outside an object and click on a label to validate annotation.
+            </p>
+            <p class="card-text">
+                Then, press NEXT button to get a new image to annotate.
+            </p>
+            <p class="card-next">You may press ESC key to cancel current box creation.</p>
+          </div>
+        </div>
+  </div>
+  
+  <div class="col-lg-7 col-md-12" id="annotator" ></div>
+
+  <div class="col">
+        <div class="col annotate-actions">
+          <button class="btn btn-success" (click)="nextImage()">Next</button>
+          <button class="btn btn-warning">Stop</button>
+        </div>
+        <div class="col align-items-center justify-content-center mt-3">
+            <span 
+              *ngFor="let label of project.tags" 
+              class="badge badge-pill badge-success mr-1" 
+              (click)="setLabel(label)">{{ label }}</span>
+        </div>
+  </div>
+
+</div>
+

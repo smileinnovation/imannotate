@@ -1,32 +1,42 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { ApiService } from './api.service';
-import { User } from "../classes/user";
-import { Observable } from "rxjs/Observable";
-import { ProjectService } from "./project.service";
-import { Project } from "../classes/project";
+import { User } from '../classes/user';
+import { Subject, Observable } from 'rxjs';
 
 @Injectable()
 export class UserService {
 
-  user$: Observable<User>
+  private userSource = new Subject<User>();
+  public currentUser = new User();
+  user$ = this.userSource.asObservable();
 
   constructor(
     private api: ApiService,
-    private projectService: ProjectService) {
-    console.log("get user")
-    this.user$ = this.current()
+    private router: Router,
+  ) { }
+
+  login(user: User) {
+    const obs = this.api.post<User>('/v1/user/signin', user);
+    obs.subscribe(
+      u => {
+        console.log('login ok', new Date().toString());
+        this.currentUser = u;
+        localStorage.setItem('user', JSON.stringify(u));
+        this.userSource.next(u);
+      },
+      error => {
+        console.log('login failed',  new Date().toString());
+        this.currentUser = null;
+        this.userSource.error(error);
+      });
   }
 
-  login(user: User){
-    return this.api.post<User>("/signin", user)
-  }
-
-  signup(user: User){
-    return this.api.post<User>("/signup", user)
-  }
-
-  current() {
-    return this.api.get<User>("/user/me")
+  logout() {
+    localStorage.removeItem('user');
+    this.currentUser = null;
+    this.userSource.error('logout');
+    this.router.navigate(['/']);
   }
 
 }
