@@ -3,12 +3,15 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 
+	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/smileinnovation/imannotate/api/auth"
 	"github.com/smileinnovation/imannotate/api/project"
 	"github.com/smileinnovation/imannotate/app"
-	"github.com/smileinnovation/imannotate/app/providers"
+	"github.com/smileinnovation/imannotate/app/providers/dummy"
+	"github.com/smileinnovation/imannotate/app/providers/mongo"
 )
 
 func unlisted(c *gin.Context) {
@@ -32,14 +35,18 @@ func Auth(c *gin.Context) {
 }
 
 func init() {
-	auth.SetAuthenticator(&providers.DummyAuth{})
-	project.SetProvider(&providers.DummyProject{})
+	auth.SetAuthenticator(&mongo.MongoAuth{})
+	project.SetProvider(&dummy.DummyProject{})
 }
 
 func main() {
 	router := gin.Default()
 
 	router.Use(CORS)
+
+	if os.Getenv("SERVE_STATICS") == "true" {
+		router.Use(static.Serve("/", static.LocalFile("/ui", true)))
+	}
 
 	v1 := router.Group("/api/v1")
 	{
