@@ -1,9 +1,9 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <a class="navbar-brand" href="#">{{ title }}</a>
-  <button class="navbar-toggler" 
-    type="button" 
-    aria-controls="navbarColor02" 
-    aria-expanded="false" 
+  <button class="navbar-toggler"
+    type="button"
+    aria-controls="navbarColor02"
+    aria-expanded="false"
     aria-label="Toggle navigation"
     (click)="toggleCollapse()">
     <span class="navbar-toggler-icon"></span>
@@ -20,6 +20,8 @@
       <li class="nav-item dropdown" *ngIf="user && user.username" ngbDropdown>
         <a class="nav-link dropdown-toggle" id="navbarDropdown" ngbDropdownToggle><i class="material-icons">face</i>{{ user.username }}</a>
 				<div ngbDropdownMenu aria-labelledby="navbarDropdown">
+					<a class="dropdown-item" href="/dashboard">My projects</a>
+          <div class="dropdown-divider"></div>
 					<a class="dropdown-item" (click)="logout()">Logout</a>
 				</div>
       </li>

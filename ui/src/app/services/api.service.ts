@@ -27,8 +27,11 @@ export class ApiService {
     return this.http.post<T>(this.apiLocation + endpoint, body, this.options);
   }
 
+  public put<T>(endpoint: string, body: any): Observable<T> {
+    return this.http.put<T>(this.apiLocation + endpoint, body, this.options);
+  }
+
   public head(endpoint: string) {
     return this.http.head(this.apiLocation + endpoint, this.options);
   }
-
 }

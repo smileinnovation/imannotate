@@ -3,5 +3,10 @@ export class Project {
   owner: string;
   description: string;
   tags: Array<String>;
-  constructor() { }
+  constructor() {
+    this.name = "";
+    this.owner = "";
+    this.description = "";
+    this.tags = new Array<string>();
+  }
 }

@@ -10,8 +10,11 @@ type ProjectManager interface {
 	// Get return the project named "name".
 	Get(name string) *Project
 
-	// Create and save a new project
+	// Create and save a new project.
 	New(*Project) error
+
+	// Update project.
+	Update(*Project) error
 
 	// NextImage return next image url or id to annotate for a given project.
 	NextImage(*Project) (string, error)
@@ -34,6 +37,10 @@ func Get(name string) *Project {
 
 func New(p *Project) error {
 	return provider.New(p)
+}
+
+func Update(p *Project) error {
+	return provider.Update(p)
 }
 
 func NextImage(p *Project) (string, error) {

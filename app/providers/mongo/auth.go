@@ -4,28 +4,34 @@ import (
 	"errors"
 	"log"
 	"net/http"
-	"os"
 	"strings"
 	"time"
 
+	"github.com/globalsign/mgo"
+	"github.com/globalsign/mgo/bson"
 	"github.com/smileinnovation/imannotate/api/user"
 	"golang.org/x/crypto/bcrypt"
 	jwt "gopkg.in/dgrijalva/jwt-go.v3"
-	mgo "gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 )
 
 var SigningKey = []byte("AllYourBase")
 
 func init() {
-	pass, _ := bcrypt.GenerateFromPassword([]byte("toto123"), bcrypt.DefaultCost)
 	db := getMongo()
-	if err := db.C("user").Find(bson.M{"username": "Bob"}); err != nil {
-		db.C("user").Upsert(bson.M{"username": "Bob"}, &user.User{
-			Username: "Bob",
-			Password: string(pass),
-		})
+	defer db.Session.Close()
+
+	idx := mgo.Index{
+		Key:      []string{"email", "username"},
+		Unique:   true,
+		DropDups: true,
 	}
+	db.C("user").EnsureIndex(idx)
+
+	pass, _ := bcrypt.GenerateFromPassword([]byte("toto123"), bcrypt.DefaultCost)
+	db.C("user").Upsert(bson.M{"username": "Bob"}, &user.User{
+		Username: "Bob",
+		Password: string(pass),
+	})
 }
 
 type MongoAuth struct{}
@@ -36,6 +42,7 @@ type CustomClaim struct {
 
 func (ma *MongoAuth) Login(u *user.User) error {
 	db := getMongo()
+	defer db.Session.Close()
 
 	r := bson.M{"username": u.Username}
 	real := &user.User{}
@@ -89,26 +96,4 @@ func (ma *MongoAuth) GetCurrentUsername(req *http.Request) (string, error) {
 	}
 	claim := token.Claims.(*CustomClaim)
 	return claim.ID, nil
-}
-
-var sess *mgo.Session
-
-func getMongo() *mgo.Database {
-	// db := os.Getenv("DB_HOST")
-	// dbu := os.Getenv("DB_USER")
-	// dbp := os.Getenv("DB_PASS")
-	dbn := os.Getenv("DB_NAME")
-
-	if sess == nil {
-		var err error
-		// c := fmt.Sprintf("mongo://%s:%s@%s:27017", dbu, dbp, db)
-		c := "database"
-		log.Println(c)
-		sess, err = mgo.Dial(c)
-		if err != nil {
-			log.Fatal("DB connection error:", err)
-		}
-	}
-
-	return sess.Clone().DB(dbn)
 }

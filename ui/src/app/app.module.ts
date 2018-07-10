@@ -20,6 +20,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MiniviewComponent } from './components/project/miniview/miniview.component';
 import { AnnotatorComponent } from './components/project/annotator/annotator.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ProjectformComponent } from './components/project/projectform/projectform.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ListComponent,
     MiniviewComponent,
     AnnotatorComponent,
+    ProjectformComponent,
   ],
   imports: [
     BrowserModule,

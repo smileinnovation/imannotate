@@ -28,4 +28,8 @@ export class MiniviewComponent implements OnInit {
     this.router.navigate(['annotate', p.name]);
   }
 
+  edit() {
+    this.router.navigate(['project','edit', this.project.name])
+  }
+
 }

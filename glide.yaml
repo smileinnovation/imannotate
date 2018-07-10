@@ -2,10 +2,10 @@ package: github.com/smileinnovation/imannotate
 import:
 - package: github.com/gin-gonic/gin
   version: ^1.2.0
-- package: gopkg.in/mgo.v2
 - package: golang.org/x/crypto
   subpackages:
   - bcrypt
 - package: gopkg.in/dgrijalva/jwt-go.v3
   version: ^3.2.0
 - package: github.com/gin-contrib/static
+- package: github.com/globalsign/mgo

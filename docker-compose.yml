@@ -40,9 +40,9 @@ services:
     image: mongo
     volumes:
       - db:/data/db
-    # environment:
-    # MONGO_INITDB_ROOT_USERNAME: mongouser
-    # MONGO_INITDB_ROOT_PASSWORD: mongopwd
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongouser
+      MONGO_INITDB_ROOT_PASSWORD: mongopwd
     privileged: true
 
   http:

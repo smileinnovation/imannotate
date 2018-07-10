@@ -10,7 +10,6 @@ import (
 	"github.com/smileinnovation/imannotate/api/auth"
 	"github.com/smileinnovation/imannotate/api/project"
 	"github.com/smileinnovation/imannotate/app"
-	"github.com/smileinnovation/imannotate/app/providers/dummy"
 	"github.com/smileinnovation/imannotate/app/providers/mongo"
 )
 
@@ -36,7 +35,7 @@ func Auth(c *gin.Context) {
 
 func init() {
 	auth.SetAuthenticator(&mongo.MongoAuth{})
-	project.SetProvider(&dummy.DummyProject{})
+	project.SetProvider(&mongo.MongoProjectProvider{})
 }
 
 func main() {
@@ -51,6 +50,8 @@ func main() {
 	v1 := router.Group("/api/v1")
 	{
 		v1.POST("/user/signin", app.Login)
+		v1.POST("/project", Auth, app.NewProject)
+		v1.PUT("/project", Auth, app.UpdateProject)
 		v1.GET("/project/:name", Auth, app.GetProject)
 		v1.GET("/project/:name/next", Auth, app.GetNextImage)
 		v1.GET("/projects", Auth, app.GetProjects)

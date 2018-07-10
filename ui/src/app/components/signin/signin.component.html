@@ -9,7 +9,7 @@
         <div class="form-group">
           <input class="form-control" required type="password" placeholder="Password" [(ngModel)]="user.password" name="password">
         </div>
-        <button class="btn btn-success" (click)="doLogin()">Signin</button>
+        <button class="btn btn-success" type="submit">Signin</button>
       </form>
       <div class="alert alert-danger" [hidden]="!error.error">{{ error.error }}</div>
     </div>

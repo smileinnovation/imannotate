@@ -1,5 +1,5 @@
-hash: 1b92ac7261aefa7129632207c6b076c84a44c897f780f05a7064e12107898843
-updated: 2018-07-09T11:35:23.57474505+02:00
+hash: 4435a8f38f6c8b7a033513cca20d10432e4016f09e1594601cbd4042d555471a
+updated: 2018-07-10T15:25:23.705651684+02:00
 imports:
 - name: github.com/gin-contrib/sse
   version: 22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae
@@ -10,6 +10,13 @@ imports:
   subpackages:
   - binding
   - render
+- name: github.com/globalsign/mgo
+  version: 113d3961e7311526535a1ef7042196563d442761
+  subpackages:
+  - bson
+  - internal/json
+  - internal/sasl
+  - internal/scram
 - name: github.com/golang/protobuf
   version: 1325a051a2753cd67556b182843b1b693d0854cd
   subpackages:
@@ -33,13 +40,6 @@ imports:
   version: 06ea1031745cb8b3dab3f6a236daf2b0aa468b7e
 - name: gopkg.in/go-playground/validator.v8
   version: 5f1438d3fca68893a817e4a66806cea46a9e4ebf
-- name: gopkg.in/mgo.v2
-  version: 9856a29383ce1c59f308dd1cf0363a79b5bef6b5
-  subpackages:
-  - bson
-  - internal/json
-  - internal/sasl
-  - internal/scram
 - name: gopkg.in/yaml.v2
   version: 5420a8b6744d3b0345ab293f6fcba19c978f1183
 testImports: []

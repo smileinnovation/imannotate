@@ -46,6 +46,18 @@ func NewProject(c *gin.Context) {
 	c.JSON(http.StatusCreated, p)
 }
 
+func UpdateProject(c *gin.Context) {
+	p := &project.Project{}
+	c.Bind(p)
+
+	if err := project.Update(p); err != nil {
+		c.JSON(http.StatusNotAcceptable, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, p)
+}
+
 func GetNextImage(c *gin.Context) {
 	p := project.Get(c.Param("name"))
 	image, _ := project.NextImage(p)
