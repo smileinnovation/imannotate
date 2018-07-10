@@ -14,7 +14,7 @@ func init() {
 	defer db.Session.Close()
 
 	idx := mgo.Index{
-		Key:      []string{"name"},
+		Key:      []string{"name", "owner"},
 		DropDups: true,
 		Unique:   true,
 	}
