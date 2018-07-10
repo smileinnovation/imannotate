@@ -1,7 +1,7 @@
 .user.compose.yml
-./gin-bin
+gin-bin
 ./imannotate
-./vendor
-./vendor/*
-./out
-./out/*
+vendor
+vendor/*
+out
+out/*
