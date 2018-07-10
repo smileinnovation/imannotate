@@ -15,7 +15,6 @@ import { NavbarComponent } from './components/nav/navbar/navbar.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ProjectService } from './services/project.service';
 import { ListComponent } from './components/project/list/list.component';
-import { CreatorComponent } from './components/project/creator/creator.component';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MiniviewComponent } from './components/project/miniview/miniview.component';
@@ -30,7 +29,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     NavbarComponent,
     DashboardComponent,
     ListComponent,
-    CreatorComponent,
     MiniviewComponent,
     AnnotatorComponent,
   ],

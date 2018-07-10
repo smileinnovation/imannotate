@@ -1,15 +1,17 @@
-hash: 6bb74500e035cad7e60a57746230760922f9bb13fdd5461d30af5944e6b3fc93
-updated: 2018-06-29T15:31:51.48070646+02:00
+hash: 1b92ac7261aefa7129632207c6b076c84a44c897f780f05a7064e12107898843
+updated: 2018-07-09T11:35:23.57474505+02:00
 imports:
 - name: github.com/gin-contrib/sse
   version: 22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae
+- name: github.com/gin-contrib/static
+  version: 73da7037e716e63aa2b0ffceb630dfa7be299086
 - name: github.com/gin-gonic/gin
   version: d459835d2b077e44f7c9b453505ee29881d5d12d
   subpackages:
   - binding
   - render
 - name: github.com/golang/protobuf
-  version: 9eb2c01ac278a5d89ce4b2be68fe4500955d8179
+  version: 1325a051a2753cd67556b182843b1b693d0854cd
   subpackages:
   - proto
 - name: github.com/mattn/go-isatty
@@ -18,12 +20,26 @@ imports:
   version: 7d51bbe6161dcb8f32a1252c27668ce36e3ef16b
   subpackages:
   - codec
+- name: golang.org/x/crypto
+  version: a49355c7e3f8fe157a85be2f77e6e269a0f89602
+  subpackages:
+  - bcrypt
+  - blowfish
 - name: golang.org/x/sys
-  version: 7138fd3d9dc8335c567ca206f4333fb75eb05d56
+  version: 1b2967e3c290b7c545b3db0deeda16e9be4f98a2
   subpackages:
   - unix
+- name: gopkg.in/dgrijalva/jwt-go.v3
+  version: 06ea1031745cb8b3dab3f6a236daf2b0aa468b7e
 - name: gopkg.in/go-playground/validator.v8
   version: 5f1438d3fca68893a817e4a66806cea46a9e4ebf
+- name: gopkg.in/mgo.v2
+  version: 9856a29383ce1c59f308dd1cf0363a79b5bef6b5
+  subpackages:
+  - bson
+  - internal/json
+  - internal/sasl
+  - internal/scram
 - name: gopkg.in/yaml.v2
   version: 5420a8b6744d3b0345ab293f6fcba19c978f1183
 testImports: []
