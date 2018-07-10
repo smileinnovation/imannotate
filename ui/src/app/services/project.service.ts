@@ -37,10 +37,9 @@ export class ProjectService {
 
   getProject(name: string): Observable<Project> {
     name = encodeURIComponent(name);
-    const obs = this.api.get<Project>('/v1/project/' + name).pipe(tap(
+    return this.api.get<Project>('/v1/project/' + name).pipe(tap(
       project => this.currentProject = project
     ));
-    return obs;
   }
 
   getNextImage(): Observable<string> {
