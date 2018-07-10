@@ -20,7 +20,7 @@ export class ProjectService {
     return obs;
   }
 
-  save(p: Project, edit: boolean = false) {
+  save(p: Project, edit: boolean = false): Observable<Project> {
     console.log("Create project", p, "edit:", edit)
     if (edit){
       // edit

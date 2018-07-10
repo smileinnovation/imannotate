@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ApiService } from './api.service';
 import { User } from '../classes/user';
 import { Subject, Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class UserService {
@@ -16,9 +17,8 @@ export class UserService {
     private router: Router,
   ) { }
 
-  login(user: User) {
-    const obs = this.api.post<User>('/v1/user/signin', user);
-    obs.subscribe(
+  login(user: User): Observable<User> {
+    return this.api.post<User>('/v1/user/signin', user).pipe(tap(
       u => {
         console.log('login ok', new Date().toString());
         this.currentUser = u;
@@ -29,7 +29,8 @@ export class UserService {
         console.log('login failed',  new Date().toString());
         this.currentUser = null;
         this.userSource.error(error);
-      });
+      }
+    ));
   }
 
   logout() {

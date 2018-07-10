@@ -1,0 +1,25 @@
+<div class="container">
+  <div class="row justify-content-md-center">
+    <div class="col col-md-6">
+      <h1 innerHTML="{{ title }}"></h1>
+      <form #f="ngForm" (submit)="create()">
+        <div class="form-group">
+          <input class="form-control" required type="text" placeholder="Project name" [(ngModel)]="project.name" name="name" />
+        </div>
+        <div class="form-group">
+          <input class="form-control" required type="text" placeholder="Coma separated list of classes to annotate" (keyup)="onTagChange()" [(ngModel)]="tags" name="tags" />
+        </div>
+        <div class="form-group">
+          <textarea class="form-control" required placeholder="Type a description about the project" [(ngModel)]="project.description" name="description"></textarea>
+        </div>
+        <div class="form-group">
+          <button class="btn btn-success" type="submit">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<pre>
+{{ project | json }}
+</pre>
+

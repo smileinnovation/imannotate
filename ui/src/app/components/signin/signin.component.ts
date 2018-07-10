@@ -10,26 +10,30 @@ import { User } from '../../classes/user';
 })
 export class SigninComponent implements OnInit {
 
-  user: User;
+  public user: User;
   error = { 'error': '' };
   constructor(
     private userservice: UserService,
     private router: Router) {
+    this.user = new User();
   }
 
   ngOnInit() {
-    this.user = new User();
+    console.log("feiuozfhuezih");
   }
 
   doLogin() {
     this.error.error = '';
-    this.userservice.user$.subscribe(user => {
-      console.log(user);
-      this.router.navigate(['dashboard']);
-    }, error => {
-      this.userservice.currentUser = null;
-      console.log(error);
-    });
-    this.userservice.login(this.user);
+    console.log("login");
+    this.userservice.login(this.user).subscribe(
+      user => {
+        console.log(user);
+        this.router.navigate(['dashboard']);
+      },
+      error => {
+        this.userservice.currentUser = null;
+        console.log(error);
+      }
+    );
   }
 }
