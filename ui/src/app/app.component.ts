@@ -23,8 +23,9 @@ export class AppComponent implements OnInit {
     if (luser !== null) {
       this.userservice.currentUser = JSON.parse(luser);
       console.log('Yes, user found');
-      console.log(this.router);
-      //this.router.navigate(['dashboard']);
+      if (location.pathname === "/") {
+        this.router.navigate(['dashboard']);
+      }
     } else {
       this.router.navigate(['signin']);
       console.log('Hu... user NOT found');
