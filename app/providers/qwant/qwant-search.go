@@ -1,4 +1,4 @@
-package providers
+package qwant
 
 import (
 	"encoding/json"
@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+
+	"github.com/smileinnovation/imannotate/api/providers"
 )
 
 const searchUrl = "https://api.qwant.com/api/search/images?q=%s&t=image&offset=%d&count=10&license=sharecommercially"
@@ -48,7 +50,7 @@ func (q *Qwant) fetch() (string, error) {
 	if i, ok := <-q.hit; ok {
 		return i, nil
 	} else {
-		return "", NoMoreFileError{}
+		return "", providers.NoMoreFileError{}
 	}
 }
 

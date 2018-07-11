@@ -5,8 +5,6 @@ import (
 	"path/filepath"
 )
 
-var current = ""
-
 type FileSystemImageProvider struct {
 	BaseRoot string
 	List     []string
