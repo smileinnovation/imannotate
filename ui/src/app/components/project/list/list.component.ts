@@ -10,7 +10,7 @@ import { ProjectService } from '../../../services/project.service';
 })
 export class ListComponent implements OnInit {
 
-  private _projects: Array<Project>;
+  public projects: Array<Project>;
 
   constructor(
     private projectService: ProjectService,
@@ -19,14 +19,8 @@ export class ListComponent implements OnInit {
   ngOnInit() {
     this.projectService.getProjectList().subscribe(projects => {
       console.log('projects: ', projects);
-      this._projects = projects;
+      this.projects = projects;
     });
 
   }
-
-  get projects() {
-    console.log('get projects...');
-    return this._projects;
-  }
-
 }
