@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
+	"github.com/smileinnovation/imannotate/api/annotation"
 	"github.com/smileinnovation/imannotate/api/auth"
 	"github.com/smileinnovation/imannotate/api/project"
 	"github.com/smileinnovation/imannotate/app"
@@ -36,6 +37,7 @@ func Auth(c *gin.Context) {
 func init() {
 	auth.SetAuthenticator(&mongo.MongoAuth{})
 	project.SetProvider(&mongo.MongoProjectProvider{})
+	annotation.SetStore(&mongo.MongoAnnotationStore{})
 }
 
 func main() {
@@ -54,6 +56,7 @@ func main() {
 		v1.PUT("/project", Auth, app.UpdateProject)
 		v1.GET("/project/:name", Auth, app.GetProject)
 		v1.GET("/project/:name/next", Auth, app.GetNextImage)
+		v1.POST("/project/:name/annotate", app.SaveAnnotation)
 		v1.GET("/projects", Auth, app.GetProjects)
 	}
 

@@ -4,6 +4,7 @@ import { Project } from '../classes/project';
 import { Observable } from 'rxjs';
 import { UserService } from './user.service';
 import { tap } from 'rxjs/operators';
+import { Annotation } from "../classes/annotation";
 
 @Injectable()
 export class ProjectService {
@@ -44,5 +45,11 @@ export class ProjectService {
 
   getNextImage(): Observable<string> {
     return this.api.get<string>('/v1/project/' + this.currentProject.name + '/next');
+  }
+
+  // user id in the future
+  saveAnnotation(project: string, annotation: Annotation): Observable<Annotation> {
+    project = encodeURIComponent(project);
+    return this.api.post<Annotation>(`/v1/project/${project}/annotate`, annotation);
   }
 }

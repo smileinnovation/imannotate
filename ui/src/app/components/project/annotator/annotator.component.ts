@@ -4,6 +4,7 @@ import { ProjectService } from '../../../services/project.service';
 import { Project } from '../../../classes/project';
 import { Annotator } from '../../../classes/annotator';
 import { BoundingBox } from '../../../classes/boundingbox';
+import { Annotation } from '../../../classes/annotation';
 
 @Component({
   selector: 'app-annotator',
@@ -15,6 +16,7 @@ export class AnnotatorComponent implements OnInit {
   currentBox: BoundingBox;
   boxes = new Array<BoundingBox>();
   project = new Project();
+  image = "";
 
   constructor(
     private route: ActivatedRoute,
@@ -53,9 +55,23 @@ export class AnnotatorComponent implements OnInit {
     this.currentBox = null;
   }
 
+
+  saveAnnotation() {
+    console.log(this.boxes);
+    const annotation = new Annotation();
+    annotation.image = this.image;
+    annotation.boxes = this.boxes;
+    console.log(annotation);
+    this.projectService.saveAnnotation(this.project.name, annotation).subscribe(ann => {
+      console.log("saved:", ann);
+      this.nextImage();
+    });
+  }
+
   nextImage() {
     // TODO: send box to server before to get next image
     this.projectService.getNextImage().subscribe(image => {
+      this.image = image;
       this.boxes = new Array<BoundingBox>();
       this.annotator.loadImage(image);
     });

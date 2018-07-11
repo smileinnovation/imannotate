@@ -1,8 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Project } from "../../../classes/project";
 import { UserService } from "../../../services/user.service";
 import { ProjectService } from "../../../services/project.service";
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'project-form',
@@ -51,5 +51,20 @@ export class ProjectformComponent implements OnInit {
 
   onTagChange(){
     this.project.tags = this.tags.split(",").map(i => i.trim());
+  }
+
+  onProviderChange(){
+    switch(this.project.imageProvider) {
+      case 'qwant':
+        this.project.imageProviderOptions = {
+          qwantQuery: ""
+        };
+        break;
+      case 'filesystem':
+        this.project.imageProviderOptions = {
+          file: ""
+        };
+        break;
+    }
   }
 }

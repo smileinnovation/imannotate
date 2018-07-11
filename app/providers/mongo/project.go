@@ -54,15 +54,19 @@ func (mpp *MongoProjectProvider) GetAll(username ...string) []*project.Project {
 
 	// TODO: link others projects from ACL (project where user is not owner)
 
+	for _, p := range projects {
+		fixId(p)
+	}
 	return projects
 }
 
 func (mpp *MongoProjectProvider) Get(name string) *project.Project {
-	p := &project.Project{}
+	p := project.Project{}
 	db := getMongo()
 	defer db.Session.Close()
-	db.C("project").Find(bson.M{"name": name}).One(p)
-	return p
+	db.C("project").Find(bson.M{"name": name}).One(&p)
+
+	return fixId(&p)
 }
 
 func (mpp *MongoProjectProvider) New(p *project.Project) error {
@@ -78,12 +82,18 @@ func (mpp *MongoProjectProvider) Update(p *project.Project) error {
 	defer db.Session.Close()
 	log.Println("updating", p)
 
-	return db.C("project").Update(bson.M{
-		"name":  p.Name,
-		"owner": p.Owner,
-	}, p)
+	id := bson.ObjectIdHex(p.Id)
+	p.Id = ""
+
+	return db.C("project").UpdateId(id, p)
 }
 
-func (mpp *MongoProjectProvider) NextImage(*project.Project) (string, error) {
-	return "", nil
+func (mpp *MongoProjectProvider) NextImage(prj *project.Project) (string, error) {
+	provider := getProvider(prj)
+	return provider.GetImage()
+}
+
+func fixId(p *project.Project) *project.Project {
+	p.Id = bson.ObjectId(p.Id).Hex()
+	return p
 }

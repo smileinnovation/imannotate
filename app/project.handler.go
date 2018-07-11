@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/smileinnovation/imannotate/api/annotation"
 	"github.com/smileinnovation/imannotate/api/auth"
 	"github.com/smileinnovation/imannotate/api/project"
 )
@@ -62,9 +63,21 @@ func GetNextImage(c *gin.Context) {
 	p := project.Get(c.Param("name"))
 	image, _ := project.NextImage(p)
 
-	c.String(http.StatusOK, image)
+	c.JSON(http.StatusOK, image)
 }
 
 func SaveAnnotation(c *gin.Context) {
+	ann := &annotation.Annotation{}
+	c.Bind(ann)
 
+	// TODO: use id
+	pid := c.Param("name")
+	prj := project.Get(pid)
+	log.Println("Should save", ann)
+	if err := annotation.Save(prj, ann); err != nil {
+		c.JSON(http.StatusNotAcceptable, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusAccepted, ann)
 }

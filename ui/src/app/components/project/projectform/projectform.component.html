@@ -4,14 +4,36 @@
       <h1 innerHTML="{{ title }}"></h1>
       <form #f="ngForm" (submit)="create()">
         <div class="form-group">
+          <label for="name">Project name</label>
           <input class="form-control" required type="text" placeholder="Project name" [(ngModel)]="project.name" name="name" />
         </div>
         <div class="form-group">
+          <label for="tags">Applicable tags for annotation</label>
           <input class="form-control" required type="text" placeholder="Coma separated list of classes to annotate" (keyup)="onTagChange()" [(ngModel)]="tags" name="tags" />
         </div>
         <div class="form-group">
+          <label for="description">Description text</label>
           <textarea class="form-control" required placeholder="Type a description about the project" [(ngModel)]="project.description" name="description"></textarea>
         </div>
+
+        <div class="form-group">
+          <label for="imageProvider">Choose an image provider that will fetch image to annotate</label>
+          <select (change)="onProviderChange()" name="imageProvider" class="form-control" [(ngModel)]="project.imageProvider">
+             <option value="filesystem">Directory</option>
+             <option value="qwant">Qwant image search</option>
+           </select>
+        </div>
+
+        <div class="form-group" name="fs-options" *ngIf="project.imageProvider == 'filesystem'">
+          <label for="zipfile">Put image archive (.zip, .tar.gz, .tar.bz2)</label>
+          <input type="file" class="form-control" name="zipfile" [(ngModel)]="project.imageProviderOptions.file" required/>
+        </div>
+
+        <div class="form-group" name="qwant-options" *ngIf="project.imageProvider == 'qwant'">
+          <label for="qwant-query">Qwant search query string</label>
+          <input type="text" name="qwant-query" class="form-control" placeholder="Qwant query, eg. Dog Cat" [(ngModel)]="project.imageProviderOptions.qwantQuery" required/>
+        </div>
+
         <div class="form-group">
           <button class="btn btn-success" type="submit">Save</button>
         </div>
@@ -19,7 +41,4 @@
     </div>
   </div>
 </div>
-<pre>
-{{ project | json }}
-</pre>
 

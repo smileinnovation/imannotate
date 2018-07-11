@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 )
 
-const url = "https://api.qwant.com/api/search/images?q=%s&t=image&offset=%d&count=10&license=sharecommercially"
+const searchUrl = "https://api.qwant.com/api/search/images?q=%s&t=image&offset=%d&count=10&license=sharecommercially"
 
 type Qwant struct {
 	req   string
@@ -34,7 +35,7 @@ type qItem struct {
 
 func NewQwant(req string) *Qwant {
 	q := Qwant{
-		req: req,
+		req: url.QueryEscape(req),
 		hit: make(chan string, 0),
 	}
 
@@ -58,11 +59,10 @@ func (q *Qwant) GetImage() (string, error) {
 func (q *Qwant) provide() {
 
 	for {
-		u := fmt.Sprintf(url, q.req, q.page)
+		u := fmt.Sprintf(searchUrl, q.req, q.page)
 		q.page += 10
 		log.Println("Getting", u)
 		resp, err := http.Get(u)
-		defer resp.Body.Close()
 
 		if err != nil {
 			// Error with the GET request on api
@@ -71,6 +71,7 @@ func (q *Qwant) provide() {
 			return
 		} else {
 			// Decode response
+			defer resp.Body.Close()
 			jd := json.NewDecoder(resp.Body)
 			res := qMeta{}
 			if err := jd.Decode(&res); err != nil {

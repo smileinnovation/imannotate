@@ -1,5 +1,5 @@
 <div class="row justify-content-center mt-2">
-  
+
   <div class="col-lg-3 col-sm-12">
       <h2 innerHTML="{{ project.name}}"></h2>
       <div class="card">
@@ -21,18 +21,18 @@
           </div>
         </div>
   </div>
-  
+
   <div class="col-lg-7 col-md-12" id="annotator" ></div>
 
   <div class="col">
         <div class="col annotate-actions">
-          <button class="btn btn-success" (click)="nextImage()">Next</button>
+          <button class="btn btn-success" (click)="saveAnnotation()">Next</button>
           <button class="btn btn-warning">Stop</button>
         </div>
         <div class="col align-items-center justify-content-center mt-3">
-            <span 
-              *ngFor="let label of project.tags" 
-              class="badge badge-pill badge-success mr-1" 
+            <span
+              *ngFor="let label of project.tags"
+              class="badge badge-pill badge-success mr-1"
               (click)="setLabel(label)">{{ label }}</span>
         </div>
   </div>
