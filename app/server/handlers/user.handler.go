@@ -21,3 +21,22 @@ func Login(c *gin.Context) {
 	u.Password = ""
 	c.JSON(200, u)
 }
+
+func SearchUser(c *gin.Context) {
+	q := c.Request.URL.Query().Get("q")
+	if len(q) > 1 {
+		if users, err := user.Seach(q); err != nil {
+			c.JSON(http.StatusBadRequest, err.Error())
+			return
+		} else {
+			for _, u := range users {
+				u.Email = ""
+				u.Password = ""
+			}
+			c.JSON(http.StatusOK, users)
+			return
+		}
+	}
+
+	c.JSON(http.StatusOK, []*user.User{})
+}

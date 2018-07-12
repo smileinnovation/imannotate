@@ -81,3 +81,38 @@ func SaveAnnotation(c *gin.Context) {
 
 	c.JSON(http.StatusAccepted, ann)
 }
+
+func GetContributors(c *gin.Context) {
+	pid := c.Param("name")
+	prj := project.Get(pid)
+
+	users := project.GetContributors(prj)
+	status := http.StatusOK
+	if len(users) == 0 {
+		status = http.StatusNotFound
+	}
+	c.JSON(status, users)
+}
+
+func AddContributor(c *gin.Context) {
+	pid := c.Param("name")
+	uid := c.Param("user")
+	prj := project.Get(pid)
+	log.Println("Prject::", prj)
+	user, err := auth.Get(uid)
+	log.Println("User::", user)
+
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := project.AddContributor(user, prj); err != nil {
+		c.JSON(http.StatusInternalServerError, err.Error())
+		return
+	} else {
+		c.JSON(http.StatusCreated, "injected")
+	}
+
+}

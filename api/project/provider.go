@@ -1,5 +1,7 @@
 package project
 
+import "github.com/smileinnovation/imannotate/api/user"
+
 var provider ProjectManager
 
 // PrjectManager interface to implement to manage projects.
@@ -18,6 +20,15 @@ type ProjectManager interface {
 
 	// NextImage return next image url or id to annotate for a given project.
 	NextImage(*Project) (string, error)
+
+	// GetContributors return the list of user that are allowed to annotate images.
+	GetContributors(*Project) []*user.User
+
+	// AddContributor append a contributor to the project.
+	AddContributor(*user.User, *Project) error
+
+	// RemoveContributor remove contributor from the project.
+	RemoveContributor(*user.User, *Project) error
 }
 
 // SetProvider registers the manager to use.
@@ -45,4 +56,16 @@ func Update(p *Project) error {
 
 func NextImage(p *Project) (string, error) {
 	return provider.NextImage(p)
+}
+
+func GetContributors(p *Project) []*user.User {
+	return provider.GetContributors(p)
+}
+
+func AddContributor(u *user.User, p *Project) error {
+	return provider.AddContributor(u, p)
+}
+
+func RemoveContributor(u *user.User, p *Project) error {
+	return provider.RemoveContributor(u, p)
 }

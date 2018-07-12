@@ -1,4 +1,5 @@
 export class Project {
+  id: string;
   name: string;
   owner: string;
   description: string;
@@ -7,6 +8,7 @@ export class Project {
   imageProviderOptions: any;
 
   constructor() {
+    this.id = "";
     this.name = "";
     this.owner = "";
     this.description = "";

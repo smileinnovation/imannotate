@@ -47,7 +47,10 @@ func GetServer() *gin.Engine {
 		v1.GET("/project/:name", Auth, handlers.GetProject)
 		v1.GET("/project/:name/next", Auth, handlers.GetNextImage)
 		v1.POST("/project/:name/annotate", handlers.SaveAnnotation)
+		v1.GET("/project/:name/contributors", handlers.GetContributors)
+		v1.POST("/project/:name/contributors/add/:user", handlers.AddContributor)
 		v1.GET("/projects", Auth, handlers.GetProjects)
+		v1.GET("/user/search", handlers.SearchUser)
 	}
 	return router
 }

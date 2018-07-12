@@ -21,17 +21,37 @@ func init() {
 	defer db.Session.Close()
 
 	idx := mgo.Index{
-		Key:      []string{"email", "username"},
+		Key:      []string{"username"},
 		Unique:   true,
 		DropDups: true,
 	}
 	db.C("user").EnsureIndex(idx)
 
+	// TODO: remove that - that's just to not waste our time
 	pass, _ := bcrypt.GenerateFromPassword([]byte("toto123"), bcrypt.DefaultCost)
-	db.C("user").Upsert(bson.M{"username": "Bob"}, &user.User{
+	log.Println(db.C("user").Upsert(bson.M{"username": "Bob"}, &user.User{
+		ID:       "",
 		Username: "Bob",
 		Password: string(pass),
-	})
+	}))
+
+	log.Println(db.C("user").Upsert(bson.M{"username": "Alice"}, &user.User{
+		ID:       "",
+		Username: "Alice",
+		Password: string(pass),
+	}))
+
+	log.Println(db.C("user").Upsert(bson.M{"username": "Alain"}, &user.User{
+		ID:       "",
+		Username: "Alain",
+		Password: string(pass),
+	}))
+
+	log.Println(db.C("user").Upsert(bson.M{"username": "Bobby"}, &user.User{
+		ID:       "",
+		Username: "Bobby",
+		Password: string(pass),
+	}))
 }
 
 type MongoAuth struct{}
@@ -70,9 +90,15 @@ func (ma *MongoAuth) Login(u *user.User) error {
 
 	return nil
 }
+
+func (ma *MongoAuth) Signup(u *user.User) error {
+	return nil
+}
+
 func (ma *MongoAuth) Logout(u *user.User) error {
 	return nil
 }
+
 func (ma *MongoAuth) Allowed(req *http.Request) error {
 
 	bearer := req.Header.Get("Authorization")
@@ -96,4 +122,15 @@ func (ma *MongoAuth) GetCurrentUsername(req *http.Request) (string, error) {
 	}
 	claim := token.Claims.(*CustomClaim)
 	return claim.ID, nil
+}
+
+func (ma *MongoAuth) Get(id string) (*user.User, error) {
+	db := getMongo()
+	defer db.Session.Close()
+
+	u := user.User{}
+	err := db.C("user").FindId(bson.ObjectIdHex(id)).One(&u)
+	u.ID = bson.ObjectId(u.ID).Hex()
+
+	return &u, err
 }

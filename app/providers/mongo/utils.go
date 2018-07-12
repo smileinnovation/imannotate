@@ -6,6 +6,9 @@ import (
 	"os"
 
 	"github.com/globalsign/mgo"
+	"github.com/globalsign/mgo/bson"
+	"github.com/smileinnovation/imannotate/api/project"
+	"github.com/smileinnovation/imannotate/api/user"
 )
 
 var sess *mgo.Session
@@ -27,4 +30,14 @@ func getMongo() *mgo.Database {
 	}
 
 	return sess.Clone().DB(dbn)
+}
+
+func fixProjectId(p *project.Project) *project.Project {
+	p.Id = bson.ObjectId(p.Id).Hex()
+	return p
+}
+
+func fixUserId(p *user.User) *user.User {
+	p.ID = bson.ObjectId(p.ID).Hex()
+	return p
 }

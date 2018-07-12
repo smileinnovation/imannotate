@@ -5,9 +5,15 @@ import (
 
 	"github.com/globalsign/mgo"
 	"github.com/smileinnovation/imannotate/api/project"
+	"github.com/smileinnovation/imannotate/api/user"
 
 	"github.com/globalsign/mgo/bson"
 )
+
+type MongoProjectACL struct {
+	ProjectID bson.ObjectId `bson:"projectId"`
+	UserID    bson.ObjectId `bson:"userId"`
+}
 
 func init() {
 	db := getMongo()
@@ -27,11 +33,13 @@ func init() {
 		Description: "A sample project in database",
 	}
 	db.C("project").Insert(p)
-}
 
-type MongoProjectACL struct {
-	ProjectName string
-	Username    string
+	idx = mgo.Index{
+		Key:      []string{"projectId", "userId"},
+		DropDups: true,
+		Unique:   true,
+	}
+	db.C("project_acl").EnsureIndex(idx)
 }
 
 type MongoProjectProvider struct{}
@@ -50,12 +58,31 @@ func (mpp *MongoProjectProvider) GetAll(username ...string) []*project.Project {
 			log.Println(err)
 			return nil
 		}
+
+		// Get project where user is not owner but is allowed to participate
+		p2 := []*MongoProjectACL{}
+		if err := db.C("project_acl").Find(bson.M{
+			"username": username[0],
+		}).All(&p2); err == nil {
+			ids := []bson.ObjectId{}
+			projectacl := []*project.Project{}
+
+			for _, p := range p2 {
+				ids = append(ids, p.ProjectID)
+			}
+
+			db.C("project").Find(bson.M{
+				"_id": bson.M{
+					"$in": ids,
+				},
+			}).All(&projectacl)
+
+			projects = append(projects, projectacl...)
+		}
 	}
 
-	// TODO: link others projects from ACL (project where user is not owner)
-
 	for _, p := range projects {
-		fixId(p)
+		fixProjectId(p)
 	}
 	return projects
 }
@@ -66,7 +93,7 @@ func (mpp *MongoProjectProvider) Get(name string) *project.Project {
 	defer db.Session.Close()
 	db.C("project").Find(bson.M{"name": name}).One(&p)
 
-	return fixId(&p)
+	return fixProjectId(&p)
 }
 
 func (mpp *MongoProjectProvider) New(p *project.Project) error {
@@ -93,7 +120,37 @@ func (mpp *MongoProjectProvider) NextImage(prj *project.Project) (string, error)
 	return provider.GetImage()
 }
 
-func fixId(p *project.Project) *project.Project {
-	p.Id = bson.ObjectId(p.Id).Hex()
-	return p
+func (mpp *MongoProjectProvider) GetContributors(p *project.Project) []*user.User {
+	db := getMongo()
+	defer db.Session.Close()
+
+	projects := []*MongoProjectACL{}
+	db.C("project_acl").Find(bson.M{
+		"projectId": bson.ObjectIdHex(p.Id),
+	}).All(&projects)
+
+	users := []*user.User{}
+	for _, p := range projects {
+		u := user.User{}
+		db.C("user").FindId(p.UserID).One(&u)
+		fixUserId(&u)
+		users = append(users, &u)
+	}
+
+	return users
+}
+
+func (mpp *MongoProjectProvider) AddContributor(u *user.User, p *project.Project) error {
+	db := getMongo()
+	defer db.Session.Close()
+
+	return db.C("project_acl").Insert(MongoProjectACL{
+		ProjectID: bson.ObjectIdHex(p.Id),
+		UserID:    bson.ObjectIdHex(u.ID),
+	})
+
+}
+
+func (mpp *MongoProjectProvider) RemoveContributor(u *user.User, p *project.Project) error {
+	return nil
 }
