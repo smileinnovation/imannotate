@@ -18,9 +18,7 @@ export class SigninComponent implements OnInit {
     this.user = new User();
   }
 
-  ngOnInit() {
-    console.log("feiuozfhuezih");
-  }
+  ngOnInit() {}
 
   doLogin() {
     this.error.error = '';
