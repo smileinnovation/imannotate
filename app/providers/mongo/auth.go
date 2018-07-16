@@ -21,22 +21,43 @@ func init() {
 	defer db.Session.Close()
 
 	idx := mgo.Index{
-		Key:      []string{"email", "username"},
+		Key:      []string{"username"},
 		Unique:   true,
 		DropDups: true,
 	}
 	db.C("user").EnsureIndex(idx)
 
+	// TODO: remove that - that's just to not waste our time
 	pass, _ := bcrypt.GenerateFromPassword([]byte("toto123"), bcrypt.DefaultCost)
-	db.C("user").Upsert(bson.M{"username": "Bob"}, &user.User{
+	log.Println(db.C("user").Upsert(bson.M{"username": "Bob"}, &user.User{
+		ID:       "",
 		Username: "Bob",
 		Password: string(pass),
-	})
+	}))
+
+	log.Println(db.C("user").Upsert(bson.M{"username": "Alice"}, &user.User{
+		ID:       "",
+		Username: "Alice",
+		Password: string(pass),
+	}))
+
+	log.Println(db.C("user").Upsert(bson.M{"username": "Alain"}, &user.User{
+		ID:       "",
+		Username: "Alain",
+		Password: string(pass),
+	}))
+
+	log.Println(db.C("user").Upsert(bson.M{"username": "Bobby"}, &user.User{
+		ID:       "",
+		Username: "Bobby",
+		Password: string(pass),
+	}))
 }
 
 type MongoAuth struct{}
 type CustomClaim struct {
-	ID string
+	ID       string
+	Username string
 	jwt.StandardClaims
 }
 
@@ -56,7 +77,8 @@ func (ma *MongoAuth) Login(u *user.User) error {
 	}
 
 	claims := CustomClaim{
-		u.Username,
+		bson.ObjectId(real.ID).Hex(),
+		real.Username,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Duration(time.Hour * 24)).Unix(),
 		},
@@ -65,14 +87,21 @@ func (ma *MongoAuth) Login(u *user.User) error {
 	if ss, err := token.SignedString(SigningKey); err != nil {
 		return err
 	} else {
+		u.ID = real.ID
 		u.Token = "Bearer " + ss
+		fixUserId(u)
 	}
-
 	return nil
 }
+
+func (ma *MongoAuth) Signup(u *user.User) error {
+	return nil
+}
+
 func (ma *MongoAuth) Logout(u *user.User) error {
 	return nil
 }
+
 func (ma *MongoAuth) Allowed(req *http.Request) error {
 
 	bearer := req.Header.Get("Authorization")
@@ -85,15 +114,43 @@ func (ma *MongoAuth) Allowed(req *http.Request) error {
 	return err
 }
 
-func (ma *MongoAuth) GetCurrentUsername(req *http.Request) (string, error) {
+func (ma *MongoAuth) GetCurrentUser(req *http.Request) *user.User {
 	bearer := req.Header.Get("Authorization")
 	bearer = strings.Replace(bearer, "Bearer ", "", 1)
 	token, err := jwt.ParseWithClaims(bearer, &CustomClaim{}, func(token *jwt.Token) (interface{}, error) {
 		return SigningKey, nil
 	})
 	if err != nil {
-		return "", err
+		return nil
 	}
 	claim := token.Claims.(*CustomClaim)
-	return claim.ID, nil
+	log.Println("claim", claim)
+	db := getMongo()
+	defer db.Session.Close()
+
+	u := user.User{}
+	if err := db.C("user").FindId(bson.ObjectIdHex(claim.ID)).One(&u); err != nil {
+		return nil
+	}
+	fixUserId(&u)
+	return &u
+}
+
+func (ma *MongoAuth) GetCurrentUsername(req *http.Request) (string, error) {
+	if u := ma.GetCurrentUser(req); u == nil {
+		return "", errors.New("No correct user logged found")
+	} else {
+		return u.Username, nil
+	}
+}
+
+func (ma *MongoAuth) Get(id string) (*user.User, error) {
+	db := getMongo()
+	defer db.Session.Close()
+
+	u := user.User{}
+	err := db.C("user").FindId(bson.ObjectIdHex(id)).One(&u)
+	u.ID = bson.ObjectId(u.ID).Hex()
+
+	return &u, err
 }

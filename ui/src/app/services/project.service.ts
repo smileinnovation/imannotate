@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { UserService } from './user.service';
 import { tap } from 'rxjs/operators';
 import { Annotation } from "../classes/annotation";
+import { User } from "../classes/user";
 
 @Injectable()
 export class ProjectService {
@@ -38,9 +39,21 @@ export class ProjectService {
 
   getProject(name: string): Observable<Project> {
     name = encodeURIComponent(name);
-    return this.api.get<Project>('/v1/project/' + name).pipe(tap(
+    return this.api.get<Project>(`/v1/project/${name}`).pipe(tap(
       project => this.currentProject = project
     ));
+  }
+
+  getContributors(project: Project): Observable<Array<User>> {
+    return this.api.get<Array<User>>(`/v1/project/${project.name}/contributors`);
+  }
+
+  addContributor(user: string, project: Project): Observable<string> {
+    return this.api.post(`/v1/project/${project.name}/contributors/${user}`, null);
+  }
+
+  removeContributor(user: string, project: Project): Observable<any> {
+    return this.api.delete(`/v1/project/${project.name}/contributors/${user}`);
   }
 
   getNextImage(): Observable<string> {
@@ -52,4 +65,11 @@ export class ProjectService {
     project = encodeURIComponent(project);
     return this.api.post<Annotation>(`/v1/project/${project}/annotate`, annotation);
   }
+
+  downloadAnnotation(project: Project): Observable<any> {
+    return this.api.download<any>(`/v1/project/${project.name}/annotations/csv`, {
+      responseType: "blob",
+    });
+  }
+
 }

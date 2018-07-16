@@ -6,6 +6,9 @@ import (
 	"os"
 
 	"github.com/globalsign/mgo"
+	"github.com/globalsign/mgo/bson"
+	"github.com/smileinnovation/imannotate/api/project"
+	"github.com/smileinnovation/imannotate/api/user"
 )
 
 var sess *mgo.Session
@@ -27,4 +30,43 @@ func getMongo() *mgo.Database {
 	}
 
 	return sess.Clone().DB(dbn)
+}
+
+func fixProjectId(p *project.Project) *project.Project {
+	p.Id = bson.ObjectId(p.Id).Hex()
+	return p
+}
+
+func fixUserId(p *user.User) *user.User {
+	p.ID = bson.ObjectId(p.ID).Hex()
+	return p
+}
+
+func canTouchProject(u *user.User, p *project.Project) bool {
+
+	db := getMongo()
+	defer db.Session.Close()
+
+	if p.Owner == u.ID {
+		return true
+	}
+
+	return false
+}
+
+func canAnnotateProject(u *user.User, p *project.Project) bool {
+
+	if canTouchProject(u, p) {
+		return true
+	}
+
+	db := getMongo()
+	defer db.Session.Close()
+	if i, err := db.C("project_acl").Find(bson.M{
+		"projectId": bson.ObjectIdHex(p.Id),
+		"userId":    bson.ObjectIdHex(u.ID),
+	}).Count(); err != nil || i < 1 {
+		return false
+	}
+	return false
 }

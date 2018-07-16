@@ -24,6 +24,10 @@ func (ta *TestAuthenticator) Login(u *user.User) error {
 	return nil
 }
 
+func (ta *TestAuthenticator) Signup(*user.User) error {
+	return nil
+}
+
 func (ta *TestAuthenticator) Logout(*user.User) error {
 	panic("not implemented")
 }
@@ -34,6 +38,14 @@ func (ta *TestAuthenticator) Allowed(*http.Request) error {
 
 func (ta *TestAuthenticator) GetCurrentUsername(*http.Request) (string, error) {
 	panic("not implemented")
+}
+
+func (ta *TestAuthenticator) Get(id string) (*user.User, error) {
+	panic("not implemented")
+}
+
+func (ta *TestAuthenticator) GetCurrentUser(*http.Request) *user.User {
+	return nil
 }
 
 func getHTTPTest() *httptest.Server {

@@ -11,6 +11,9 @@ type Authenticator interface {
 	// Login should take a user as parameter and return error if login failed
 	Login(*user.User) error
 
+	// Signup should take a user, check it and register it.
+	Signup(*user.User) error
+
 	// Logout should take a user as paramter and return error if logout failed.
 	// That one is not mandatory for the entire authenticator, some use JWT so that method can only
 	// return nil.
@@ -22,7 +25,13 @@ type Authenticator interface {
 
 	// GetCurrentUsername must use header to return username. Note that this method is ONLY used
 	// to get username and NOT to check authorization !
-	GetCurrentUsername(*http.Request) (string, error)
+	GetCurrentUsername(*http.Request) (string, error) // deprecated ?
+
+	// GetCurrentUser should give the current logged in user
+	GetCurrentUser(*http.Request) *user.User
+
+	// Get user from any db. ID should be manipulate by authenticator instance.
+	Get(id string) (*user.User, error)
 }
 
 var authent Authenticator
@@ -46,4 +55,12 @@ func Allowed(req *http.Request) error {
 // logged so an error is returned. If something goes wrong to read the user name, an non-nil error is also returned.
 func GetCurrentUsername(req *http.Request) (string, error) {
 	return authent.GetCurrentUsername(req)
+}
+
+func Get(id string) (*user.User, error) {
+	return authent.Get(id)
+}
+
+func GetCurrentUser(req *http.Request) *user.User {
+	return authent.GetCurrentUser(req)
 }

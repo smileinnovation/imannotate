@@ -37,7 +37,11 @@ export class UserService {
     localStorage.removeItem('user');
     this.currentUser = null;
     this.userSource.error('logout');
-    this.router.navigate(['/']);
+    this.router.navigate(['/signin']);
+  }
+
+  search(username: string): Observable<Array<User>> {
+    return this.api.get<Array<User>>(`/v1/user/search?q=${username}`)
   }
 
 }

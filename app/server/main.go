@@ -44,10 +44,15 @@ func GetServer() *gin.Engine {
 		v1.POST("/user/signin", handlers.Login)
 		v1.POST("/project", Auth, handlers.NewProject)
 		v1.PUT("/project", Auth, handlers.UpdateProject)
-		v1.GET("/project/:name", Auth, handlers.GetProject)
+		v1.GET("/project/:name/annotations/:format", handlers.ExportProject)
 		v1.GET("/project/:name/next", Auth, handlers.GetNextImage)
+		v1.GET("/project/:name/contributors", handlers.GetContributors)
+		v1.DELETE("/project/:name/contributors/:user", handlers.RemoveContributor)
+		v1.POST("/project/:name/contributors/:user", handlers.AddContributor)
 		v1.POST("/project/:name/annotate", handlers.SaveAnnotation)
+		v1.GET("/project/:name", Auth, handlers.GetProject)
 		v1.GET("/projects", Auth, handlers.GetProjects)
+		v1.GET("/user/search", handlers.SearchUser)
 	}
 	return router
 }
