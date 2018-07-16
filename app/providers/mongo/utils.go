@@ -18,7 +18,12 @@ func getMongo() *mgo.Database {
 	dbu := os.Getenv("DB_USER")
 	dbp := os.Getenv("DB_PASS")
 	dbn := os.Getenv("DB_NAME")
-	admdb := dbn
+	admdb := os.Getenv("DB_AUTH")
+	if admdb == "" {
+		// is there is no "DB_AUTH" database name for authentication
+		// so we use the used db name
+		admdb = dbn
+	}
 
 	if sess == nil {
 		var err error
