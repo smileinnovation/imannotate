@@ -39,7 +39,7 @@ export class ProjectService {
 
   getProject(name: string): Observable<Project> {
     name = encodeURIComponent(name);
-    return this.api.get<Project>('/v1/project/' + name).pipe(tap(
+    return this.api.get<Project>(`/v1/project/${name}`).pipe(tap(
       project => this.currentProject = project
     ));
   }
@@ -49,7 +49,11 @@ export class ProjectService {
   }
 
   addContributor(user: string, project: Project): Observable<string> {
-    return this.api.post(`/v1/project/${project.name}/contributors/add/${user}`, null);
+    return this.api.post(`/v1/project/${project.name}/contributors/${user}`, null);
+  }
+
+  removeContributor(user: string, project: Project): Observable<any> {
+    return this.api.delete(`/v1/project/${project.name}/contributors/${user}`);
   }
 
   getNextImage(): Observable<string> {
@@ -61,4 +65,11 @@ export class ProjectService {
     project = encodeURIComponent(project);
     return this.api.post<Annotation>(`/v1/project/${project}/annotate`, annotation);
   }
+
+  downloadAnnotation(project: Project): Observable<any> {
+    return this.api.download<any>(`/v1/project/${project.name}/annotations/csv`, {
+      responseType: "blob",
+    });
+  }
+
 }

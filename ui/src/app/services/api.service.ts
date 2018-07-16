@@ -34,4 +34,16 @@ export class ApiService {
   public head(endpoint: string) {
     return this.http.head(this.apiLocation + endpoint, this.options);
   }
+
+  public delete(endpoint: string) {
+    return this.http.delete(this.apiLocation + endpoint, this.options);
+  }
+
+  public download<T>(endpoint: string, options: {}): Observable<T> {
+    // merge options
+    for (const key in this.options) {
+      options[key] = this.options[key];
+    }
+    return this.http.get<T>(this.apiLocation + endpoint, options);
+  }
 }

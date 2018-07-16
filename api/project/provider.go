@@ -1,13 +1,15 @@
 package project
 
-import "github.com/smileinnovation/imannotate/api/user"
+import (
+	"github.com/smileinnovation/imannotate/api/user"
+)
 
 var provider ProjectManager
 
 // PrjectManager interface to implement to manage projects.
 type ProjectManager interface {
-	// GetAll returns the whole project for given users.
-	GetAll(username ...string) []*Project
+	// GetAll returns the whole project for given user.
+	GetAll(user *user.User) []*Project
 
 	// Get return the project named "name".
 	Get(name string) *Project
@@ -29,6 +31,12 @@ type ProjectManager interface {
 
 	// RemoveContributor remove contributor from the project.
 	RemoveContributor(*user.User, *Project) error
+
+	// CanEdit return boolean to indicate if user can touch the project.
+	CanEdit(*user.User, *Project) bool
+
+	// CanAnnotate return boolean to indicate if user can annotate images in project.
+	CanAnnotate(*user.User, *Project) bool
 }
 
 // SetProvider registers the manager to use.
@@ -37,8 +45,8 @@ func SetProvider(pm ProjectManager) {
 }
 
 // GetAll returns the ProjectManager.GetAll result.
-func GetAll(username ...string) []*Project {
-	return provider.GetAll(username...)
+func GetAll(u *user.User) []*Project {
+	return provider.GetAll(u)
 }
 
 // Get returns the ProjectManager.Get result.
@@ -68,4 +76,12 @@ func AddContributor(u *user.User, p *Project) error {
 
 func RemoveContributor(u *user.User, p *Project) error {
 	return provider.RemoveContributor(u, p)
+}
+
+func CanEdit(u *user.User, p *Project) bool {
+	return provider.CanEdit(u, p)
+}
+
+func CanAnnotate(u *user.User, p *Project) bool {
+	return provider.CanAnnotate(u, p)
 }

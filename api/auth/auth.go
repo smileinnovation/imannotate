@@ -25,7 +25,10 @@ type Authenticator interface {
 
 	// GetCurrentUsername must use header to return username. Note that this method is ONLY used
 	// to get username and NOT to check authorization !
-	GetCurrentUsername(*http.Request) (string, error)
+	GetCurrentUsername(*http.Request) (string, error) // deprecated ?
+
+	// GetCurrentUser should give the current logged in user
+	GetCurrentUser(*http.Request) *user.User
 
 	// Get user from any db. ID should be manipulate by authenticator instance.
 	Get(id string) (*user.User, error)
@@ -56,4 +59,8 @@ func GetCurrentUsername(req *http.Request) (string, error) {
 
 func Get(id string) (*user.User, error) {
 	return authent.Get(id)
+}
+
+func GetCurrentUser(req *http.Request) *user.User {
+	return authent.GetCurrentUser(req)
 }

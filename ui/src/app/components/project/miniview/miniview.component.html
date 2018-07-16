@@ -9,8 +9,9 @@
         <span *ngFor="let tag of project.tags" class="badge badge-pill badge-success">{{ tag }}</span>
       </p>
       <div class="col">
-        <button *ngIf="owner" (click)="edit()" class="col-md-6 btn btn-primary btn-sm">Edit</button>
-        <button class="col-md-6 btn btn-success btn-sm" (click)="gotoProject(project)">Annotate</button>
+        <button *ngIf="owner"  class="col-md-4 btn btn-primary btn-sm" (click)="edit()"><i class="material-icons">edit</i> Edit</button>
+        <button class="col-md-4 btn btn-success btn-sm" (click)="gotoProject(project)"><i class="material-icons">border_color</i> Annotate</button>
+        <button class="col-md-4 btn btn-warning btn-sm" (click)="exportProject()"><i class="material-icons">save_alt</i> Export</button>
       </div>
     </div>
   </div>

@@ -42,6 +42,7 @@
       <div *ngIf="!edit">
         <p>You'll be able to share the project with other user as soon as you created the project</p>
       </div>
+
       <div *ngIf="edit">
         <p>You may propose to other to annotate the project with you</p>
         <input type="text" class="form-control"
@@ -49,16 +50,19 @@
           [inputFormatter]="searchFormatter"
           [resultTemplate]="rt"
           [ngbTypeahead]="searchContributor"/><button class="btn btn-success" (click)="addContributor()">add</button>
-        <span *ngIf="!searching"><i class="material-icons rotating" style="float: right; margin-top: -2.2rem; margin-right: 1rem;">refresh</i></span>
+        <span *ngIf="searching"><i class="material-icons rotating" style="float: right; margin-top: -2.2rem; margin-right: 1rem;">refresh</i></span>
+        <ngb-alert [type]="alertType" [dismissible]="false" (close)="successMessage = null" *ngIf="successMessage">
+          {{ successMessage }}
+        </ngb-alert>
         <ul>
-          <li *ngFor="let c of contributors">{{ c.username }} - {{ c.id }} <button class="btn btn-danger material-icons">delete</button></li>
+          <li *ngFor="let c of contributors">{{ c.username }} - {{ c.id }} <button class="btn btn-danger material-icons" (click)="removeContributor(c)">delete</button></li>
         </ul>
-        <pre>{{ contribSearch | json }}</pre>
       </div>
+
     </div>
   </div>
 </div>
 
 <ng-template #rt let-r="result" let-t="term">
-  {{ r.username}} - {{ r.id }}
+  {{ r.username}}
 </ng-template>

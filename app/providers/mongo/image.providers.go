@@ -11,6 +11,10 @@ import (
 var imageProviders = make(map[string]providers.ImageProvider)
 
 func getProvider(prj *project.Project) providers.ImageProvider {
+	if prj.ImageProvider == "" {
+		log.Println("No image provider defined")
+		return nil
+	}
 	if p, ok := imageProviders[prj.Name]; !ok {
 		createImageProvider(prj)
 		return getProvider(prj)

@@ -1,9 +1,12 @@
 package mongo
 
 import (
+	"errors"
+	"io"
 	"log"
 
 	"github.com/globalsign/mgo"
+	"github.com/smileinnovation/imannotate/api/annotation/exporter"
 	"github.com/smileinnovation/imannotate/api/project"
 	"github.com/smileinnovation/imannotate/api/user"
 
@@ -26,13 +29,21 @@ func init() {
 	}
 	db.C("project").EnsureIndex(idx)
 
+	u := user.User{}
+	db.C("user").Find(bson.M{
+		"username": "Bob",
+	}).One(&u)
+	fixUserId(&u)
+
 	p := &project.Project{
 		Name:        "DB project",
-		Owner:       "Bob",
+		Owner:       u.ID,
 		Tags:        []string{"foo", "bar", "baz"},
 		Description: "A sample project in database",
 	}
-	db.C("project").Insert(p)
+	db.C("project").Upsert(bson.M{
+		"name": p.Name,
+	}, p)
 
 	idx = mgo.Index{
 		Key:      []string{"projectId", "userId"},
@@ -44,41 +55,44 @@ func init() {
 
 type MongoProjectProvider struct{}
 
-func (mpp *MongoProjectProvider) GetAll(username ...string) []*project.Project {
+func (mpp *MongoProjectProvider) GetAll(u *user.User) []*project.Project {
 	db := getMongo()
 	defer db.Session.Close()
 
 	projects := []*project.Project{}
 
-	if len(username) > 0 {
-		log.Println("Fetching project for user", username[0])
-		if err := db.C("project").Find(bson.M{
-			"owner": username[0],
-		}).All(&projects); err != nil {
-			log.Println(err)
-			return nil
+	log.Println("Fetching project for user", u)
+	if err := db.C("project").Find(bson.M{
+		"owner": u.ID,
+	}).All(&projects); err != nil {
+		log.Println("P1", err)
+		return nil
+	}
+
+	// Get project where user is not owner but is allowed to participate
+	p2 := []*MongoProjectACL{}
+	if err := db.C("project_acl").Find(bson.M{
+		"userId": bson.ObjectIdHex(u.ID),
+	}).All(&p2); err == nil {
+		ids := []bson.ObjectId{}
+		projectacl := []*project.Project{}
+
+		for _, p := range p2 {
+			ids = append(ids, p.ProjectID)
 		}
 
-		// Get project where user is not owner but is allowed to participate
-		p2 := []*MongoProjectACL{}
-		if err := db.C("project_acl").Find(bson.M{
-			"username": username[0],
-		}).All(&p2); err == nil {
-			ids := []bson.ObjectId{}
-			projectacl := []*project.Project{}
-
-			for _, p := range p2 {
-				ids = append(ids, p.ProjectID)
-			}
-
-			db.C("project").Find(bson.M{
-				"_id": bson.M{
-					"$in": ids,
-				},
-			}).All(&projectacl)
-
-			projects = append(projects, projectacl...)
+		db.C("project").Find(bson.M{
+			"_id": bson.M{
+				"$in": ids,
+			},
+		}).All(&projectacl)
+		for _, p := range projectacl {
+			owner := &user.User{}
+			db.C("user").FindId(bson.ObjectIdHex(p.Owner)).One(&owner)
+			p.Owner = owner.Username
 		}
+
+		projects = append(projects, projectacl...)
 	}
 
 	for _, p := range projects {
@@ -87,6 +101,7 @@ func (mpp *MongoProjectProvider) GetAll(username ...string) []*project.Project {
 	return projects
 }
 
+// TODO: use project id
 func (mpp *MongoProjectProvider) Get(name string) *project.Project {
 	p := project.Project{}
 	db := getMongo()
@@ -117,6 +132,9 @@ func (mpp *MongoProjectProvider) Update(p *project.Project) error {
 
 func (mpp *MongoProjectProvider) NextImage(prj *project.Project) (string, error) {
 	provider := getProvider(prj)
+	if provider == nil {
+		return "", errors.New("No image provider given for the project named " + prj.Name)
+	}
 	return provider.GetImage()
 }
 
@@ -152,5 +170,23 @@ func (mpp *MongoProjectProvider) AddContributor(u *user.User, p *project.Project
 }
 
 func (mpp *MongoProjectProvider) RemoveContributor(u *user.User, p *project.Project) error {
+	db := getMongo()
+	defer db.Session.Close()
+
+	return db.C("project_acl").Remove(bson.M{
+		"projectId": bson.ObjectIdHex(p.Id),
+		"userId":    bson.ObjectIdHex(u.ID),
+	})
+}
+
+func (mpp *MongoProjectProvider) CanEdit(u *user.User, p *project.Project) bool {
+	return canTouchProject(u, p)
+}
+
+func (mpp *MongoProjectProvider) CanAnnotate(u *user.User, p *project.Project) bool {
+	return canAnnotateProject(u, p)
+}
+
+func (mpp *MongoProjectProvider) Export(p *project.Project, exp exporter.Exporter) io.Reader {
 	return nil
 }

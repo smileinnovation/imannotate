@@ -6,6 +6,7 @@ import { ProjectService } from '../../../services/project.service';
 import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, map, tap, switchMap } from 'rxjs/operators';
 import { User } from "../../../classes/user";
+import { Subject } from "rxjs/internal/Subject";
 
 
 @Component({
@@ -16,6 +17,9 @@ import { User } from "../../../classes/user";
 export class ProjectformComponent implements OnInit {
 
   @Input("project") project: Project;
+  private _success = new Subject<string>();
+  successMessage: string;
+  alertType = "success";
   tags: string
   edit = false;
   title = "Create project"
@@ -44,15 +48,22 @@ export class ProjectformComponent implements OnInit {
       this.projectservice.getProject(param.name).subscribe(project => {
         this.project = project;
         this.tags = this.project.tags.join(",");
-        this.project.owner = this.userservice.currentUser.username;
+        this.project.owner = this.userservice.currentUser.id;
+        console.log(this.project)
         this.edit = true;
         this.title = "Edit project";
         this.projectservice.getContributors(project).subscribe(contributors => {
           contributors.forEach(c => this.contributors.push(c))
         });
+
+        this._success.subscribe((message) => this.successMessage = message);
+        this._success.pipe(
+          debounceTime(5000)
+        ).subscribe(() => this.successMessage = null);
+
       });
     })
-    this.project.owner = this.userservice.currentUser.username;
+    this.project.owner = this.userservice.currentUser.id;
   }
 
   create(){
@@ -71,13 +82,27 @@ export class ProjectformComponent implements OnInit {
 
 
   addContributor() {
+    this.alertType = "success";
+    const u = this.contribSearch.username;
     this.projectservice.addContributor(this.contribSearch.id, this.project).subscribe(res => {
+      this._success.next(`${u} successfuly added to the project`);
       this.projectservice.getContributors(this.project).subscribe(
-        contributors => this.contributors = contributors
+        contributors => this.contributors = contributors,
+        error => this.contributors = new Array<User>()
       );
     });
-    this.contributors.push(this.contribSearch)
     this.contribSearch = new User();
+  }
+
+  removeContributor(contrib: User) {
+    this.projectservice.removeContributor(contrib.id, this.project).subscribe(res => {
+      this.alertType = "warning";
+      this._success.next(`${contrib.username} has been removed from the project`);
+      this.projectservice.getContributors(this.project).subscribe(
+        contributors => this.contributors = contributors,
+        error => this.contributors = new Array<User>()
+      );
+    });
   }
 
 

@@ -36,6 +36,10 @@ func (ta *TestAuthenticator) GetCurrentUsername(*http.Request) (string, error) {
 	panic("not implemented")
 }
 
+func (ta *TestAuthenticator) Get(id string) (*user.User, error) {
+	panic("not implemented")
+}
+
 func getHTTPTest() *httptest.Server {
 	auth.SetAuthenticator(&TestAuthenticator{})
 	gin.SetMode(gin.ReleaseMode)

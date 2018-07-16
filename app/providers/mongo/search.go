@@ -16,7 +16,8 @@ func (u *UserSearch) Search(q string) ([]*user.User, error) {
 	users := []*user.User{}
 	err := db.C("user").Find(bson.M{
 		"username": bson.M{
-			"$regex": q,
+			"$regex":   q,
+			"$options": "i",
 		},
 	}).All(&users)
 
