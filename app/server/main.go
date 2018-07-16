@@ -31,6 +31,10 @@ func Auth(c *gin.Context) {
 	}
 }
 
+func Health(c *gin.Context) {
+	c.Status(200)
+}
+
 func GetServer() *gin.Engine {
 
 	router := gin.Default()
@@ -41,6 +45,7 @@ func GetServer() *gin.Engine {
 
 	v1 := router.Group("/api/v1")
 	{
+		v1.GET("/health", Health)
 		v1.POST("/user/signin", handlers.Login)
 		v1.POST("/project", Auth, handlers.NewProject)
 		v1.PUT("/project", Auth, handlers.UpdateProject)

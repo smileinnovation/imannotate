@@ -6,6 +6,6 @@ type Project struct {
 	Description          string            `json:"description"`
 	Tags                 []string          `json:"tags"`
 	Owner                string            `json:"owner"`
-	ImageProvider        string            `json:"imageProvider"`
-	ImageProviderOptions map[string]string `json:"imageProviderOptions"`
+	ImageProvider        string            `json:"imageProvider" bson:"imageprovider"`
+	ImageProviderOptions map[string]string `json:"imageProviderOptions" bson:"imageprovideroptions"`
 }

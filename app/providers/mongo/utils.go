@@ -18,10 +18,11 @@ func getMongo() *mgo.Database {
 	dbu := os.Getenv("DB_USER")
 	dbp := os.Getenv("DB_PASS")
 	dbn := os.Getenv("DB_NAME")
+	admdb := dbn
 
 	if sess == nil {
 		var err error
-		c := fmt.Sprintf("%s:%s@%s:27017", dbu, dbp, db)
+		c := fmt.Sprintf("%s:%s@%s:27017/%s", dbu, dbp, db, admdb)
 		log.Println(c)
 		sess, err = mgo.Dial(c)
 		if err != nil {
