@@ -17,7 +17,7 @@ export usercompose
 
 
 run: .user.compose.yml
-	docker-compose up --remove-orphans --build -d
+	docker-compose up --remove-orphans --build 
 
 .user.compose.yml:
 	@echo "$$usercompose" > $@
