@@ -13,6 +13,10 @@ func (a *TestAuth) Login(*user.User) error {
 	return nil
 }
 
+func (a *TestAuth) Signup(*user.User) error {
+	return nil
+}
+
 func (a *TestAuth) Logout(*user.User) error {
 	return nil
 }
@@ -23,6 +27,14 @@ func (a *TestAuth) Allowed(*http.Request) error {
 
 func (a *TestAuth) GetCurrentUsername(*http.Request) (string, error) {
 	return "Alice", nil
+}
+
+func (a *TestAuth) GetCurrentUser(*http.Request) *user.User {
+	return nil
+}
+
+func (a *TestAuth) Get(id string) (*user.User, error) {
+	return nil, nil
 }
 
 func TestAuthLogin(t *testing.T) {
