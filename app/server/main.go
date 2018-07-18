@@ -32,7 +32,7 @@ func Auth(c *gin.Context) {
 }
 
 func Health(c *gin.Context) {
-	c.Status(200)
+	c.String(200, "ok")
 }
 
 func GetServer() *gin.Engine {

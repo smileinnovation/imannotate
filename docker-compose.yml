@@ -34,6 +34,7 @@ services:
       DB_PASS: mongopwd
       DB_HOST: database
       DB_NAME: imannotate
+      DB_AUTH: admin
     privileged: true
 
   database:
