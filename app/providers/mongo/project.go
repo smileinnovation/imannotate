@@ -130,10 +130,10 @@ func (mpp *MongoProjectProvider) Update(p *project.Project) error {
 	return db.C("project").UpdateId(id, p)
 }
 
-func (mpp *MongoProjectProvider) NextImage(prj *project.Project) (string, error) {
+func (mpp *MongoProjectProvider) NextImage(prj *project.Project) (string, string, error) {
 	provider := getProvider(prj)
 	if provider == nil {
-		return "", errors.New("No image provider given for the project named " + prj.Name)
+		return "", "", errors.New("No image provider given for the project named " + prj.Name)
 	}
 	return provider.GetImage()
 }

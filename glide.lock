@@ -1,6 +1,40 @@
-hash: 4435a8f38f6c8b7a033513cca20d10432e4016f09e1594601cbd4042d555471a
-updated: 2018-07-10T15:25:23.705651684+02:00
+hash: aa33860eba64161bc8d75a3446b9d5b6cb3c0fe2f14cc47928f64248e9912b23
+updated: 2018-07-18T15:39:11.164024798+02:00
 imports:
+- name: github.com/aws/aws-sdk-go
+  version: c25475dd537f7becaf29e97c14617c8082f6b5d4
+  subpackages:
+  - aws
+  - aws/awserr
+  - aws/awsutil
+  - aws/client
+  - aws/client/metadata
+  - aws/corehandlers
+  - aws/credentials
+  - aws/credentials/ec2rolecreds
+  - aws/credentials/endpointcreds
+  - aws/credentials/stscreds
+  - aws/csm
+  - aws/defaults
+  - aws/ec2metadata
+  - aws/endpoints
+  - aws/request
+  - aws/session
+  - aws/signer/v4
+  - internal/sdkio
+  - internal/sdkrand
+  - internal/sdkuri
+  - internal/shareddefaults
+  - private/protocol
+  - private/protocol/eventstream
+  - private/protocol/eventstream/eventstreamapi
+  - private/protocol/query
+  - private/protocol/query/queryutil
+  - private/protocol/rest
+  - private/protocol/restxml
+  - private/protocol/xml/xmlutil
+  - service/s3
+  - service/sts
 - name: github.com/gin-contrib/sse
   version: 22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae
 - name: github.com/gin-contrib/static
@@ -17,14 +51,18 @@ imports:
   - internal/json
   - internal/sasl
   - internal/scram
+- name: github.com/go-ini/ini
+  version: 358ee7663966325963d4e8b2e1fbd570c5195153
 - name: github.com/golang/protobuf
-  version: 1325a051a2753cd67556b182843b1b693d0854cd
+  version: 14aad3d5ea4c323bcd7a2137e735da24a76e814c
   subpackages:
   - proto
+- name: github.com/jmespath/go-jmespath
+  version: c2b33e8439af944379acbdd9c3a5fe0bc44bd8a5
 - name: github.com/mattn/go-isatty
   version: 6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c
 - name: github.com/ugorji/go
-  version: 7d51bbe6161dcb8f32a1252c27668ce36e3ef16b
+  version: 2e1067cd04ec91c6fdf491ac8028c9d3aea73ab4
   subpackages:
   - codec
 - name: golang.org/x/crypto
@@ -33,7 +71,7 @@ imports:
   - bcrypt
   - blowfish
 - name: golang.org/x/sys
-  version: 1b2967e3c290b7c545b3db0deeda16e9be4f98a2
+  version: ac767d655b305d4e9612f5f6e33120b9176c4ad4
   subpackages:
   - unix
 - name: gopkg.in/dgrijalva/jwt-go.v3

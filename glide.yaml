@@ -9,3 +9,7 @@ import:
   version: ^3.2.0
 - package: github.com/gin-contrib/static
 - package: github.com/globalsign/mgo
+- package: github.com/aws/aws-sdk-go
+  version: ^1.14.28
+  subpackages:
+  - service/s3

@@ -71,9 +71,12 @@ func UpdateProject(c *gin.Context) {
 
 func GetNextImage(c *gin.Context) {
 	p := project.Get(c.Param("name"))
-	image, _ := project.NextImage(p)
+	name, image, _ := project.NextImage(p)
 
-	c.JSON(http.StatusOK, image)
+	c.JSON(http.StatusOK, map[string]string{
+		"name": name,
+		"url":  image,
+	})
 }
 
 func SaveAnnotation(c *gin.Context) {

@@ -6,6 +6,7 @@ import { UserService } from './user.service';
 import { tap } from 'rxjs/operators';
 import { Annotation } from "../classes/annotation";
 import { User } from "../classes/user";
+import { ImageResult } from "../classes/imageresult";
 
 @Injectable()
 export class ProjectService {
@@ -56,8 +57,8 @@ export class ProjectService {
     return this.api.delete(`/v1/project/${project.name}/contributors/${user}`);
   }
 
-  getNextImage(): Observable<string> {
-    return this.api.get<string>('/v1/project/' + this.currentProject.name + '/next');
+  getNextImage(): Observable<ImageResult> {
+    return this.api.get<ImageResult>('/v1/project/' + this.currentProject.name + '/next');
   }
 
   // user id in the future

@@ -20,8 +20,8 @@ type ProjectManager interface {
 	// Update project.
 	Update(*Project) error
 
-	// NextImage return next image url or id to annotate for a given project.
-	NextImage(*Project) (string, error)
+	// NextImage return next image name and url to annotate for a given project.
+	NextImage(*Project) (string, string, error)
 
 	// GetContributors return the list of user that are allowed to annotate images.
 	GetContributors(*Project) []*user.User
@@ -62,7 +62,7 @@ func Update(p *Project) error {
 	return provider.Update(p)
 }
 
-func NextImage(p *Project) (string, error) {
+func NextImage(p *Project) (string, string, error) {
 	return provider.NextImage(p)
 }
 

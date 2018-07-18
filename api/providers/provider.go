@@ -1,7 +1,9 @@
 package providers
 
 type ImageProvider interface {
-	GetImage() (string, error)
+	// GetImage should return the name and the url of image. In case of non accessible image
+	// you may use url encoded image (eg. data:image/png,base63,...).
+	GetImage() (name, url string, err error)
 }
 
 type FileNotFoundError struct{}

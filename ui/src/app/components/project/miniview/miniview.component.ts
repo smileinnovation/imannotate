@@ -44,7 +44,7 @@ export class MiniviewComponent implements OnInit {
           {
             "type": 'text/csv;charset=utf-8'
           },
-          'example.csv'
+          this.project.name + '.csv'
         )
       }
     );
