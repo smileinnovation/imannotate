@@ -22,3 +22,7 @@
 		display: block;
 	}
 }
+
+.navbar-brand img {
+  max-width: 120px;
+}
