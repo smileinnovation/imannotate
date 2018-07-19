@@ -27,8 +27,10 @@ export class AppComponent implements OnInit {
         this.router.navigate(['dashboard']);
       }
     } else {
-      this.router.navigate(['signin']);
       console.log('Hu... user NOT found');
+      if (location.pathname !== "/signup") {
+        this.router.navigate(['signin']);
+      }
     }
   }
 }

@@ -28,6 +28,10 @@ func GetProvider(prj *project.Project) providers.ImageProvider {
 	}
 }
 
+func RemoveProvider(prj *project.Project) {
+	delete(imageProviders, prj.Name)
+}
+
 func createImageProvider(prj *project.Project) {
 	log.Println("Provider for project", prj.Name, prj.ImageProvider, prj.ImageProviderOptions)
 	opt := prj.ImageProviderOptions

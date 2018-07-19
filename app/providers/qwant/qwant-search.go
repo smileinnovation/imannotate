@@ -103,7 +103,7 @@ func (q *Qwant) provide() {
 			for _, img := range res.Data.Result.Items {
 				// write url to the channel
 				// and wait someone read it
-				q.AddImage(img.Url, path.Base(img.Url))
+				q.AddImage(path.Base(img.Url), img.Url)
 			}
 		}
 	}

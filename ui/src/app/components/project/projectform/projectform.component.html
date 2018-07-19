@@ -2,6 +2,7 @@
   <div class="row justify-content-md-center">
     <div class="col col-md-6">
       <h1 innerHTML="{{ title }}"></h1>
+      <div class="alert alert-success" *ngIf="projectWasSaved">Project successfuly saved</div>
       <form #f="ngForm" (submit)="create()">
         <div class="form-group">
           <label for="name">Project name</label>
@@ -26,16 +27,28 @@
 
         <div class="form-group" name="fs-options" *ngIf="project.imageProvider == 's3'">
           <label for="id">Your amazon id</label>
-          <input type="text" class="form-control" name="id" [(ngModel)]="project.imageProviderOptions.id" required />
+          <input type="text" class="form-control"
+            name="id" [(ngModel)]="project.imageProviderOptions.id"
+            (keyup)="checkS3Credentials()" required />
 
           <label for="secret">AWS Secret</label>
-          <input type="password" class="form-control" name="secret" [(ngModel)]="project.imageProviderOptions.secret" required />
+          <input type="password" class="form-control"
+            name="secret" [(ngModel)]="project.imageProviderOptions.secret"
+            (keyup)="checkS3Credentials()" required />
 
           <label for="region">AWS Region</label>
-          <input type="text" class="form-control" name="region" [(ngModel)]="project.imageProviderOptions.region" required />
+          <input type="text" class="form-control"
+            name="region" [(ngModel)]="project.imageProviderOptions.region"
+            (keyup)="checkS3Credentials()" required />
+
+          <div class="alert alert-danger" *ngIf="!s3Valid">
+            S3 authentication problem: {{ s3Error }}
+          </div>
 
           <label for="bucket">Bucket name</label>
-          <input type="text" class="form-control" name="bucket" [(ngModel)]="project.imageProviderOptions.bucket" required />
+          <select [(ngModel)]="project.imageProviderOptions.bucket" required name="bucket" class="form-control">
+            <option *ngFor="let b of bucketList" value="{{b.Name}}" type="option">{{ b.Name }}</option>
+          </select>
 
           <label for="prefix">Prefix in that bucket</label>
           <input type="text" class="form-control" name="prefix" [(ngModel)]="project.imageProviderOptions.prefix" required />
@@ -47,7 +60,7 @@
         </div>
 
         <div class="form-group">
-          <button class="btn btn-success" type="submit">Save</button>
+          <button class="btn btn-success" type="submit" [disabled]="f.status == 'INVALID' || !formIsValid()">Save</button>
         </div>
       </form>
 
@@ -79,4 +92,4 @@
   {{ r.username}}
 </ng-template>
 
-<pre>{{project|json}}</pre>
+<pre>{{ f.status }} - {{ formIsValid() | json }}</pre>

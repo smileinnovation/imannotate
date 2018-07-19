@@ -13,6 +13,7 @@ const routes: Routes = [
   { path: 'annotate/:name', component: AnnotatorComponent },
   { path: 'project/create', component: ProjectformComponent },
   { path: 'project/edit/:name', component: ProjectformComponent },
+  { path: 'project/edit/:name/:state', component: ProjectformComponent },
 ];
 
 @NgModule({

@@ -33,6 +33,17 @@ export class UserService {
     ));
   }
 
+  signup(user: User): Observable<User> {
+    return this.api.post<User>('/v1/user/signup', user).pipe(tap(
+      u => {
+        console.log("user created", u);
+      },
+      error => {
+        console.log("there were a problem", error)
+      }
+    ));
+  }
+
   logout() {
     localStorage.removeItem('user');
     this.currentUser = null;

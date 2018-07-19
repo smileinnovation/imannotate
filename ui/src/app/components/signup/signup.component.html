@@ -1,15 +1,35 @@
-<div class="container align-self-center">
-  <h1>Signup !</h1>
-  <p>
-  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sagittis turpis elit, ac laoreet turpis varius eget. Cras justo nisl, viverra non fermentum a, dapibus sed velit. Donec efficitur arcu id est rutrum dapibus. Duis orci urna, molestie sit amet sodales luctus, malesuada non elit. Praesent tincidunt ultricies justo non sagittis. Fusce condimentum metus a ligula hendrerit blandit. Cras vel molestie diam. Praesent ac dui neque. Morbi condimentum congue orci, ut imperdiet nisi venenatis ac. Donec aliquet blandit lectus, pulvinar porta mi sollicitudin pellentesque. Quisque iaculis nisi in urna pretium sollicitudin. Maecenas congue purus purus, non molestie magna tempor id.
-  </p>
-  <div class="form-group">
-    <input class="form-control" type="text" placeholder="Username"
-      [(ngModel)]="user.username">
-    <input class="form-control" type="text" placeholder="Email"
-      [(ngModel)]="user.email">
-    <input class="form-control" type="password" placeholder="Password"
-      [(ngModel)]="user.password">
-    <button class="btn btn-success" (click)="signup()">Signup</button>
+<div class="container">
+  <div class="row justify-content-md-center text-center">
+    <div class="col col-md-6">
+      <img src="/assets/logo-dark.svg" class="logo"/>
+    </div>
+  </div>
+  <div class="row justify-content-md-center">
+    <div class="col col-md-6">
+      <h1>Signup Imannotate</h1>
+      <form #f="ngForm" (submit)="signup()" *ngIf="!registered">
+        <div class="form-group">
+          <input class="form-control" (keyup)="search()"
+                 type="text" placeholder="Username"
+                 [(ngModel)]="user.username"
+                 name="username"
+                 #username="ngModel"
+                 min-length="3"
+                 required />
+          <div *ngIf="userExists" class="alert alert-danger">User {{ user.username }} already exists</div>
+
+        </div>
+        <div class="form-group">
+          <input class="form-control" name="email" type="email" placeholder="Email"
+            [(ngModel)]="user.email" required />
+        </div>
+        <div class="form-group">
+          <input class="form-control" name="password" type="password" placeholder="Password"
+            [(ngModel)]="user.password" min-length="6" required />
+        </div>
+          <button type="submit" class="btn btn-success" [disabled]="f.status=='INVALID' || userExists">Signup</button>
+      </form>
+      <div class="alert alert-success" *ngIf="registered">You've been registered ! You can now <a href="/signin">signin</a>.</div>
+    </div>
   </div>
 </div>

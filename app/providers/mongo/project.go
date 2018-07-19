@@ -31,22 +31,6 @@ func init() {
 	}
 	db.C("project").EnsureIndex(idx)
 
-	u := user.User{}
-	db.C("user").Find(bson.M{
-		"username": "Bob",
-	}).One(&u)
-	fixUserId(&u)
-
-	p := &project.Project{
-		Name:        "DB project",
-		Owner:       u.ID,
-		Tags:        []string{"foo", "bar", "baz"},
-		Description: "A sample project in database",
-	}
-	db.C("project").Upsert(bson.M{
-		"name": p.Name,
-	}, p)
-
 	idx = mgo.Index{
 		Key:      []string{"projectId", "userId"},
 		DropDups: true,

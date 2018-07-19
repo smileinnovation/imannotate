@@ -11,6 +11,7 @@ import (
 	"github.com/smileinnovation/imannotate/api/annotation/exporter"
 	"github.com/smileinnovation/imannotate/api/auth"
 	"github.com/smileinnovation/imannotate/api/project"
+	"github.com/smileinnovation/imannotate/app/registry"
 )
 
 func GetProjects(c *gin.Context) {
@@ -54,6 +55,8 @@ func NewProject(c *gin.Context) {
 func UpdateProject(c *gin.Context) {
 	p := &project.Project{}
 	c.Bind(p)
+
+	registry.RemoveProvider(p)
 
 	u := auth.GetCurrentUser(c.Request)
 	if !project.CanEdit(u, p) {

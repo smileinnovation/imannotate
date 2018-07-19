@@ -39,6 +39,8 @@ func NewS3ImageProvider(id, secret, region, bucket, prefix string) *S3ImageProvi
 		log.Println(err)
 	}
 	svc := s3.New(sess, aws.NewConfig().WithRegion(region))
+	log.Println(*svc)
+
 	sss := &S3ImageProvider{
 		id:     id,
 		secret: secret,
@@ -47,6 +49,7 @@ func NewS3ImageProvider(id, secret, region, bucket, prefix string) *S3ImageProvi
 		prefix: prefix,
 		hit:    make(chan *s3res),
 	}
+	log.Println(*sss)
 	go sss.fetch(svc)
 	return sss
 }
@@ -92,10 +95,13 @@ func (sss *S3ImageProvider) fetch(svc *s3.S3) {
 func (sss *S3ImageProvider) listThat(svc *s3.S3, buck *s3.ListObjectsV2Input) {
 	prefixes := []string{}
 	page := 0
-	svc.ListObjectsV2Pages(buck, func(p *s3.ListObjectsV2Output, lastPage bool) bool {
+	log.Println("Getting S3 images")
+	err := svc.ListObjectsV2Pages(buck, func(p *s3.ListObjectsV2Output, lastPage bool) bool {
 		page++
+		log.Println("S3 p", p)
 		for _, cc := range p.Contents {
 			isImage := false
+			log.Println(cc)
 			for _, ext := range []string{".jpg", ".jpeg", ".png"} {
 				k := strings.ToLower(*cc.Key)
 				if strings.HasSuffix(k, ext) {
@@ -112,7 +118,7 @@ func (sss *S3ImageProvider) listThat(svc *s3.S3, buck *s3.ListObjectsV2Input) {
 			}
 			res, err := svc.GetObject(&in)
 			if err != nil {
-				log.Println(err)
+				log.Println("S3 ERR 1", err)
 			}
 
 			// AddImage...
@@ -126,6 +132,9 @@ func (sss *S3ImageProvider) listThat(svc *s3.S3, buck *s3.ListObjectsV2Input) {
 		}
 		return lastPage
 	})
+	if err != nil {
+		log.Println("S3 failed", err)
+	}
 	for _, p := range prefixes {
 		b := &s3.ListObjectsV2Input{}
 		b.SetBucket(*buck.Bucket)
