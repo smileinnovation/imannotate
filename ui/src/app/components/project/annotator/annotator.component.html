@@ -22,12 +22,22 @@
         </div>
   </div>
 
-  <div class="col-lg-7 col-md-12" id="annotator" ></div>
+  <div class="col-lg-7" id="annotator" ></div>
 
-  <div class="col">
-        <div class="col annotate-actions">
-          <button class="btn btn-success" (click)="saveAnnotation()">Next</button>
-          <button class="btn btn-warning">Stop</button>
+  <div class="col col-lg-2">
+        <div class="col justify-content-center flex-column annotate-actions">
+          <button class="p-2 btn btn-success"
+            (click)="saveAnnotation()"
+            [disabled]="boxes.length == 0"
+            ngbTooltip="Save annotation and fetch another image">Next</button>
+          <button class="p-2 btn btn-danger"
+            (click)="saveEmptyAnnotation(content)"
+            [disabled]="boxes.length > 0"
+            ngbTooltip="If there are no annotation found on that image">Nothing !</button>
+          <button class="p-2 btn btn-warning"
+            [disabled]="boxes.length > 0"
+            (click)="nextImage()"
+            ngbTooltip="Do not save, let other do the job">Pass</button>
         </div>
         <div class="col align-items-center justify-content-center mt-3">
             <span
@@ -39,3 +49,20 @@
 
 </div>
 
+
+<ng-template #content let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Empty annotation</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('no')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>
+      Are you sure that you want to send empty annotation for that image ? That means that this image doesn't contains any of the proposed labels.
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="c('yes')">Yes</button>
+  </div>
+</ng-template>

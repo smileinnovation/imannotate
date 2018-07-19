@@ -7,6 +7,8 @@ import { BoundingBox } from '../../../classes/boundingbox';
 import { Annotation } from '../../../classes/annotation';
 import { ImageResult } from "../../../classes/imageresult";
 
+import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+
 @Component({
   selector: 'app-annotator',
   templateUrl: './annotator.component.html',
@@ -21,7 +23,8 @@ export class AnnotatorComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private modalService: NgbModal,
   ) { }
 
   ngOnInit() {
@@ -67,6 +70,17 @@ export class AnnotatorComponent implements OnInit {
       console.log("saved:", ann);
       this.nextImage();
     });
+  }
+
+  saveEmptyAnnotation(content) {
+    this.modalService.open(content, {}).result.then(
+      result => {
+        console.log("result", result);
+      },
+      reason => {
+        console.log("reason", reason);
+      }
+    );
   }
 
   nextImage() {
