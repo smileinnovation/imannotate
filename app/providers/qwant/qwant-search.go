@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"path"
 
+	"github.com/smileinnovation/imannotate/api/garbage"
 	"github.com/smileinnovation/imannotate/api/providers"
 )
 
@@ -18,6 +19,7 @@ type Qwant struct {
 	page  int
 	cache []string
 	hit   chan map[string]string
+	gc    garbage.GarbageCollector
 }
 
 type qMeta struct {
@@ -61,6 +63,13 @@ func (q *Qwant) GetImage() (string, string, error) {
 	return q.fetch()
 }
 
+func (q *Qwant) AddImage(name, url string) {
+	q.hit <- map[string]string{
+		"name": name,
+		"url":  url,
+	}
+}
+
 func (q *Qwant) provide() {
 
 	for {
@@ -94,23 +103,8 @@ func (q *Qwant) provide() {
 			for _, img := range res.Data.Result.Items {
 				// write url to the channel
 				// and wait someone read it
-				q.hit <- map[string]string{
-					"url":  img.Url,
-					"name": path.Base(img.Url),
-				}
+				q.AddImage(img.Url, path.Base(img.Url))
 			}
 		}
 	}
-}
-
-func (q *Qwant) AdaptPage() (string, string) {
-	logo := "https://www.qwant.com/img/boards-footer-logo-x1.png"
-
-	content := `
-<div id="qwant-search">
-	<input type="text"></input><br />
-	<img src="` + logo + `" />
-</div>`
-
-	return content, "#nav"
 }

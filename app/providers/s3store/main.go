@@ -45,14 +45,15 @@ func NewS3ImageProvider(id, secret, region, bucket, prefix string) *S3ImageProvi
 		region: region,
 		bucket: bucket,
 		prefix: prefix,
+		hit:    make(chan *s3res),
 	}
-	sss.hit = make(chan *s3res)
 	go sss.fetch(svc)
 	return sss
 }
 
 func (sss *S3ImageProvider) GetImage() (string, string, error) {
 	if i, ok := <-sss.hit; ok {
+		// copy stream
 		im, s, err := image.Decode(i.Reader)
 		log.Println(s)
 		if err != nil {
@@ -65,6 +66,18 @@ func (sss *S3ImageProvider) GetImage() (string, string, error) {
 	}
 	log.Println("no new file")
 	return "", "", errors.New("No new file")
+}
+
+func (sss *S3ImageProvider) AddImage(name, url string) {
+	var b []byte
+
+	buff := bytes.NewBuffer(b)
+	buff.WriteString(url)
+
+	sss.hit <- &s3res{
+		Name:   name,
+		Reader: buff,
+	}
 }
 
 func (sss *S3ImageProvider) fetch(svc *s3.S3) {
@@ -101,6 +114,8 @@ func (sss *S3ImageProvider) listThat(svc *s3.S3, buck *s3.ListObjectsV2Input) {
 			if err != nil {
 				log.Println(err)
 			}
+
+			// AddImage...
 			sss.hit <- &s3res{
 				Name:   *cc.Key,
 				Reader: res.Body,
@@ -117,7 +132,5 @@ func (sss *S3ImageProvider) listThat(svc *s3.S3, buck *s3.ListObjectsV2Input) {
 		b.SetPrefix(p)
 		b.SetDelimiter("/")
 		sss.listThat(svc, b)
-
 	}
-
 }

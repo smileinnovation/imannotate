@@ -3,12 +3,14 @@ package mongo
 import (
 	"errors"
 	"io"
+	"io/ioutil"
 	"log"
 
 	"github.com/globalsign/mgo"
 	"github.com/smileinnovation/imannotate/api/annotation/exporter"
 	"github.com/smileinnovation/imannotate/api/project"
 	"github.com/smileinnovation/imannotate/api/user"
+	"github.com/smileinnovation/imannotate/app/registry"
 
 	"github.com/globalsign/mgo/bson"
 )
@@ -131,11 +133,28 @@ func (mpp *MongoProjectProvider) Update(p *project.Project) error {
 }
 
 func (mpp *MongoProjectProvider) NextImage(prj *project.Project) (string, string, error) {
-	provider := getProvider(prj)
+	provider := registry.GetProvider(prj)
 	if provider == nil {
 		return "", "", errors.New("No image provider given for the project named " + prj.Name)
 	}
-	return provider.GetImage()
+	name, url, err := provider.GetImage()
+
+	if gc := registry.GetGC(prj); gc != nil {
+		gc.Collect(name, url)
+	}
+
+	return name, url, err
+}
+
+func (mpp *MongoProjectProvider) AddImage(prj *project.Project, name string, reader io.Reader) error {
+	provider := registry.GetProvider(prj)
+	if provider == nil {
+		return errors.New("Provider not found:" + name)
+	}
+
+	c, _ := ioutil.ReadAll(reader)
+	provider.AddImage(name, string(c))
+	return nil
 }
 
 func (mpp *MongoProjectProvider) GetContributors(p *project.Project) []*user.User {

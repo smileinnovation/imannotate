@@ -6,6 +6,7 @@ import (
 	"github.com/globalsign/mgo/bson"
 	"github.com/smileinnovation/imannotate/api/annotation"
 	"github.com/smileinnovation/imannotate/api/project"
+	"github.com/smileinnovation/imannotate/app/registry"
 )
 
 type ProjectAnnotation struct {
@@ -19,6 +20,11 @@ func (ma *MongoAnnotationStore) Save(p *project.Project, ann *annotation.Annotat
 	pa := ProjectAnnotation{bson.ObjectIdHex(p.Id), ann}
 	db := getMongo()
 	defer db.Session.Close()
+	defer func() {
+		if gc := registry.GetGC(p); gc != nil {
+			gc.Delete(ann.Image)
+		}
+	}()
 	return db.C("annotation").Insert(pa)
 }
 
