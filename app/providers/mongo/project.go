@@ -7,6 +7,7 @@ import (
 	"log"
 
 	"github.com/globalsign/mgo"
+	"github.com/smileinnovation/imannotate/api/annotation"
 	"github.com/smileinnovation/imannotate/api/annotation/exporter"
 	"github.com/smileinnovation/imannotate/api/project"
 	"github.com/smileinnovation/imannotate/api/user"
@@ -122,6 +123,11 @@ func (mpp *MongoProjectProvider) NextImage(prj *project.Project) (string, string
 		return "", "", errors.New("No image provider given for the project named " + prj.Name)
 	}
 	name, url, err := provider.GetImage()
+
+	// check if image already annotated
+	if ann, err := annotation.GetImage(prj, name); err == nil && ann != nil {
+		return mpp.NextImage(prj)
+	}
 
 	if gc := registry.GetGC(prj); gc != nil {
 		gc.Collect(name, url)

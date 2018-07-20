@@ -33,7 +33,6 @@ func (ma *MongoAnnotationStore) Get(p *project.Project) []*annotation.Annotation
 	defer db.Session.Close()
 
 	pja := []*ProjectAnnotation{}
-	log.Println(p)
 
 	if err := db.C("annotation").Find(bson.M{
 		"pid": bson.ObjectIdHex(p.Id),
@@ -46,5 +45,20 @@ func (ma *MongoAnnotationStore) Get(p *project.Project) []*annotation.Annotation
 		ann = append(ann, pa.Annotation)
 	}
 	return ann
+}
 
+func (ma *MongoAnnotationStore) GetImage(p *project.Project, name string) (*annotation.Annotation, error) {
+	db := getMongo()
+	defer db.Session.Close()
+	pja := &ProjectAnnotation{}
+
+	if err := db.C("annotation").Find(bson.M{
+		"pid":              bson.ObjectIdHex(p.Id),
+		"annotation.image": name,
+	}).One(&pja); err != nil {
+		log.Println("Err", err)
+		return nil, err
+	}
+
+	return pja.Annotation, nil
 }
