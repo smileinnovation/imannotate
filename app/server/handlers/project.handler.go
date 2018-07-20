@@ -11,6 +11,7 @@ import (
 	"github.com/smileinnovation/imannotate/api/annotation/exporter"
 	"github.com/smileinnovation/imannotate/api/auth"
 	"github.com/smileinnovation/imannotate/api/project"
+	"github.com/smileinnovation/imannotate/app/registry"
 )
 
 func GetProjects(c *gin.Context) {
@@ -55,6 +56,8 @@ func UpdateProject(c *gin.Context) {
 	p := &project.Project{}
 	c.Bind(p)
 
+	registry.RemoveProvider(p)
+
 	u := auth.GetCurrentUser(c.Request)
 	if !project.CanEdit(u, p) {
 		c.JSON(http.StatusUnauthorized, errors.New("You're not allowed to update that project"))
@@ -71,9 +74,12 @@ func UpdateProject(c *gin.Context) {
 
 func GetNextImage(c *gin.Context) {
 	p := project.Get(c.Param("name"))
-	image, _ := project.NextImage(p)
+	name, image, _ := project.NextImage(p)
 
-	c.JSON(http.StatusOK, image)
+	c.JSON(http.StatusOK, map[string]string{
+		"name": name,
+		"url":  image,
+	})
 }
 
 func SaveAnnotation(c *gin.Context) {

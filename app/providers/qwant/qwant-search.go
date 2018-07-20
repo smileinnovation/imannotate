@@ -6,7 +6,9 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"path"
 
+	"github.com/smileinnovation/imannotate/api/garbage"
 	"github.com/smileinnovation/imannotate/api/providers"
 )
 
@@ -16,7 +18,8 @@ type Qwant struct {
 	req   string
 	page  int
 	cache []string
-	hit   chan string
+	hit   chan map[string]string
+	gc    garbage.GarbageCollector
 }
 
 type qMeta struct {
@@ -38,24 +41,33 @@ type qItem struct {
 func NewQwant(req string) *Qwant {
 	q := Qwant{
 		req: url.QueryEscape(req),
-		hit: make(chan string, 0),
+		hit: make(chan map[string]string, 0),
 	}
 
 	go q.provide()
 	return &q
 }
 
-func (q *Qwant) fetch() (string, error) {
+func (q *Qwant) fetch() (string, string, error) {
 
 	if i, ok := <-q.hit; ok {
-		return i, nil
+		// we should not return "name" because we must save "image url"
+		// on annotation database to retrieve image source
+		return i["url"], i["url"], nil
 	} else {
-		return "", providers.NoMoreFileError{}
+		return "", "", providers.NoMoreFileError{}
 	}
 }
 
-func (q *Qwant) GetImage() (string, error) {
+func (q *Qwant) GetImage() (string, string, error) {
 	return q.fetch()
+}
+
+func (q *Qwant) AddImage(name, url string) {
+	q.hit <- map[string]string{
+		"name": name,
+		"url":  url,
+	}
 }
 
 func (q *Qwant) provide() {
@@ -91,20 +103,8 @@ func (q *Qwant) provide() {
 			for _, img := range res.Data.Result.Items {
 				// write url to the channel
 				// and wait someone read it
-				q.hit <- img.Url
+				q.AddImage(path.Base(img.Url), img.Url)
 			}
 		}
 	}
-}
-
-func (q *Qwant) AdaptPage() (string, string) {
-	logo := "https://www.qwant.com/img/boards-footer-logo-x1.png"
-
-	content := `
-<div id="qwant-search">
-	<input type="text"></input><br />
-	<img src="` + logo + `" />
-</div>`
-
-	return content, "#nav"
 }

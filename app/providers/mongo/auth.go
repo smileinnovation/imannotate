@@ -26,32 +26,6 @@ func init() {
 		DropDups: true,
 	}
 	db.C("user").EnsureIndex(idx)
-
-	// TODO: remove that - that's just to not waste our time
-	pass, _ := bcrypt.GenerateFromPassword([]byte("toto123"), bcrypt.DefaultCost)
-	log.Println(db.C("user").Upsert(bson.M{"username": "Bob"}, &user.User{
-		ID:       "",
-		Username: "Bob",
-		Password: string(pass),
-	}))
-
-	log.Println(db.C("user").Upsert(bson.M{"username": "Alice"}, &user.User{
-		ID:       "",
-		Username: "Alice",
-		Password: string(pass),
-	}))
-
-	log.Println(db.C("user").Upsert(bson.M{"username": "Alain"}, &user.User{
-		ID:       "",
-		Username: "Alain",
-		Password: string(pass),
-	}))
-
-	log.Println(db.C("user").Upsert(bson.M{"username": "Bobby"}, &user.User{
-		ID:       "",
-		Username: "Bobby",
-		Password: string(pass),
-	}))
 }
 
 type MongoAuth struct{}
@@ -95,7 +69,18 @@ func (ma *MongoAuth) Login(u *user.User) error {
 }
 
 func (ma *MongoAuth) Signup(u *user.User) error {
-	return nil
+	db := getMongo()
+	defer db.Session.Close()
+
+	u.ID = "" // ensure no ID were sent
+
+	if pass, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost); err != nil {
+		return err
+	} else {
+		u.Password = string(pass)
+	}
+	return db.C("user").Insert(u)
+
 }
 
 func (ma *MongoAuth) Logout(u *user.User) error {

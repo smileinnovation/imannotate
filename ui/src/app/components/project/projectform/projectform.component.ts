@@ -7,7 +7,11 @@ import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, map, tap, switchMap } from 'rxjs/operators';
 import { User } from "../../../classes/user";
 import { Subject } from "rxjs/internal/Subject";
+import { ApiService } from "../../../services/api.service";
 
+class Bucket {
+  Name: string;
+}
 
 @Component({
   selector: 'project-form',
@@ -27,12 +31,17 @@ export class ProjectformComponent implements OnInit {
   contributors = new Array<User>();
   contribSearch: User;
   contribId = "";
+  bucketList = new Array<Bucket>();
+  s3Valid = true;
+  s3Error = "";
+  projectWasSaved = false;
 
   constructor(
     private userservice: UserService,
     private projectservice: ProjectService,
     private router: ActivatedRoute,
     private route: Router,
+    private api: ApiService,
   ) { }
 
   ngOnInit() {
@@ -41,7 +50,9 @@ export class ProjectformComponent implements OnInit {
       this.project = new Project();
     }
     this.router.params.subscribe(param => {
-      console.log("params", param);
+      if (param["state"] && param["state"] === "saved") {
+        this.projectWasSaved = true;
+      }
       if (!param["name"]) {
         return;
       }
@@ -49,12 +60,14 @@ export class ProjectformComponent implements OnInit {
         this.project = project;
         this.tags = this.project.tags.join(",");
         this.project.owner = this.userservice.currentUser.id;
-        console.log(this.project)
         this.edit = true;
         this.title = "Edit project";
         this.projectservice.getContributors(project).subscribe(contributors => {
           contributors.forEach(c => this.contributors.push(c))
         });
+        if (this.project.imageProvider == "s3") {
+          this.checkS3Credentials();
+        }
 
         this._success.subscribe((message) => this.successMessage = message);
         this._success.pipe(
@@ -70,7 +83,7 @@ export class ProjectformComponent implements OnInit {
     this.projectservice.save(this.project, this.edit).subscribe(
       project => {
         console.log("project created", project);
-        this.route.navigate(["/project/edit", project.name]);
+        this.route.navigate(["/project/edit", project.name, "saved"]);
       },
       error => { console.log(error); }
     );
@@ -79,7 +92,6 @@ export class ProjectformComponent implements OnInit {
   onTagChange(){
     this.project.tags = this.tags.split(",").map(i => i.trim());
   }
-
 
   addContributor() {
     this.alertType = "success";
@@ -128,6 +140,7 @@ export class ProjectformComponent implements OnInit {
         this.project.imageProviderOptions = {
           qwantQuery: ""
         };
+        this.checkS3Credentials()
         break;
       case 'filesystem':
         this.project.imageProviderOptions = {
@@ -135,5 +148,26 @@ export class ProjectformComponent implements OnInit {
         };
         break;
     }
+  }
+
+  checkS3Credentials() {
+    this.api.post('/v1/check/s3', this.project.imageProviderOptions).subscribe(
+      (resp: Array<Bucket>) => {
+        this.bucketList = resp;
+        this.s3Valid = true;
+      },
+      error => {
+        this.s3Valid = false;
+        this.s3Error = "Invalid S3 communication, maybe your AWS ID, Secret or Region is wrong.";
+        this.bucketList = new Array<Bucket>();
+      }
+    );
+  }
+
+  formIsValid() {
+    if (!this.s3Valid) {
+      return false;
+    }
+    return true;
   }
 }

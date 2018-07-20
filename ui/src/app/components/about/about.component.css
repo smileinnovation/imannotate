@@ -1,0 +1,13 @@
+.video {
+  max-width: 95%;
+  margin: auto;
+}
+
+@media (min-width: 992px) {
+  .video {
+    max-width: 40%;
+    margin: auto;
+    float: left;
+    padding: 0 1rem 1rem 0;
+  }
+}

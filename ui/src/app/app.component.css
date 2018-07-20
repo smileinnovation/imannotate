@@ -1,0 +1,11 @@
+.wrapper {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+}
+
+main {
+  overflow: auto;
+  height: 100vh;
+}
+

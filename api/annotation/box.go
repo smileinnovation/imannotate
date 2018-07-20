@@ -18,6 +18,7 @@ type Box struct {
 type AnnotationStore interface {
 	Save(*project.Project, *Annotation) error
 	Get(*project.Project) []*Annotation
+	GetImage(p *project.Project, name string) (*Annotation, error)
 }
 
 var store AnnotationStore
@@ -32,4 +33,8 @@ func Save(p *project.Project, an *Annotation) error {
 
 func Get(p *project.Project) []*Annotation {
 	return store.Get(p)
+}
+
+func GetImage(p *project.Project, name string) (*Annotation, error) {
+	return store.GetImage(p, name)
 }

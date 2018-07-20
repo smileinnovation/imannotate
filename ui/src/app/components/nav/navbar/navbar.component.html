@@ -1,34 +1,41 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="#">{{ title }}</a>
-  <button class="navbar-toggler"
+<nav id="sidebar" *ngIf="user && user.username" class="navbar-dark bg-dark d-flex flex-column align-items-center" [class.active]="show">
+  <button class="navbar-toggler align-self-end"
     type="button"
-    aria-controls="navbarColor02"
     aria-expanded="false"
     aria-label="Toggle navigation"
+    ngbTooltip="Toggle navigation" placement="right"
     (click)="toggleCollapse()">
     <span class="navbar-toggler-icon"></span>
   </button>
+  <a href="/" class="logo align-self-center text-center"><img src="/assets/logo.svg" class="p-0 m-0 navbar-brand"/></a>
 
-  <div class="collapse navbar-collapse" [class.show]="show" id="navbarColor02">
-    <ul class="navbar-nav ml-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">About</a>
-      </li>
-      <li class="nav-item dropdown" *ngIf="user && user.username" ngbDropdown>
-        <a class="nav-link dropdown-toggle" id="navbarDropdown" ngbDropdownToggle><i class="material-icons">face</i>{{ user.username }}</a>
-				<div ngbDropdownMenu aria-labelledby="navbarDropdown">
-					<a class="dropdown-item" href="/dashboard">My projects</a>
-          <div class="dropdown-divider"></div>
-					<a class="dropdown-item" (click)="logout()">Logout</a>
-				</div>
-      </li>
-    </ul>
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="text" placeholder="Search">
-      <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-    </form>
+  <ul class="navbar-nav p-4 align-self-stretch">
+    <li class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="/dashboard">
+        <i ngbTooltip="Home" placement="right" class="material-icons">home</i>
+        <span class="item-text">Home</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="/about">
+        <i ngbTooltip="About" placement="right" class="material-icons">info</i>
+        <span class="item-text">About</span>
+      </a>
+    </li>
+    <li class="nav-item dropdown" *ngIf="user && user.username" ngbDropdown>
+      <a class="nav-link dropdown-toggle" id="navbarDropdown" ngbDropdownToggle>
+        <i ngbTooltip="You" placement="right" class="material-icons">face</i>
+        <span class="item-text">{{ user.username }}</span>
+      </a>
+      <div ngbDropdownMenu aria-labelledby="navbarDropdown">
+        <a class="dropdown-item" (click)="logout()">Logout</a>
+      </div>
+    </li>
+  </ul>
+  <div class="navbar-bottom text-center">
+    <p class="made-by p-3">
+      Made with <i class="material-icons">favorite</i> by <a href="https://www.smile.eu/en/innovation" target="_blank">Smile Innovation</a>
+    </p>
+    <a href="https://www.smile.eu/en/innovation" target="_blank"><img src="/assets/smile.png" style="max-width: 90%" /></a>
   </div>
 </nav>

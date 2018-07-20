@@ -1,6 +1,8 @@
 package project
 
 import (
+	"io"
+
 	"github.com/smileinnovation/imannotate/api/user"
 )
 
@@ -20,8 +22,13 @@ type ProjectManager interface {
 	// Update project.
 	Update(*Project) error
 
-	// NextImage return next image url or id to annotate for a given project.
-	NextImage(*Project) (string, error)
+	// NextImage return next image name and url to annotate for a given project.
+	NextImage(*Project) (string, string, error)
+
+	// AddImage allow to add an image to be annotated. This method is optional.
+	// Commonly used to inject image in ImageProvider when you need to manage
+	// garbage collector.
+	AddImage(prj *Project, name string, reader io.Reader) error
 
 	// GetContributors return the list of user that are allowed to annotate images.
 	GetContributors(*Project) []*user.User
@@ -62,7 +69,7 @@ func Update(p *Project) error {
 	return provider.Update(p)
 }
 
-func NextImage(p *Project) (string, error) {
+func NextImage(p *Project) (string, string, error) {
 	return provider.NextImage(p)
 }
 
@@ -72,6 +79,10 @@ func GetContributors(p *Project) []*user.User {
 
 func AddContributor(u *user.User, p *Project) error {
 	return provider.AddContributor(u, p)
+}
+
+func AddImage(prj *Project, name string, reader io.Reader) error {
+	return provider.AddImage(prj, name, reader)
 }
 
 func RemoveContributor(u *user.User, p *Project) error {

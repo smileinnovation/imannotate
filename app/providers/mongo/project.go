@@ -3,12 +3,15 @@ package mongo
 import (
 	"errors"
 	"io"
+	"io/ioutil"
 	"log"
 
 	"github.com/globalsign/mgo"
+	"github.com/smileinnovation/imannotate/api/annotation"
 	"github.com/smileinnovation/imannotate/api/annotation/exporter"
 	"github.com/smileinnovation/imannotate/api/project"
 	"github.com/smileinnovation/imannotate/api/user"
+	"github.com/smileinnovation/imannotate/app/registry"
 
 	"github.com/globalsign/mgo/bson"
 )
@@ -28,22 +31,6 @@ func init() {
 		Unique:   true,
 	}
 	db.C("project").EnsureIndex(idx)
-
-	u := user.User{}
-	db.C("user").Find(bson.M{
-		"username": "Bob",
-	}).One(&u)
-	fixUserId(&u)
-
-	p := &project.Project{
-		Name:        "DB project",
-		Owner:       u.ID,
-		Tags:        []string{"foo", "bar", "baz"},
-		Description: "A sample project in database",
-	}
-	db.C("project").Upsert(bson.M{
-		"name": p.Name,
-	}, p)
 
 	idx = mgo.Index{
 		Key:      []string{"projectId", "userId"},
@@ -130,12 +117,34 @@ func (mpp *MongoProjectProvider) Update(p *project.Project) error {
 	return db.C("project").UpdateId(id, p)
 }
 
-func (mpp *MongoProjectProvider) NextImage(prj *project.Project) (string, error) {
-	provider := getProvider(prj)
+func (mpp *MongoProjectProvider) NextImage(prj *project.Project) (string, string, error) {
+	provider := registry.GetProvider(prj)
 	if provider == nil {
-		return "", errors.New("No image provider given for the project named " + prj.Name)
+		return "", "", errors.New("No image provider given for the project named " + prj.Name)
 	}
-	return provider.GetImage()
+	name, url, err := provider.GetImage()
+
+	// check if image already annotated
+	if ann, err := annotation.GetImage(prj, name); err == nil && ann != nil {
+		return mpp.NextImage(prj)
+	}
+
+	if gc := registry.GetGC(prj); gc != nil {
+		gc.Collect(name, url)
+	}
+
+	return name, url, err
+}
+
+func (mpp *MongoProjectProvider) AddImage(prj *project.Project, name string, reader io.Reader) error {
+	provider := registry.GetProvider(prj)
+	if provider == nil {
+		return errors.New("Provider not found:" + name)
+	}
+
+	c, _ := ioutil.ReadAll(reader)
+	provider.AddImage(name, string(c))
+	return nil
 }
 
 func (mpp *MongoProjectProvider) GetContributors(p *project.Project) []*user.User {

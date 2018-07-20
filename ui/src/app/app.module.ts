@@ -21,6 +21,7 @@ import { MiniviewComponent } from './components/project/miniview/miniview.compon
 import { AnnotatorComponent } from './components/project/annotator/annotator.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ProjectformComponent } from './components/project/projectform/projectform.component';
+import { AboutComponent } from './components/about/about.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { ProjectformComponent } from './components/project/projectform/projectfo
     MiniviewComponent,
     AnnotatorComponent,
     ProjectformComponent,
+    AboutComponent,
   ],
   imports: [
     BrowserModule,

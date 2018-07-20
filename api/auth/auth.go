@@ -46,6 +46,10 @@ func Login(u *user.User) error {
 	return authent.Login(u)
 }
 
+func Signup(u *user.User) error {
+	return authent.Signup(u)
+}
+
 // Allowed returns Authenticator.Allowed result, it user is not allowed to use current resource, an non nil error is returned.
 func Allowed(req *http.Request) error {
 	return authent.Allowed(req)

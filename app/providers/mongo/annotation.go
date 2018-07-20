@@ -6,6 +6,7 @@ import (
 	"github.com/globalsign/mgo/bson"
 	"github.com/smileinnovation/imannotate/api/annotation"
 	"github.com/smileinnovation/imannotate/api/project"
+	"github.com/smileinnovation/imannotate/app/registry"
 )
 
 type ProjectAnnotation struct {
@@ -19,6 +20,11 @@ func (ma *MongoAnnotationStore) Save(p *project.Project, ann *annotation.Annotat
 	pa := ProjectAnnotation{bson.ObjectIdHex(p.Id), ann}
 	db := getMongo()
 	defer db.Session.Close()
+	defer func() {
+		if gc := registry.GetGC(p); gc != nil {
+			gc.Delete(ann.Image)
+		}
+	}()
 	return db.C("annotation").Insert(pa)
 }
 
@@ -27,7 +33,6 @@ func (ma *MongoAnnotationStore) Get(p *project.Project) []*annotation.Annotation
 	defer db.Session.Close()
 
 	pja := []*ProjectAnnotation{}
-	log.Println(p)
 
 	if err := db.C("annotation").Find(bson.M{
 		"pid": bson.ObjectIdHex(p.Id),
@@ -40,5 +45,20 @@ func (ma *MongoAnnotationStore) Get(p *project.Project) []*annotation.Annotation
 		ann = append(ann, pa.Annotation)
 	}
 	return ann
+}
 
+func (ma *MongoAnnotationStore) GetImage(p *project.Project, name string) (*annotation.Annotation, error) {
+	db := getMongo()
+	defer db.Session.Close()
+	pja := &ProjectAnnotation{}
+
+	if err := db.C("annotation").Find(bson.M{
+		"pid":              bson.ObjectIdHex(p.Id),
+		"annotation.image": name,
+	}).One(&pja); err != nil {
+		log.Println("Err", err)
+		return nil, err
+	}
+
+	return pja.Annotation, nil
 }

@@ -38,14 +38,15 @@ containers/prod/app:
 	rm builder.sh
 
 
-clean:
+clean: clean-container-dist
 	rm -rf ui/dist
-	rm -rf containers/prod/ui containers/prod/app
 	rm -f gin-bin app.bin
+
+clean-container-dist:
+	rm -rf containers/prod/ui containers/prod/app
 
 clean-docker:
 	docker-compose down --remove-orphans
-
 
 clean-volumes:
 	docker-compose down -v --remove-orphans

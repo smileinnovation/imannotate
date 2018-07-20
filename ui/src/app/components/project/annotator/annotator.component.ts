@@ -5,6 +5,9 @@ import { Project } from '../../../classes/project';
 import { Annotator } from '../../../classes/annotator';
 import { BoundingBox } from '../../../classes/boundingbox';
 import { Annotation } from '../../../classes/annotation';
+import { ImageResult } from "../../../classes/imageresult";
+
+import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-annotator',
@@ -16,11 +19,12 @@ export class AnnotatorComponent implements OnInit {
   currentBox: BoundingBox;
   boxes = new Array<BoundingBox>();
   project = new Project();
-  image = "";
+  image: ImageResult ;
 
   constructor(
     private route: ActivatedRoute,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private modalService: NgbModal,
   ) { }
 
   ngOnInit() {
@@ -59,7 +63,7 @@ export class AnnotatorComponent implements OnInit {
   saveAnnotation() {
     console.log(this.boxes);
     const annotation = new Annotation();
-    annotation.image = this.image;
+    annotation.image = this.image.name;
     annotation.boxes = this.boxes;
     console.log(annotation);
     this.projectService.saveAnnotation(this.project.name, annotation).subscribe(ann => {
@@ -68,12 +72,24 @@ export class AnnotatorComponent implements OnInit {
     });
   }
 
+  saveEmptyAnnotation(content) {
+    this.modalService.open(content, {}).result.then(
+      result => {
+        console.log("result", result);
+      },
+      reason => {
+        console.log("reason", reason);
+      }
+    );
+  }
+
   nextImage() {
     // TODO: send box to server before to get next image
     this.projectService.getNextImage().subscribe(image => {
+      console.log(image)
       this.image = image;
       this.boxes = new Array<BoundingBox>();
-      this.annotator.loadImage(image);
+      this.annotator.loadImage(image.url);
     });
   }
 }

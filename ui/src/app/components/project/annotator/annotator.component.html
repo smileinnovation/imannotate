@@ -1,41 +1,49 @@
-<div class="row justify-content-center mt-2">
+<div class="container justify-content-center mt-2">
 
-  <div class="col-lg-3 col-sm-12">
-      <h2 innerHTML="{{ project.name}}"></h2>
-      <div class="card">
-          <div class="card-body">
-            <p class="card-text" innerHTML="{{ project.description }}"></p>
-          </div>
-      </div>
-      <div class="card pt-2">
-          <div class="card-body">
-            <h5 class="card-title">Instructions</h5>
-            <video src="./assets/ui-cut.webm" loop controls autoplay class="card-img-top"></video>
-            <p class="card-text">
-                Draw selection box outside an object and click on a label to validate annotation.
-            </p>
-            <p class="card-text">
-                Then, press NEXT button to get a new image to annotate.
-            </p>
-            <p class="card-next">You may press ESC key to cancel current box creation.</p>
-          </div>
-        </div>
-  </div>
+  <div class="row">
+    <div class="col-md-9" id="annotator" ></div>
 
-  <div class="col-lg-7 col-md-12" id="annotator" ></div>
-
-  <div class="col">
-        <div class="col annotate-actions">
-          <button class="btn btn-success" (click)="saveAnnotation()">Next</button>
-          <button class="btn btn-warning">Stop</button>
+    <div class="col col-md-3">
+        <div class="col justify-content-center flex-column annotate-actions">
+          <p>Actions:</p>
+          <button class="p-2 btn btn-success"
+            (click)="saveAnnotation()"
+            [disabled]="boxes.length == 0"
+            ngbTooltip="Save annotation and fetch another image">Next</button>
+          <button class="p-2 btn btn-danger"
+            (click)="saveEmptyAnnotation(content)"
+            [disabled]="boxes.length > 0"
+            ngbTooltip="If there are no annotation found on that image">Nothing !</button>
+          <button class="p-2 btn btn-warning"
+            [disabled]="boxes.length > 0"
+            (click)="nextImage()"
+            ngbTooltip="Do not save, let other do the job">Pass</button>
         </div>
         <div class="col align-items-center justify-content-center mt-3">
-            <span
-              *ngFor="let label of project.tags"
-              class="badge badge-pill badge-success mr-1"
-              (click)="setLabel(label)">{{ label }}</span>
+          <p>Labels:</p>
+          <span
+            *ngFor="let label of project.tags"
+            class="badge badge-pill badge-success mr-1"
+            (click)="setLabel(label)">{{ label }}</span>
         </div>
+    </div>
   </div>
-
 </div>
 
+
+<ng-template #content let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Empty annotation</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('no')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>
+      Are you sure that you want to send empty annotation for that image ? That means that this image doesn't contains any of the proposed labels.
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="c('yes')">Yes</button>
+  </div>
+</ng-template>

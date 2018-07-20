@@ -19,7 +19,21 @@ func Login(c *gin.Context) {
 		return
 	}
 	u.Password = ""
-	c.JSON(200, u)
+	c.JSON(http.StatusOK, u)
+}
+
+func Signup(c *gin.Context) {
+	u := &user.User{}
+	c.Bind(u)
+
+	if err := auth.Signup(u); err != nil {
+		log.Println(err)
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	u.Password = ""
+	c.JSON(http.StatusOK, u)
 }
 
 func SearchUser(c *gin.Context) {
@@ -38,5 +52,6 @@ func SearchUser(c *gin.Context) {
 		}
 	}
 
+	// emty list
 	c.JSON(http.StatusOK, []*user.User{})
 }

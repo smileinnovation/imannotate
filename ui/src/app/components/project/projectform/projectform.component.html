@@ -2,6 +2,7 @@
   <div class="row justify-content-md-center">
     <div class="col col-md-6">
       <h1 innerHTML="{{ title }}"></h1>
+      <div class="alert alert-success" *ngIf="projectWasSaved">Project successfuly saved</div>
       <form #f="ngForm" (submit)="create()">
         <div class="form-group">
           <label for="name">Project name</label>
@@ -19,14 +20,38 @@
         <div class="form-group">
           <label for="imageProvider">Choose an image provider that will fetch image to annotate</label>
           <select (change)="onProviderChange()" name="imageProvider" class="form-control" [(ngModel)]="project.imageProvider">
-             <option value="filesystem">Directory</option>
+             <option value="s3">Amazon S3</option>
              <option value="qwant">Qwant image search</option>
            </select>
         </div>
 
-        <div class="form-group" name="fs-options" *ngIf="project.imageProvider == 'filesystem'">
-          <label for="zipfile">Put image archive (.zip, .tar.gz, .tar.bz2)</label>
-          <input type="file" class="form-control" name="zipfile" [(ngModel)]="project.imageProviderOptions.file" required/>
+        <div class="form-group" name="fs-options" *ngIf="project.imageProvider == 's3'">
+          <label for="id">Your amazon id</label>
+          <input type="text" class="form-control"
+            name="id" [(ngModel)]="project.imageProviderOptions.id"
+            (keyup)="checkS3Credentials()" required />
+
+          <label for="secret">AWS Secret</label>
+          <input type="password" class="form-control"
+            name="secret" [(ngModel)]="project.imageProviderOptions.secret"
+            (keyup)="checkS3Credentials()" required />
+
+          <label for="region">AWS Region</label>
+          <input type="text" class="form-control"
+            name="region" [(ngModel)]="project.imageProviderOptions.region"
+            (keyup)="checkS3Credentials()" required />
+
+          <div class="alert alert-danger" *ngIf="!s3Valid">
+            S3 authentication problem: {{ s3Error }}
+          </div>
+
+          <label for="bucket">Bucket name</label>
+          <select [(ngModel)]="project.imageProviderOptions.bucket" required name="bucket" class="form-control">
+            <option *ngFor="let b of bucketList" value="{{b.Name}}" type="option">{{ b.Name }}</option>
+          </select>
+
+          <label for="prefix">Prefix in that bucket</label>
+          <input type="text" class="form-control" name="prefix" [(ngModel)]="project.imageProviderOptions.prefix" required />
         </div>
 
         <div class="form-group" name="qwant-options" *ngIf="project.imageProvider == 'qwant'">
@@ -35,7 +60,7 @@
         </div>
 
         <div class="form-group">
-          <button class="btn btn-success" type="submit">Save</button>
+          <button class="btn btn-success" type="submit" [disabled]="f.status == 'INVALID' || !formIsValid()">Save</button>
         </div>
       </form>
 
@@ -66,3 +91,5 @@
 <ng-template #rt let-r="result" let-t="term">
   {{ r.username}}
 </ng-template>
+
+<pre>{{ f.status }} - {{ formIsValid() | json }}</pre>
