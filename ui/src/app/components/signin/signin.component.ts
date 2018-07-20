@@ -11,7 +11,7 @@ import { User } from '../../classes/user';
 export class SigninComponent implements OnInit {
 
   public user: User;
-  error = { 'error': '' };
+  error = "";
   constructor(
     private userservice: UserService,
     private router: Router) {
@@ -21,7 +21,7 @@ export class SigninComponent implements OnInit {
   ngOnInit() {}
 
   doLogin() {
-    this.error.error = '';
+    this.error = '';
     console.log("login");
     this.userservice.login(this.user).subscribe(
       user => {
@@ -31,6 +31,7 @@ export class SigninComponent implements OnInit {
       error => {
         this.userservice.currentUser = null;
         console.log(error);
+        this.error = error.error;
       }
     );
   }

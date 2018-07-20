@@ -7,6 +7,7 @@
   <div class="row justify-content-center text-center">
     <div class="col col-md-6">
       <h1>Signin Imannotate</h1>
+      <div class="alert alert-warning" *ngIf="error">Bad login or password</div>
       <form #f="ngForm" (submit)="doLogin()">
         <div class="form-group">
           <input class="form-control" required type="text" placeholder="Username" [(ngModel)]="user.username" name="username"/>
