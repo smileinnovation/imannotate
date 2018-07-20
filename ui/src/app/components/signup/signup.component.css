@@ -5,3 +5,9 @@
 .logo {
   max-width: 80%
 }
+
+i.material-icons {
+  margin-top: -1.5em;
+  margin-right: .2em;
+  cursor: pointer
+}
