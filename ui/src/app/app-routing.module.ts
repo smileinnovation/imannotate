@@ -8,6 +8,7 @@ import { ProjectformComponent } from "./components/project/projectform/projectfo
 import { AboutComponent } from "./components/about/about.component";
 
 const routes: Routes = [
+  { path:'', redirectTo: 'dashboard', pathMatch: 'full'},
   { path: 'signup', component: SignupComponent },
   { path: 'signin', component: SigninComponent },
   { path: 'dashboard', component: DashboardComponent },

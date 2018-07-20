@@ -80,7 +80,7 @@
           {{ successMessage }}
         </ngb-alert>
         <ul>
-          <li *ngFor="let c of contributors">{{ c.username }} - {{ c.id }} <button class="btn btn-danger material-icons" (click)="removeContributor(c)">delete</button></li>
+          <li *ngFor="let c of contributors">{{ c.username }} <button class="btn btn-danger material-icons" (click)="removeContributor(c)">delete</button></li>
         </ul>
       </div>
 
@@ -91,5 +91,3 @@
 <ng-template #rt let-r="result" let-t="term">
   {{ r.username}}
 </ng-template>
-
-<pre>{{ f.status }} - {{ formIsValid() | json }}</pre>

@@ -48,7 +48,7 @@
           <a routerLink="/signin" class="btn btn-info">Back</a>
           <button type="submit" class="btn btn-success" [disabled]="f.status=='INVALID' || userExists">Signup</button>
       </form>
-      <div class="alert alert-success" *ngIf="registered">You've been registered ! You can now <a href="/signin">signin</a>.</div>
+      <div class="alert alert-success" *ngIf="registered">You've been registered ! You can now <a routerLink="/signin">signin</a>.</div>
     </div>
   </div>
 </div>
