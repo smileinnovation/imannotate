@@ -9,7 +9,9 @@
       <h1>Signup Imannotate</h1>
       <form #f="ngForm" (submit)="signup()" *ngIf="!registered">
         <div class="form-group">
-          <input class="form-control" (keyup)="search()"
+          <input class="form-control"
+                 (keyup)="search()"
+                 (change)="search()"
                  type="text" placeholder="Username"
                  [(ngModel)]="user.username"
                  name="username"
