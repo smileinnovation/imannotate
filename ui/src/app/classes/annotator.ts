@@ -13,10 +13,13 @@ export class Annotator {
     public boxes: Observable<BoundingBox>;
     private boxInProgress: boolean;
 
+    private isMobile: boolean;
+
     private removeBoxSubject: Subject<BoundingBox>;
     public removeBox: Observable<BoundingBox>;
 
     constructor(element) {
+        this.isMobile = false;
         this.canvasRescale = true;
         this.boxInProgress = false;
         this.boxeSubject = new Subject<BoundingBox>();
@@ -69,7 +72,6 @@ export class Annotator {
             this.rescaleCanvas();
             return;
         }
-        console.log('creating canvas');
         const canvas = document.createElement('canvas');
         const ratio = this.image.naturalWidth / this.image.naturalHeight;
         this.element.appendChild(canvas);
@@ -80,72 +82,99 @@ export class Annotator {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
 
+        let ecx=0, ecy=0;
+
         let x, y = null;
         let down = false;
-        this.canvas.addEventListener('mousedown', (evt) => {
-            const rect = evt.target.getBoundingClientRect();
-            x = evt.clientX - rect.left;
-            y = evt.clientY - rect.top;
-            down = true;
-        });
 
-        this.canvas.addEventListener('mousemove', (evt) => {
-            const rect = evt.target.getBoundingClientRect();
-            if (!down) {
-                this.resetBoundingBoxesColor();
-                // check if mouse is inside a box
-                const toAlpha = [];
-                this.boxesList.forEach(elem => {
-                    if (this.ctx.isPointInPath(elem.path, evt.clientX - rect.left, evt.clientY - rect.top)) {
-                        toAlpha.push(elem);
-                    }
-                });
-
-                if (!this.boxInProgress) {
-                    Array.from(document.querySelectorAll('.annotate-controls')).forEach(
-                        control => control.classList.remove('visible')
-                    );
-
-                    if (toAlpha.length > 0) {
-                        this.highlightBoxes();
-                    }
-                    toAlpha.forEach(box => {
-                        box.color = 'rgba(255,0,0,1)';
-                        const controls: HTMLDivElement = document.querySelector('#' + box.id);
-                        controls.classList.add('visible');
-                    });
-                    this.clearCanvas();
-                    this.drawBoundingBoxes();
-                }
-                return;
+        ["mousedown", "touchstart"].forEach( evname => {
+          this.canvas.addEventListener(evname, (evt) => {
+            evt.preventDefault();
+            if(evt["touches"]) {
+              this.isMobile = true;
             }
-
-            this.clearCanvas();
-            this.resetBoundingBoxesColor();
-            this.drawBoundingBoxes();
-
-            // draw current boxes
-            this.drawRect(
-                x,
-                y,
-                (evt.clientX - rect.left - x),
-                (evt.clientY - rect.top - y),
-                null
-            );
+            const rect = evt.target.getBoundingClientRect();
+            const ecx = evt.clientX ? evt.clientX : evt.touches[0].clientX;
+            const ecy = evt.clientY ? evt.clientY : evt.touches[0].clientY;
+            x = ecx - rect.left;
+            y = ecy - rect.top;
+            down = true;
+          });
         });
 
-        this.canvas.addEventListener('mouseup', (evt) => {
-            down = false;
-            const rect = evt.target.getBoundingClientRect();
 
-            const bx = Math.min(x, evt.clientX - rect.left) / this.canvas.clientWidth,
-                by = Math.min(y, evt.clientY - rect.top) / this.canvas.clientHeight,
-                bw = Math.max(x, evt.clientX - rect.left) / this.canvas.clientWidth,
-                bh = Math.max(y, evt.clientY - rect.top) / this.canvas.clientHeight;
+        ["mousemove", "touchmove"].forEach(evname => {
+          this.canvas.addEventListener(evname, (evt) => {
+              if(evt.touches && evt.touches.length > 1) {
+                // two fingers on canvas, drop
+                return
+              }
+              evt.preventDefault();
+              const rect = evt.target.getBoundingClientRect();
+              ecx = evt.clientX ? evt.clientX : evt.touches[0].clientX;
+              ecy = evt.clientY ? evt.clientY : evt.touches[0].clientY;
+              if (!down) {
+                  this.resetBoundingBoxesColor();
+                  // check if mouse is inside a box
+                  const toAlpha = [];
+                  this.boxesList.forEach(elem => {
+                      if (this.ctx.isPointInPath(elem.path, ecx - rect.left, ecy - rect.top)) {
+                          toAlpha.push(elem);
+                      }
+                  });
 
-            const box = new BoundingBox(bx, by, bw, bh);
-            this.boxInProgress = true;
-            this.boxeSubject.next(box);
+                  if (!this.boxInProgress) {
+                      Array.from(document.querySelectorAll('.annotate-controls')).forEach(
+                          control => control.classList.remove('visible')
+                      );
+
+                      if (toAlpha.length > 0) {
+                          this.highlightBoxes();
+                      }
+                      toAlpha.forEach(box => {
+                          box.color = 'rgba(255,0,0,1)';
+                          const controls: HTMLDivElement = document.querySelector('#' + box.id);
+                          controls.classList.add('visible');
+                      });
+                      this.clearCanvas();
+                      this.drawBoundingBoxes();
+                  }
+                  return;
+              }
+
+              this.clearCanvas();
+              this.resetBoundingBoxesColor();
+              this.drawBoundingBoxes();
+
+              // draw current boxes
+              this.drawRect(
+                  x,
+                  y,
+                  (ecx - rect.left - x),
+                  (ecy - rect.top - y),
+                  null
+              );
+          });
+        });
+
+        ["mouseup", "touchend"].forEach(evname => {
+          this.canvas.addEventListener(evname, (evt) => {
+              evt.preventDefault();
+              down = false;
+              ecx = evt.clientX ? evt.clientX : ecx;
+              ecy = evt.clientY ? evt.clientY : ecy;
+
+              const rect = evt.target.getBoundingClientRect();
+
+              const bx = Math.min(x, ecx - rect.left) / this.canvas.clientWidth,
+                  by = Math.min(y, ecy - rect.top) / this.canvas.clientHeight,
+                  bw = Math.max(x, ecx - rect.left) / this.canvas.clientWidth,
+                  bh = Math.max(y, ecy - rect.top) / this.canvas.clientHeight;
+
+              const box = new BoundingBox(bx, by, bw, bh);
+              this.boxInProgress = true;
+              this.boxeSubject.next(box);
+          });
         });
 
         window.addEventListener('keyup', (evt) => {
@@ -298,6 +327,12 @@ export class Annotator {
         elem.id = box.id;
         elem.appendChild(removeButton);
         elem.classList.add('annotate-controls');
+
+        // display for mobile
+        if (this.isMobile) {
+          elem.classList.add('visible');
+          elem.classList.add('mobile');
+        }
         // elem.style.top = ((box.y) * this.canvas.clientHeight).toString() + 'px';
         // elem.style.left = ((box.x) * this.canvas.clientWidth).toString() + 'px';
         elem.style.top = (box.y * 100).toString() + '%';
