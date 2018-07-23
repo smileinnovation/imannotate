@@ -1,5 +1,7 @@
 # Imannotate - Image annotation for Machine Learning
 
+![](ui/src/assets/logo-dark.svg)
+
 Recurrent Neural Networks needs to have annotated images to learn how to get object to recognize in images, that means that you need to give image and "bounding boxes" of each object to recognize when you train your model. And you will need **a lot** of annotations to ensure a good train !
 
 Imannotate is an API and Web interface built to help to create that dataset. You will be able to manage projects and users to participate to annotation.
@@ -134,8 +136,10 @@ That will use docker-compose to build images and start containers. Your uid:gid 
 
 You may visit http://localhost:8080 to navigate application.
 
+To simplify development:
+
 - each change in Golang sources rebuild API (using "gin")
-- each change in Angular soruces refreshes the view in browser (live-reload)
+- each change in Angular sources refreshes the view in browser (live-reload)
 
 You may now use docker-compose to add Angular component, install packages, or Golang packages (with glide):
 
@@ -143,12 +147,11 @@ You may now use docker-compose to add Angular component, install packages, or Go
 ```
 docker-compose exec ui ng g component src/app/components/myview --dry-run
 docker-compose exec ui npm install --save-dev package/to/install
-
 docker-compose exec api glide get github.com/package/to/vendor
 
 ```
 
-If problems with "gin" that sometimes doesn't recompile the binary, do:
+Sometimes, "gin" doesn't want to rebuild the binary, so restart "api" container to fix:
 
 ```
 docker-compose restart api
