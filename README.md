@@ -6,7 +6,9 @@ Imannotate is an API and Web interface built to help to create that dataset. You
 
 ## Installation
 
-To make it running in "production mode" (that means that you cannot change source code), you'll need to serve "ui" (Angular interface) and the "api" built in Golang. 
+### Docker-compose "built" mode
+
+We provide a way to launch a "built" Imannotate instance. This one build the Application (in Go) + UI with Angular, and provides a Docker image named "smileinnovation/imannotate".
 
 The quick method is to use our "docker-compose-prod.yml" file with Docker-Compose to startup the service:
 
@@ -16,34 +18,109 @@ docker-compose -f docker-compose-prod.yml up
 # then navigate to http://localhost:8000
 ```
 
-If you want to manage the entire build and http server, you may use nginx as reverse proxy to the go application, and serve "ui" as static file:
+### Build your own
+
+If you want to build application, you'll need:
+
+- Go v1.10+
+- Node 10.5+
+- **MongoDB** running somewhere (this is the default storage)
+
+We will install imannotate in /var/www to be able to use Nginx.
+
+#### Build go application
+
+You may use Glide to get vendors, so you need to install it first:
+
+```
+curl https://glide.sh/get | sh
+```
+
+
+Then, get vendors packages:
 
 ```
 glide install
-go build main.go -o api
-# start api
-SERVE_STATICS=false ./api 
 ```
 
-Then configure nginx (this is a untested example):
+
+Afterward, you can compile imannotate
+
+```
+go build ./app/main.go -o imannotate
+```
+
+**Move it to `/var/www/imannotate/` directory.**
+
+Now you're able to launch application. It serves API and may serve UI as soon as you compiled it.
+
+#### Build UI
+
+UI needs Node and Angular 6+.
+
+```
+npm install -g @angular/cli
+```
+
+
+To compile a "production" distribution, go in "ui" directory and type:
+
+```
+npm install
+ng build --prod
+```
+
+
+**You may now copy "dist" directory somewhere else, for example "/var/www/imannotate/ui"**
+
+#### Launch imannotate
+
+First, check if everything is ok by serving Imannotate in "full stand alone mode" (that means that imannotate can serve Angular application):
+
+```
+SERVE_STATICS=true ./imannatote
+```
+
+Check http://localhost:8000/ if the interace responds. You should see normal interface (logos, decorations). Imannotate can work as is, but it's recommended to use a reverse proxy to take advantage of caches, SSL, better routing, ...
+
+
+To use Nginx, stop previous run (CTRL+C) and relaunch without `SERVE_STATICS` option:
+
+```
+SERVE_STATICS=false ./imannotate
+```
+
+Now, visiting http://localhost:8000 should not work, but you can try http://localhost:8000/health that must responds correctly. You're readdy to configure NGinx.
+
+
+#### Configure nginx
+
+Then configure nginx:
 
 ```
 server {
     listen [::]:80;
+    listen 80;
 
+    # serve application routes
     location ^~ /api {
-        proxy_pass http://localhots:8000/api;
+        proxy_pass http://127.0.0.1:8000/api;
         proxy_redirect          off;
         proxy_set_header        Host            $host;
         proxy_set_header        X-Real-IP       $remote_addr;
         proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
     }
 
+    # serve Angular dist, static files and so on...
     location ^~ / {
         root /var/www/imannotate/ui;
+        index index.html index.htm;
+        try_files $uri $uri/ /index.html =404;
     }
 }
+
 ```
+
 
 ## Developpers, you're welcome !
 
