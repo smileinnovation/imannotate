@@ -12,7 +12,6 @@ import { SigninComponent } from './components/signin/signin.component';
 import { ApiService } from './services/api.service';
 import { UserService } from './services/user.service';
 import { NavbarComponent } from './components/nav/navbar/navbar.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ProjectService } from './services/project.service';
 import { ListComponent } from './components/project/list/list.component';
 
@@ -22,6 +21,9 @@ import { AnnotatorComponent } from './components/project/annotator/annotator.com
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ProjectformComponent } from './components/project/projectform/projectform.component';
 import { AboutComponent } from './components/about/about.component';
+import { DashboardComponent } from "./components/dashboard/dashboard.component";
+import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
+import { AdminService } from "./services/admin.service";
 
 @NgModule({
   declarations: [
@@ -35,6 +37,7 @@ import { AboutComponent } from './components/about/about.component';
     AnnotatorComponent,
     ProjectformComponent,
     AboutComponent,
+    AdminDashboardComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,6 +56,7 @@ import { AboutComponent } from './components/about/about.component';
     ApiService,
     UserService,
     ProjectService,
+    AdminService,
   ],
   bootstrap: [AppComponent]
 })

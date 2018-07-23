@@ -6,6 +6,7 @@ import { AnnotatorComponent } from './components/project/annotator/annotator.com
 import { SignupComponent } from './components/signup/signup.component';
 import { ProjectformComponent } from "./components/project/projectform/projectform.component";
 import { AboutComponent } from "./components/about/about.component";
+import { AdminDashboardComponent } from "./components/admin/admin-dashboard/admin-dashboard.component";
 
 const routes: Routes = [
   { path:'', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'project/create', component: ProjectformComponent },
   { path: 'project/edit/:name', component: ProjectformComponent },
   { path: 'project/edit/:name/:state', component: ProjectformComponent },
+  { path: 'admin', component: AdminDashboardComponent },
 ];
 
 @NgModule({

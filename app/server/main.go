@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
+	"github.com/smileinnovation/imannotate/api/admin"
 	"github.com/smileinnovation/imannotate/api/auth"
 	"github.com/smileinnovation/imannotate/app/server/handlers"
 )
@@ -27,6 +28,13 @@ func CORS(c *gin.Context) {
 
 func Auth(c *gin.Context) {
 	if err := auth.Allowed(c.Request); err != nil {
+		c.AbortWithStatus(http.StatusUnauthorized)
+	}
+}
+
+func Admin(c *gin.Context) {
+	u := auth.GetCurrentUser(c.Request)
+	if !admin.Get().IsAdmin(u) {
 		c.AbortWithStatus(http.StatusUnauthorized)
 	}
 }
@@ -59,6 +67,8 @@ func GetServer() *gin.Engine {
 		v1.GET("/project/:name", Auth, handlers.GetProject)
 		v1.GET("/projects", Auth, handlers.GetProjects)
 		v1.GET("/user/search", handlers.SearchUser)
+
+		v1.GET("/admin/projects", Auth, Admin, handlers.AdminGetProjects)
 
 		v1.POST("/check/s3", Auth, handlers.CheckS3Credentials)
 	}
