@@ -140,12 +140,10 @@ export class ProjectformComponent implements OnInit {
         this.project.imageProviderOptions = {
           qwantQuery: ""
         };
-        this.checkS3Credentials()
         break;
-      case 'filesystem':
-        this.project.imageProviderOptions = {
-          file: ""
-        };
+      case 's3':
+        this.project.imageProviderOptions = {};
+        this.checkS3Credentials()
         break;
     }
   }
@@ -165,9 +163,14 @@ export class ProjectformComponent implements OnInit {
   }
 
   formIsValid() {
-    if (!this.s3Valid) {
-      return false;
+    switch(this.project.imageProvider) {
+      case 's3':
+        if (!this.s3Valid) {
+          return false;
+        }
+        return true;
+      default:
+        return true;
     }
-    return true;
   }
 }
