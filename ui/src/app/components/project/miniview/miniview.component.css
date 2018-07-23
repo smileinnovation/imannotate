@@ -1,5 +1,6 @@
 .miniview {
   margin-bottom: 1rem;
+  height: 100%;
 }
 
 .tags .badge {
@@ -9,4 +10,12 @@
 .owner-icon {
   float: left;
   margin: -.2rem .1rem 0 0;
+}
+.card-img-top {
+  flex: 1 1;
+  max-height: 140px;
+}
+
+.card {
+  height: 100%
 }

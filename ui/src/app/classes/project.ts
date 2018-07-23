@@ -1,6 +1,7 @@
 export class Project {
   id: string;
   name: string;
+  banner: string;
   owner: string;
   description: string;
   tags: Array<String>;

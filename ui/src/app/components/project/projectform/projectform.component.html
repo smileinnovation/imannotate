@@ -9,6 +9,12 @@
           <input class="form-control" required type="text" placeholder="Project name" [(ngModel)]="project.name" name="name" />
         </div>
         <div class="form-group">
+          <label for="Banner">Illustration image for your project</label>
+          <input class="form-control" type="file" (change)="setBanner($event)" />
+          <img src="{{ project.banner }}" style="max-width: 90%" />
+        </div>
+
+        <div class="form-group">
           <label for="tags">Applicable tags for annotation</label>
           <input class="form-control" required type="text" placeholder="Coma separated list of classes to annotate" (keyup)="onTagChange()" [(ngModel)]="tags" name="tags" />
         </div>
@@ -91,3 +97,4 @@
 <ng-template #rt let-r="result" let-t="term">
   {{ r.username}}
 </ng-template>
+<pre>{{ project | json }}</pre>

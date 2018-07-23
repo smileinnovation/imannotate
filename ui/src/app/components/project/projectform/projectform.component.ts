@@ -162,6 +162,20 @@ export class ProjectformComponent implements OnInit {
     );
   }
 
+
+  setBanner(event) {
+    let reader = new FileReader();
+
+    if(event.target.files && event.target.files.length) {
+      const [file] = event.target.files;
+      reader.readAsDataURL(file);
+
+      reader.onload = () => {
+        this.project.banner = reader.result;
+      };
+    }
+  }
+
   formIsValid() {
     switch(this.project.imageProvider) {
       case 's3':
