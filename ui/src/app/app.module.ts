@@ -24,6 +24,9 @@ import { AboutComponent } from './components/about/about.component';
 import { DashboardComponent } from "./components/dashboard/dashboard.component";
 import { AdminDashboardComponent } from './components/admin/admin-dashboard/admin-dashboard.component';
 import { AdminService } from "./services/admin.service";
+import { AdminProjectComponent } from './components/admin/admin-project/admin-project.component';
+import { AdminUserComponent } from './components/admin/admin-user/admin-user.component';
+import { UserComponent } from './components/user/user.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +41,9 @@ import { AdminService } from "./services/admin.service";
     ProjectformComponent,
     AboutComponent,
     AdminDashboardComponent,
+    AdminProjectComponent,
+    AdminUserComponent,
+    UserComponent,
   ],
   imports: [
     BrowserModule,

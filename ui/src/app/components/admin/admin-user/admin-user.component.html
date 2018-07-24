@@ -1,0 +1,27 @@
+
+
+<div class="col">
+  <h2>Users</h2>
+  <table class="table table-striped table-hover">
+    <thead>
+      <th scope="col">Username</th>
+      <th scope="col">Email</th>
+      <th scope="col">ID</th>
+      <th scope="col">NB. of projects</th>
+      <th scope="col"></th>
+    </thead>
+
+    <tbody>
+    <tr *ngFor="let stat of stats">
+      <th scope="row"><img class="img gravatar m-2" [src]="gravatar(stat.user)" />{{ stat.user.username }}</th>
+      <td scope="row">{{ stat.user.email }}</td>
+      <td scope="row">{{ stat.user.id }}</td>
+      <td scope="row">{{ stat.projects }}</td>
+      <td scope="row">
+        <button class="btn btn-sm btn-danger" (click)="deleteUser(stat.user)"><i class="material-icons">delete</i></button>
+        <a class="btn btn-sm btn-info" routerLink="/user/edit/{{ stat.user.id }}"><i class="material-icons">edit</i></a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

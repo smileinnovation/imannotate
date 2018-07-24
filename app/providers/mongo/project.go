@@ -73,6 +73,7 @@ func (mpp *MongoProjectProvider) GetAll(u *user.User) []*project.Project {
 				"$in": ids,
 			},
 		}).All(&projectacl)
+
 		for _, p := range projectacl {
 			owner := &user.User{}
 			db.C("user").FindId(bson.ObjectIdHex(p.Owner)).One(&owner)
@@ -88,12 +89,11 @@ func (mpp *MongoProjectProvider) GetAll(u *user.User) []*project.Project {
 	return projects
 }
 
-// TODO: use project id
 func (mpp *MongoProjectProvider) Get(name string) *project.Project {
 	p := project.Project{}
 	db := getMongo()
 	defer db.Session.Close()
-	db.C("project").Find(bson.M{"name": name}).One(&p)
+	db.C("project").FindId(bson.ObjectIdHex(name)).One(&p)
 
 	return fixProjectId(&p)
 }
@@ -102,14 +102,42 @@ func (mpp *MongoProjectProvider) New(p *project.Project) error {
 	db := getMongo()
 	defer db.Session.Close()
 
-	// TODO: Check project before to insert
-	return db.C("project").Insert(p)
+	var err error
+	c := []byte{}
+	b := bson.M{}
+
+	if c, err = bson.Marshal(p); err != nil {
+		return err
+	}
+
+	if err = bson.Unmarshal(c, b); err != nil {
+		return err
+	}
+
+	b["_id"] = bson.NewObjectId()
+
+	//return errors.New("WIP")
+	if err = db.C("project").Insert(b); err != nil {
+		return err
+	}
+
+	// reset project to get id
+	if err := db.C("project").FindId(b["_id"]).One(&p); err != nil {
+		return err
+	} else {
+		fixProjectId(p)
+		return nil
+	}
+
 }
 
 func (mpp *MongoProjectProvider) Update(p *project.Project) error {
 	db := getMongo()
 	defer db.Session.Close()
 	log.Println("updating", p)
+
+	projCopy := project.Get(p.Id)
+	p.Owner = projCopy.Owner // strong owner protection
 
 	id := bson.ObjectIdHex(p.Id)
 	p.Id = ""
@@ -198,4 +226,17 @@ func (mpp *MongoProjectProvider) CanAnnotate(u *user.User, p *project.Project) b
 
 func (mpp *MongoProjectProvider) Export(p *project.Project, exp exporter.Exporter) io.Reader {
 	return nil
+}
+
+func (mpp *MongoProjectProvider) Delete(p *project.Project) error {
+	db := getMongo()
+	defer db.Session.Close()
+
+	// Remove ACL
+	db.C("project_acl").RemoveAll(bson.M{
+		"projectId": bson.ObjectIdHex(p.Id),
+	})
+
+	// Remove project
+	return db.C("project").RemoveId(bson.ObjectIdHex(p.Id))
 }

@@ -83,6 +83,31 @@ func (ma *MongoAuth) Signup(u *user.User) error {
 
 }
 
+func (ma *MongoAuth) Update(u *user.User) error {
+
+	db := getMongo()
+	defer db.Session.Close()
+
+	if u.Password != "" {
+		if pass, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost); err != nil {
+			return err
+		} else {
+			u.Password = string(pass)
+		}
+	} else {
+		// Get current password
+		cp := &user.User{}
+		db.C("user").FindId(bson.ObjectIdHex(u.ID)).One(cp)
+		u.Password = cp.Password
+	}
+
+	id := u.ID
+	u.ID = ""
+
+	db.C("user").UpdateId(bson.ObjectIdHex(id), u)
+	return nil
+}
+
 func (ma *MongoAuth) Logout(u *user.User) error {
 	return nil
 }

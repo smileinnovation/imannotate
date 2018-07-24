@@ -1,8 +1,11 @@
 package mongo
 
 import (
+	"log"
+
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
+	"github.com/smileinnovation/imannotate/api/auth"
 	"github.com/smileinnovation/imannotate/api/project"
 	"github.com/smileinnovation/imannotate/api/user"
 )
@@ -32,7 +35,7 @@ func (ma *MongoAdmin) IsAdmin(u *user.User) bool {
 	defer db.Session.Close()
 
 	if n, err := db.C("adminuser").Find(bson.M{
-		"userid": bson.ObjectIdHex(u.ID),
+		"userid": u.ID,
 	}).Count(); err != nil || n == 0 {
 		return false
 	}
@@ -41,7 +44,15 @@ func (ma *MongoAdmin) IsAdmin(u *user.User) bool {
 }
 
 func (ma *MongoAdmin) GetUsers() []*user.User {
-	panic("not implemented")
+	u := []*user.User{}
+	db := getMongo()
+	defer db.Session.Close()
+
+	db.C("user").Find(nil).All(&u)
+	for _, us := range u {
+		fixUserId(us)
+	}
+	return u
 }
 
 func (ma *MongoAdmin) GetProjects(user ...*user.User) []*project.Project {
@@ -50,13 +61,26 @@ func (ma *MongoAdmin) GetProjects(user ...*user.User) []*project.Project {
 
 	prjs := []*project.Project{}
 	db.C("project").Find(nil).All(&prjs)
+	for _, p := range prjs {
+		fixProjectId(p)
+
+		u, _ := auth.Get(p.Owner)
+		p.Owner = u.Username
+	}
 	return prjs
 }
 
-func (ma *MongoAdmin) DeleteUser(user *user.User) error {
-	panic("not implemented")
-}
+func (ma *MongoAdmin) DeleteUser(u *user.User) error {
+	db := getMongo()
+	defer db.Session.Close()
 
-func (ma *MongoAdmin) DeleteProject(prj *project.Project) error {
-	panic("not implemented")
+	log.Println("Deleting", u)
+
+	// remove references in ACL
+	db.C("project_acl").RemoveAll(bson.M{
+		"userId": bson.ObjectIdHex(u.ID),
+	})
+
+	// Delete user
+	return db.C("user").RemoveId(bson.ObjectIdHex(u.ID))
 }

@@ -7,6 +7,7 @@ import (
 
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
+	"github.com/smileinnovation/imannotate/api/admin"
 	"github.com/smileinnovation/imannotate/api/project"
 	"github.com/smileinnovation/imannotate/api/user"
 )
@@ -25,7 +26,7 @@ func getMongo() *mgo.Database {
 		admdb = dbn
 	}
 
-	if sess == nil {
+	if sess == nil || sess.Ping() != nil {
 		var err error
 		c := fmt.Sprintf("%s:%s@%s:27017/%s", dbu, dbp, db, admdb)
 		log.Println(c)
@@ -49,6 +50,10 @@ func fixUserId(p *user.User) *user.User {
 }
 
 func canTouchProject(u *user.User, p *project.Project) bool {
+
+	if admin.Get().IsAdmin(u) {
+		return true
+	}
 
 	db := getMongo()
 	defer db.Session.Close()

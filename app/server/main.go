@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 
@@ -9,21 +8,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/smileinnovation/imannotate/api/admin"
 	"github.com/smileinnovation/imannotate/api/auth"
+	"github.com/smileinnovation/imannotate/api/project"
 	"github.com/smileinnovation/imannotate/app/server/handlers"
 )
 
 func unlisted(c *gin.Context) {
 	c.String(http.StatusNotFound, "Not found")
-}
-
-func CORS(c *gin.Context) {
-	c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:4200")
-	c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
-	if c.Request.Method == "OPTIONS" {
-		fmt.Println("options")
-		c.AbortWithStatus(http.StatusOK)
-	}
 }
 
 func Auth(c *gin.Context) {
@@ -37,6 +27,45 @@ func Admin(c *gin.Context) {
 	if !admin.Get().IsAdmin(u) {
 		c.AbortWithStatus(http.StatusUnauthorized)
 	}
+}
+
+func ProjectProtection(c *gin.Context) {
+	prjname := c.Param("name")
+	prj := project.Get(prjname)
+
+	u := auth.GetCurrentUser(c.Request)
+
+	if project.CanEdit(u, prj) || admin.Get().IsAdmin(u) {
+		return
+	}
+	c.AbortWithStatus(http.StatusUnauthorized)
+}
+
+func AnnotationProtection(c *gin.Context) {
+	prjname := c.Param("name")
+	prj := project.Get(prjname)
+	u := auth.GetCurrentUser(c.Request)
+
+	if project.CanAnnotate(u, prj) || admin.Get().IsAdmin(u) {
+		return
+	}
+	c.AbortWithStatus(http.StatusUnauthorized)
+}
+
+func UserProtection(c *gin.Context) {
+	uname := c.Param("name")
+	u, err := auth.Get(uname)
+	if err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	cu := auth.GetCurrentUser(c.Request)
+
+	if cu.ID == u.ID || admin.Get().IsAdmin(cu) {
+		return
+	}
+	c.AbortWithStatus(http.StatusUnauthorized)
 }
 
 func Health(c *gin.Context) {
@@ -54,23 +83,33 @@ func GetServer() *gin.Engine {
 	v1 := router.Group("/api/v1")
 	{
 		v1.GET("/health", Health)
-		v1.POST("/user/signin", handlers.Login)
-		v1.POST("/user/signup", handlers.Signup)
+		v1.GET("/search/user", handlers.SearchUser)
+		v1.POST("/signin", handlers.Login)
+		v1.POST("/signup", handlers.Signup)
+		v1.PUT("/user/:name", Auth, UserProtection, handlers.UpdateUser)
+		v1.GET("/user/:name", Auth, UserProtection, handlers.GetUser)
 		v1.POST("/project", Auth, handlers.NewProject)
-		v1.PUT("/project", Auth, handlers.UpdateProject)
-		v1.GET("/project/:name/annotations/:format", Auth, handlers.ExportProject)
-		v1.GET("/project/:name/next", Auth, handlers.GetNextImage)
-		v1.GET("/project/:name/contributors", Auth, handlers.GetContributors)
-		v1.DELETE("/project/:name/contributors/:user", Auth, handlers.RemoveContributor)
-		v1.POST("/project/:name/contributors/:user", Auth, handlers.AddContributor)
-		v1.POST("/project/:name/annotate", Auth, handlers.SaveAnnotation)
+		v1.PUT("/project/:name", Auth, ProjectProtection, handlers.UpdateProject)
+		v1.GET("/project/:name/annotations/:format", Auth, AnnotationProtection, handlers.ExportProject)
+		v1.GET("/project/:name/next", Auth, AnnotationProtection, handlers.GetNextImage)
+		v1.GET("/project/:name/contributors", Auth, ProjectProtection, handlers.GetContributors)
+		v1.DELETE("/project/:name/contributors/:user", Auth, ProjectProtection, handlers.RemoveContributor)
+		v1.POST("/project/:name/contributors/:user", Auth, ProjectProtection, handlers.AddContributor)
+		v1.POST("/project/:name/annotate", Auth, AnnotationProtection, handlers.SaveAnnotation)
 		v1.GET("/project/:name", Auth, handlers.GetProject)
 		v1.GET("/projects", Auth, handlers.GetProjects)
-		v1.GET("/user/search", handlers.SearchUser)
 
+		v1.DELETE("/project/:name", Auth, ProjectProtection, handlers.DeleteProject)
+		v1.DELETE("/user/:name", Auth, Admin, handlers.DeleteUser)
+
+		v1.GET("/admin/stats", Auth, Admin, handlers.AdminStats)
 		v1.GET("/admin/projects", Auth, Admin, handlers.AdminGetProjects)
+		v1.GET("/admin/users", Auth, Admin, handlers.AdminGetUsers)
 
 		v1.POST("/check/s3", Auth, handlers.CheckS3Credentials)
+
+		v1.HEAD("/isadmin", Auth, Admin)
+
 	}
 	return router
 }

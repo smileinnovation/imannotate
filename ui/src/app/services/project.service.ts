@@ -27,7 +27,7 @@ export class ProjectService {
     console.log("Create project", p, "edit:", edit)
     if (edit){
       // edit
-      return this.api.put<Project>('/v1/project', p).pipe(tap(
+      return this.api.put<Project>(`/v1/project/${p.id}`, p).pipe(tap(
         data => this.getProjectList()
       ));
     }
@@ -39,38 +39,41 @@ export class ProjectService {
   }
 
   getProject(name: string): Observable<Project> {
-    name = encodeURIComponent(name);
     return this.api.get<Project>(`/v1/project/${name}`).pipe(tap(
       project => this.currentProject = project
     ));
   }
 
   getContributors(project: Project): Observable<Array<User>> {
-    return this.api.get<Array<User>>(`/v1/project/${project.name}/contributors`);
+    return this.api.get<Array<User>>(`/v1/project/${project.id}/contributors`);
   }
 
   addContributor(user: string, project: Project): Observable<string> {
-    return this.api.post(`/v1/project/${project.name}/contributors/${user}`, null);
+    return this.api.post(`/v1/project/${project.id}/contributors/${user}`, null);
   }
 
   removeContributor(user: string, project: Project): Observable<any> {
-    return this.api.delete(`/v1/project/${project.name}/contributors/${user}`);
+    return this.api.delete(`/v1/project/${project.id}/contributors/${user}`);
   }
 
   getNextImage(): Observable<ImageResult> {
-    return this.api.get<ImageResult>('/v1/project/' + this.currentProject.name + '/next');
+    return this.api.get<ImageResult>('/v1/project/' + this.currentProject.id + '/next');
   }
 
   // user id in the future
-  saveAnnotation(project: string, annotation: Annotation): Observable<Annotation> {
-    project = encodeURIComponent(project);
-    return this.api.post<Annotation>(`/v1/project/${project}/annotate`, annotation);
+  saveAnnotation(project: Project, annotation: Annotation): Observable<Annotation> {
+    return this.api.post<Annotation>(`/v1/project/${project.id}/annotate`, annotation);
   }
 
   downloadAnnotation(project: Project): Observable<any> {
-    return this.api.download<any>(`/v1/project/${project.name}/annotations/csv`, {
+    return this.api.download<any>(`/v1/project/${project.id}/annotations/csv`, {
       responseType: "blob",
     });
+  }
+
+
+  deleteProject(p: Project): Observable<any>{
+    return this.api.delete(`/v1/project/${p.id}`);
   }
 
 }

@@ -9,8 +9,7 @@ type Admin interface {
 	IsAdmin(*user.User) bool
 	GetUsers() []*user.User
 	GetProjects(user ...*user.User) []*project.Project
-	DeleteUser(user *user.User) error
-	DeleteProject(prj *project.Project) error
+	DeleteUser(*user.User) error
 }
 
 var administrator Admin

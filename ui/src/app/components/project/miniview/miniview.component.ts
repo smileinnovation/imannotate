@@ -32,11 +32,11 @@ export class MiniviewComponent implements OnInit {
   }
 
   gotoProject(p: Project) {
-    this.router.navigate(['annotate', p.name]);
+    this.router.navigate(['annotate', p.id]);
   }
 
   edit() {
-    this.router.navigate(['project','edit', this.project.name])
+    this.router.navigate(['project','edit', this.project.id])
   }
 
   exportProject() {

@@ -18,3 +18,9 @@ export class Project {
     this.imageProviderOptions = {};
   }
 }
+
+export class ProjectStat {
+  project: Project
+  annotations: number
+  contributors: number
+}

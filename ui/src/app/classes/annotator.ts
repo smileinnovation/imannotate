@@ -6,7 +6,7 @@ export class Annotator {
     private element: Element;
     private aside: Element;
     private canvasRescale: boolean;
-    private canvas: any;
+    public canvas: any;
     private ctx: CanvasRenderingContext2D;
     private boxesList: Array<BoundingBox>;
     private boxeSubject: Subject<BoundingBox>;
@@ -48,6 +48,7 @@ export class Annotator {
         image.addEventListener('load', () => {
             this.createCanvas();
             this.reset();
+            this.rescaleCanvas();
         });
         image.src = url;
         this.image = image;
@@ -58,11 +59,16 @@ export class Annotator {
         if (this.canvasRescale) {
             const ratio = this.image.naturalWidth / this.image.naturalHeight;
             const canvas = this.canvas;
-            canvas.width = '';
-            canvas.style.width = '100%';
-            canvas.width = canvas.clientWidth;
+
+            const w = canvas.parentElement.clientWidth
+            canvas.width = w;
             canvas.height = canvas.width / ratio;
-            canvas.style.width = 'auto';
+
+          if (canvas.height > canvas.parentElement.offsetHeight) {
+            canvas.height = canvas.parentElement.offsetHeight;
+            canvas.width = canvas.height * ratio;
+
+          }
         }
         this.drawBoundingBoxes();
     }
@@ -75,12 +81,9 @@ export class Annotator {
         const canvas = document.createElement('canvas');
         const ratio = this.image.naturalWidth / this.image.naturalHeight;
         this.element.appendChild(canvas);
-        canvas.style.width = '100%';
-        canvas.width = canvas.clientWidth;
-        canvas.height = canvas.width / ratio;
-        canvas.style.width = 'auto';
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
+        this.rescaleCanvas()
 
         let ecx=0, ecy=0;
 
@@ -165,7 +168,6 @@ export class Annotator {
               ecy = evt.clientY ? evt.clientY : ecy;
 
               const rect = evt.target.getBoundingClientRect();
-
               const bx = Math.min(x, ecx - rect.left) / this.canvas.clientWidth,
                   by = Math.min(y, ecy - rect.top) / this.canvas.clientHeight,
                   bw = Math.max(x, ecx - rect.left) / this.canvas.clientWidth,

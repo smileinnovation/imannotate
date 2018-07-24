@@ -10,6 +10,7 @@ export class UserService {
 
   private userSource = new Subject<User>();
   public currentUser = new User();
+  public isAdmin = false;
   user$ = this.userSource.asObservable();
 
   constructor(
@@ -18,23 +19,24 @@ export class UserService {
   ) { }
 
   login(user: User): Observable<User> {
-    return this.api.post<User>('/v1/user/signin', user).pipe(tap(
+    return this.api.post<User>('/v1/signin', user).pipe(tap(
       u => {
         console.log('login ok', new Date().toString());
-        this.currentUser = u;
+        this.setCurrentUser(u)
         localStorage.setItem('user', JSON.stringify(u));
-        this.userSource.next(u);
+
       },
       error => {
         console.log('login failed',  new Date().toString());
         this.currentUser = null;
+        this.isAdmin = false;
         this.userSource.error(error);
       }
     ));
   }
 
   signup(user: User): Observable<User> {
-    return this.api.post<User>('/v1/user/signup', user).pipe(tap(
+    return this.api.post<User>('/v1/signup', user).pipe(tap(
       u => {
         console.log("user created", u);
       },
@@ -42,6 +44,10 @@ export class UserService {
         console.log("there were a problem", error)
       }
     ));
+  }
+
+  update(user: User): Observable<any> {
+    return this.api.put<User>(`/v1/user/${user.id}`, user);
   }
 
   logout() {
@@ -52,7 +58,20 @@ export class UserService {
   }
 
   search(username: string): Observable<Array<User>> {
-    return this.api.get<Array<User>>(`/v1/user/search?q=${username}`)
+    return this.api.get<Array<User>>(`/v1/search/user?q=${username}`)
+  }
+
+  getUser(id: string): Observable<User> {
+    return this.api.get<User>(`/v1/user/${id}`);
+  }
+
+  setCurrentUser(user: User) {
+    this.currentUser = user
+    this.api.head("/v1/isadmin").subscribe(
+      () => this.isAdmin = true,
+      () => this.isAdmin = false
+    );
+    this.userSource.next(user);
   }
 
 }

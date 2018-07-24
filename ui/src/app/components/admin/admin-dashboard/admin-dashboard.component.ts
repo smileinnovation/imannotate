@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AdminService } from "../../../services/admin.service";
+import { Project } from "../../../classes/project";
 
 @Component({
   selector: 'admin-dashboard',
@@ -8,11 +9,14 @@ import { AdminService } from "../../../services/admin.service";
 })
 export class AdminDashboardComponent implements OnInit {
 
+
+  stats: any
   constructor(private admin: AdminService) { }
 
   ngOnInit() {
-    this.admin.getProjects().subscribe(
-      resp => {console.log(resp);},
+    this.stats = {"projects":0, "users":0};
+    this.admin.stats().subscribe(
+      resp => {this.stats = resp;},
       error => {console.log(error);}
     );
 

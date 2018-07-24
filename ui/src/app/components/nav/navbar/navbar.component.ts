@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { User } from '../../../classes/user';
 import { UserService } from '../../../services/user.service';
+import { ApiService } from "../../../services/api.service";
 
 
 
@@ -14,10 +15,12 @@ export class NavbarComponent implements OnInit {
   @Input('title') title: string;
   show = false;
 
-  constructor(private userService: UserService) { }
+  constructor(
+    private userService: UserService,
+    private api: ApiService,
+  ) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
   logout() {
     this.userService.logout();
@@ -29,5 +32,9 @@ export class NavbarComponent implements OnInit {
 
   get user() {
     return this.userService.currentUser;
+  }
+
+  get admin() {
+    return this.userService.isAdmin;
   }
 }

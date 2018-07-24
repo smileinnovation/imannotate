@@ -7,6 +7,9 @@ import { SignupComponent } from './components/signup/signup.component';
 import { ProjectformComponent } from "./components/project/projectform/projectform.component";
 import { AboutComponent } from "./components/about/about.component";
 import { AdminDashboardComponent } from "./components/admin/admin-dashboard/admin-dashboard.component";
+import { AdminProjectComponent } from "./components/admin/admin-project/admin-project.component";
+import { AdminUserComponent } from "./components/admin/admin-user/admin-user.component";
+import { UserComponent } from "./components/user/user.component";
 
 const routes: Routes = [
   { path:'', redirectTo: 'dashboard', pathMatch: 'full'},
@@ -19,6 +22,9 @@ const routes: Routes = [
   { path: 'project/edit/:name', component: ProjectformComponent },
   { path: 'project/edit/:name/:state', component: ProjectformComponent },
   { path: 'admin', component: AdminDashboardComponent },
+  { path: 'admin/projects', component: AdminProjectComponent },
+  { path: 'admin/users', component: AdminUserComponent },
+  { path: 'user/edit/:name', component: UserComponent },
 ];
 
 @NgModule({

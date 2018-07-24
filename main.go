@@ -12,7 +12,9 @@ import (
 
 func init() {
 	auth.SetAuthenticator(&mongo.MongoAuth{})
+	auth.SetStats(&mongo.MongoUserStats{})
 	project.SetProvider(&mongo.MongoProjectProvider{})
+	project.SetStats(&mongo.MongoProjectStats{})
 	annotation.SetStore(&mongo.MongoAnnotationStore{})
 	user.SetUserSearch(&mongo.UserSearch{})
 	admin.Set(&mongo.MongoAdmin{})

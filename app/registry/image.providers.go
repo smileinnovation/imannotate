@@ -17,7 +17,7 @@ func GetProvider(prj *project.Project) providers.ImageProvider {
 		log.Println("No image provider defined")
 		return nil
 	}
-	if p, ok := imageProviders[prj.Name]; !ok {
+	if p, ok := imageProviders[prj.Id]; !ok {
 		createImageProvider(prj)
 		return GetProvider(prj)
 	} else {
@@ -29,19 +29,19 @@ func GetProvider(prj *project.Project) providers.ImageProvider {
 }
 
 func RemoveProvider(prj *project.Project) {
-	delete(imageProviders, prj.Name)
+	delete(imageProviders, prj.Id)
 }
 
 func createImageProvider(prj *project.Project) {
-	log.Println("Provider for project", prj.Name, prj.ImageProvider, prj.ImageProviderOptions)
+	log.Println("Provider for project", prj.Id, prj.ImageProvider, prj.ImageProviderOptions)
 	opt := prj.ImageProviderOptions
 
 	switch prj.ImageProvider {
 	case "qwant":
 		provider := qwant.NewQwant(opt["qwantQuery"])
-		imageProviders[prj.Name] = provider
+		imageProviders[prj.Id] = provider
 	case "s3":
 		provider := s3store.NewS3ImageProvider(opt["id"], opt["secret"], opt["region"], opt["bucket"], opt["prefix"])
-		imageProviders[prj.Name] = provider
+		imageProviders[prj.Id] = provider
 	}
 }
