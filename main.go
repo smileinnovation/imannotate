@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/smileinnovation/imannotate/api/admin"
 	"github.com/smileinnovation/imannotate/api/annotation"
 	"github.com/smileinnovation/imannotate/api/auth"
 	"github.com/smileinnovation/imannotate/api/project"
@@ -11,9 +12,12 @@ import (
 
 func init() {
 	auth.SetAuthenticator(&mongo.MongoAuth{})
+	auth.SetStats(&mongo.MongoUserStats{})
 	project.SetProvider(&mongo.MongoProjectProvider{})
+	project.SetStats(&mongo.MongoProjectStats{})
 	annotation.SetStore(&mongo.MongoAnnotationStore{})
 	user.SetUserSearch(&mongo.UserSearch{})
+	admin.Set(&mongo.MongoAdmin{})
 }
 
 func main() {

@@ -1,0 +1,32 @@
+<div class="container">
+
+  <div class="row justify-content-center">
+    <div class="col col-md-6">
+      <div class="mt-2">
+        <h2><img class="gravatar mr-2" [src]="gravatar" />{{ user.username }}</h2>
+      </div>
+      <div class="alert alert-success" *ngIf="saved">
+        user saved !
+      </div>
+      <div class="alert alert-error" *ngIf="error != ''">
+        {{ error }}
+      </div>
+      <form #f="ngForm" class="form" (submit)="submit()">
+        <div class="form-group">
+          <label for="name">Username</label>
+          <input type="text" name="username" [(ngModel)]="user.username" class="form-control" required />
+        </div>
+        <div class="form-group">
+          <label for="name">Email</label>
+          <input type="email" name="email" (keyup)="onEmail()" (blur)="onEmail()" [(ngModel)]="user.email" class="form-control" />
+        </div>
+        <div class="form-group">
+          <label for="name">Password - leave blank to not change the current one</label>
+          <input type="password" name="password" [(ngModel)]="user.password" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-success">Save</button>
+      </form>
+    </div>
+  </div>
+</div>
+

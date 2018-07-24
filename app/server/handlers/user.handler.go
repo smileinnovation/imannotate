@@ -55,3 +55,24 @@ func SearchUser(c *gin.Context) {
 	// emty list
 	c.JSON(http.StatusOK, []*user.User{})
 }
+
+func UpdateUser(c *gin.Context) {
+	u := &user.User{}
+	c.Bind(u)
+	if err := auth.Update(u); err != nil {
+		c.JSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusAccepted, u.Username+" updated")
+}
+
+func GetUser(c *gin.Context) {
+	un := c.Param("name")
+	us, err := auth.Get(un)
+	if err != nil {
+		c.JSON(http.StatusNotFound, "user not found")
+		return
+	}
+	c.JSON(http.StatusOK, us)
+}

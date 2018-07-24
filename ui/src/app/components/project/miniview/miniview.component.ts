@@ -25,15 +25,18 @@ export class MiniviewComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (this.project.banner === "") {
+      this.project.banner = "/assets/logo-dark.svg";
+    }
     this.owner = this.project.owner === this.user.currentUser.id;
   }
 
   gotoProject(p: Project) {
-    this.router.navigate(['annotate', p.name]);
+    this.router.navigate(['annotate', p.id]);
   }
 
   edit() {
-    this.router.navigate(['project','edit', this.project.name])
+    this.router.navigate(['project','edit', this.project.id])
   }
 
   exportProject() {

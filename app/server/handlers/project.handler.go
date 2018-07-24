@@ -55,20 +55,18 @@ func NewProject(c *gin.Context) {
 func UpdateProject(c *gin.Context) {
 	p := &project.Project{}
 	c.Bind(p)
+	log.Println("Handler, update project", p.Id)
+	id := p.Id
 
 	registry.RemoveProvider(p)
-
-	u := auth.GetCurrentUser(c.Request)
-	if !project.CanEdit(u, p) {
-		c.JSON(http.StatusUnauthorized, errors.New("You're not allowed to update that project"))
-		return
-	}
 
 	if err := project.Update(p); err != nil {
 		c.JSON(http.StatusNotAcceptable, err.Error())
 		return
 	}
 
+	// get updated project
+	p = project.Get(id)
 	c.JSON(http.StatusOK, p)
 }
 
@@ -166,13 +164,6 @@ func ExportProject(c *gin.Context) {
 	pid := c.Param("name")
 	prj := project.Get(pid)
 
-	//u := auth.GetCurrentUser(c.Request)
-	//log.Println(u, prj)
-	//if !(project.CanAnnotate(u, prj) || project.CanEdit(u, prj)) {
-	//	c.JSON(http.StatusUnauthorized, "You can't export that project")
-	//	return
-	//}
-
 	var exp exporter.Exporter
 	switch typ {
 	case "csv":
@@ -185,4 +176,16 @@ func ExportProject(c *gin.Context) {
 	c.Status(200)
 	log.Println(reader)
 	log.Println(io.Copy(c.Writer, reader))
+}
+
+func DeleteProject(c *gin.Context) {
+	pname := c.Param("name")
+	prj := project.Get(pname)
+	if err := project.Delete(prj); err != nil {
+		c.JSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, pname+" deleted")
+
 }

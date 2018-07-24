@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
     const luser = localStorage.getItem('user');
 
     if (luser !== null) {
-      this.userservice.currentUser = JSON.parse(luser);
+      this.userservice.setCurrentUser(JSON.parse(luser));
       console.log('Yes, user found');
       if (location.pathname === "/") {
         this.router.navigate(['dashboard']);

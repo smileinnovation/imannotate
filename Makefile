@@ -50,3 +50,6 @@ clean-docker:
 
 clean-volumes:
 	docker-compose down -v --remove-orphans
+
+test:
+	go test -v ./api/... ./app/server/...

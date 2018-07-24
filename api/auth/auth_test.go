@@ -37,6 +37,10 @@ func (a *TestAuth) Get(id string) (*user.User, error) {
 	return nil, nil
 }
 
+func (a *TestAuth) Update(*user.User) error {
+	return nil
+}
+
 func TestAuthLogin(t *testing.T) {
 	SetAuthenticator(&TestAuth{})
 

@@ -14,6 +14,9 @@ type Authenticator interface {
 	// Signup should take a user, check it and register it.
 	Signup(*user.User) error
 
+	// Update the user. Please make nice checks on password.
+	Update(u *user.User) error
+
 	// Logout should take a user as paramter and return error if logout failed.
 	// That one is not mandatory for the entire authenticator, some use JWT so that method can only
 	// return nil.
@@ -67,4 +70,8 @@ func Get(id string) (*user.User, error) {
 
 func GetCurrentUser(req *http.Request) *user.User {
 	return authent.GetCurrentUser(req)
+}
+
+func Update(u *user.User) error {
+	return authent.Update(u)
 }

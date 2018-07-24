@@ -48,6 +48,10 @@ func (ta *TestAuthenticator) GetCurrentUser(*http.Request) *user.User {
 	return nil
 }
 
+func (ta *TestAuthenticator) Update(u *user.User) error {
+	panic("not implemented")
+}
+
 func getHTTPTest() *httptest.Server {
 	auth.SetAuthenticator(&TestAuthenticator{})
 	gin.SetMode(gin.ReleaseMode)
@@ -74,7 +78,7 @@ func TestLogin(t *testing.T) {
 		Password: "Test",
 	}
 
-	resp, err := postJson("/api/v1/user/signin", u)
+	resp, err := postJson("/api/v1/signin", u)
 
 	if err != nil {
 		t.Fatal(err)
@@ -95,7 +99,7 @@ func TestFailedLogin(t *testing.T) {
 		Password: "Test",
 	}
 
-	resp, err := postJson("/api/v1/user/signin", u)
+	resp, err := postJson("/api/v1/signin", u)
 	t.Log("response status", resp.StatusCode)
 
 	if err != nil {

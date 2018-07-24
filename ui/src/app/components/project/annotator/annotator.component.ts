@@ -53,6 +53,13 @@ export class AnnotatorComponent implements OnInit {
 
   setLabel(label: string) {
     if (!this.currentBox) { return; }
+    if ((this.currentBox.width - this.currentBox.x) * this.annotator.canvas.clientWidth < 20 ||
+        (this.currentBox.height - this.currentBox.y) * this.annotator.canvas.clientHeight < 20
+    ) {
+      alert("Box too small !")
+      return
+    }
+
     this.currentBox.label = label;
     this.boxes.push(this.currentBox);
     this.annotator.setBoundingBoxes(this.boxes);
@@ -66,7 +73,7 @@ export class AnnotatorComponent implements OnInit {
     annotation.image = this.image.name;
     annotation.boxes = this.boxes;
     console.log(annotation);
-    this.projectService.saveAnnotation(this.project.name, annotation).subscribe(ann => {
+    this.projectService.saveAnnotation(this.project, annotation).subscribe(ann => {
       console.log("saved:", ann);
       this.nextImage();
     });

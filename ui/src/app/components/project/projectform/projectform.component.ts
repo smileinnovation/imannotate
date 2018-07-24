@@ -59,7 +59,9 @@ export class ProjectformComponent implements OnInit {
       this.projectservice.getProject(param.name).subscribe(project => {
         this.project = project;
         this.tags = this.project.tags.join(",");
-        this.project.owner = this.userservice.currentUser.id;
+        if (this.project.owner == "") {
+          this.project.owner = this.userservice.currentUser.id;
+        }
         this.edit = true;
         this.title = "Edit project";
         this.projectservice.getContributors(project).subscribe(contributors => {
@@ -83,7 +85,7 @@ export class ProjectformComponent implements OnInit {
     this.projectservice.save(this.project, this.edit).subscribe(
       project => {
         console.log("project created", project);
-        this.route.navigate(["/project/edit", project.name, "saved"]);
+        this.route.navigate(["/project/edit", project.id, "saved"]);
       },
       error => { console.log(error); }
     );
@@ -160,6 +162,20 @@ export class ProjectformComponent implements OnInit {
         this.bucketList = new Array<Bucket>();
       }
     );
+  }
+
+
+  setBanner(event) {
+    let reader = new FileReader();
+
+    if(event.target.files && event.target.files.length) {
+      const [file] = event.target.files;
+      reader.readAsDataURL(file);
+
+      reader.onload = () => {
+        this.project.banner = reader.result;
+      };
+    }
   }
 
   formIsValid() {

@@ -44,6 +44,9 @@ type ProjectManager interface {
 
 	// CanAnnotate return boolean to indicate if user can annotate images in project.
 	CanAnnotate(*user.User, *Project) bool
+
+	// Delete the project.
+	Delete(*Project) error
 }
 
 // SetProvider registers the manager to use.
@@ -95,4 +98,8 @@ func CanEdit(u *user.User, p *Project) bool {
 
 func CanAnnotate(u *user.User, p *Project) bool {
 	return provider.CanAnnotate(u, p)
+}
+
+func Delete(p *Project) error {
+	return provider.Delete(p)
 }

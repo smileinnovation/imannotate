@@ -31,6 +31,9 @@
         <a class="dropdown-item" (click)="logout()">Logout</a>
       </div>
     </li>
+    <li *ngIf="admin" class="nav-item">
+      <a class="nav-link" routerlinkActive="active" routerLink="/admin"><i class="material-icons">security</i>Admin</a>
+    </li>
   </ul>
   <div class="navbar-bottom text-center">
     <p class="made-by p-3">

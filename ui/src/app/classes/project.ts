@@ -1,6 +1,7 @@
 export class Project {
   id: string;
   name: string;
+  banner: string;
   owner: string;
   description: string;
   tags: Array<String>;
@@ -16,4 +17,10 @@ export class Project {
     this.imageProvider = "";
     this.imageProviderOptions = {};
   }
+}
+
+export class ProjectStat {
+  project: Project
+  annotations: number
+  contributors: number
 }

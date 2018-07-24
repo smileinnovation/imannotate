@@ -10,5 +10,7 @@
   </div>
 </div>
 <div class="row">
-  <project-miniview *ngFor="let p of projects" [project]=p></project-miniview>
+  <div class="col-md-6 col-lg-4 col-sm-12 mb-4" *ngFor="let p of projects">
+    <project-miniview  [project]=p></project-miniview>
+  </div>
 </div>

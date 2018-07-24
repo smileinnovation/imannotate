@@ -12,7 +12,7 @@ import (
 	"github.com/smileinnovation/imannotate/api/providers"
 )
 
-const searchUrl = "https://api.qwant.com/api/search/images?q=%s&t=image&offset=%d&count=10&license=sharecommercially"
+const searchUrl = "https://api.qwant.com/api/search/images?q=%s&t=image&offset=%d&count=10&license=sharecommercially&uiv=4"
 
 type Qwant struct {
 	req   string
