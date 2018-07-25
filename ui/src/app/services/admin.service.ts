@@ -25,4 +25,12 @@ export class AdminService {
   deleteUser(u: User): Observable<any> {
     return this.api.delete(`/v1/user/${u.id}`);
   }
+
+  setAdmin(u: User): Observable<any> {
+    return this.api.post(`/v1/admin/user/${u.id}`, null);
+  }
+
+  removeAdmin(u: User): Observable<any> {
+    return this.api.delete(`/v1/admin/user/${u.id}`);
+  }
 }

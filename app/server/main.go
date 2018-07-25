@@ -88,6 +88,8 @@ func GetServer() *gin.Engine {
 		v1.POST("/signup", handlers.Signup)
 		v1.PUT("/user/:name", Auth, UserProtection, handlers.UpdateUser)
 		v1.GET("/user/:name", Auth, UserProtection, handlers.GetUser)
+
+		v1.GET("/projects", Auth, handlers.GetProjects)
 		v1.POST("/project", Auth, handlers.NewProject)
 		v1.PUT("/project/:name", Auth, ProjectProtection, handlers.UpdateProject)
 		v1.GET("/project/:name/annotations/:format", Auth, AnnotationProtection, handlers.ExportProject)
@@ -97,14 +99,15 @@ func GetServer() *gin.Engine {
 		v1.POST("/project/:name/contributors/:user", Auth, ProjectProtection, handlers.AddContributor)
 		v1.POST("/project/:name/annotate", Auth, AnnotationProtection, handlers.SaveAnnotation)
 		v1.GET("/project/:name", Auth, handlers.GetProject)
-		v1.GET("/projects", Auth, handlers.GetProjects)
-
 		v1.DELETE("/project/:name", Auth, ProjectProtection, handlers.DeleteProject)
+
 		v1.DELETE("/user/:name", Auth, Admin, handlers.DeleteUser)
 
 		v1.GET("/admin/stats", Auth, Admin, handlers.AdminStats)
 		v1.GET("/admin/projects", Auth, Admin, handlers.AdminGetProjects)
 		v1.GET("/admin/users", Auth, Admin, handlers.AdminGetUsers)
+		v1.POST("/admin/user/:name", Auth, Admin, handlers.SetAdmin)
+		v1.DELETE("/admin/user/:name", Auth, Admin, handlers.RemoveAdmin)
 
 		v1.POST("/check/s3", Auth, handlers.CheckS3Credentials)
 

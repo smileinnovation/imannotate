@@ -2,3 +2,7 @@
   border-radius: 100%;
   max-width: 2em;
 }
+
+.material-icons {
+  vertical-align: middle;
+}
