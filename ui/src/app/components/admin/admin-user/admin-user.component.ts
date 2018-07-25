@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AdminService } from "../../../services/admin.service";
 import { User } from "../../../classes/user";
 import { md5 } from "../../../classes/md5";
+import { UserService } from "../../../services/user.service";
 
 class userStat {
   projets: number
@@ -11,6 +12,7 @@ class userStat {
 class UserStat {
   user: User
   stat: userStat
+  isAdmin: boolean
 }
 
 
@@ -23,10 +25,17 @@ export class AdminUserComponent implements OnInit {
 
 
   stats: Array<UserStat>
-  constructor(private admin: AdminService) { }
+  constructor(
+    private admin: AdminService,
+    private userService: UserService,
+  ) { }
 
   ngOnInit() {
     this.setUserList();
+  }
+
+  get currentUser() {
+    return this.userService.currentUser;
   }
 
   setUserList() {
@@ -52,5 +61,22 @@ export class AdminUserComponent implements OnInit {
 
   gravatar(u: User) {
     return `https://www.gravatar.com/avatar/${md5(u.email)}`;
+  }
+
+  setAdmin(u: User) {
+    this.admin.setAdmin(u).subscribe(()=>{
+      this.setUserList();
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  removeAdmin(u: User) {
+    this.admin.removeAdmin(u).subscribe(()=>{
+      this.setUserList();
+    }, error => {
+      console.log(error);
+    });
+
   }
 }

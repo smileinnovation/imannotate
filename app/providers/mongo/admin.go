@@ -84,3 +84,37 @@ func (ma *MongoAdmin) DeleteUser(u *user.User) error {
 	// Delete user
 	return db.C("user").RemoveId(bson.ObjectIdHex(u.ID))
 }
+
+func (ma *MongoAdmin) SetAdmin(u *user.User) error {
+	db := getMongo()
+	defer db.Session.Close()
+
+	return db.C("adminuser").Insert(bson.M{
+		"userid": u.ID,
+		"level":  0,
+	})
+}
+
+func (ma *MongoAdmin) SetLevel(u *user.User, level int) error {
+	db := getMongo()
+	defer db.Session.Close()
+
+	return db.C("adminuser").Update(bson.M{
+		"userid": u.ID,
+	}, bson.M{
+		"$set": bson.M{
+			"level": level,
+		},
+	})
+}
+
+func (ma *MongoAdmin) RemoveAdmin(u *user.User) error {
+	db := getMongo()
+	defer db.Session.Close()
+
+	_, err := db.C("adminuser").RemoveAll(bson.M{
+		"userid": u.ID,
+	})
+
+	return err
+}

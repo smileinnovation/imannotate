@@ -47,6 +47,7 @@ func AdminGetProjects(c *gin.Context) {
 
 type userstat struct {
 	User     *user.User `json:"user"`
+	IsAdmin  bool       `json:"isAdmin"`
 	Projects int        `json:"projects"`
 }
 
@@ -56,6 +57,7 @@ func AdminGetUsers(c *gin.Context) {
 	for _, u := range users {
 		s := userstat{User: u}
 		p := project.GetAll(u)
+		s.IsAdmin = admin.Get().IsAdmin(u)
 		s.Projects = len(p)
 		stats = append(stats, s)
 	}
@@ -79,5 +81,32 @@ func DeleteUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusAccepted, u.ID+" deleted")
+}
 
+func SetAdmin(c *gin.Context) {
+	uid := c.Param("name")
+	u, err := auth.Get(uid)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+	if err := admin.Get().SetAdmin(u); err != nil {
+		c.JSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusAccepted, "user "+u.ID+" is now admin")
+}
+
+func RemoveAdmin(c *gin.Context) {
+	uid := c.Param("name")
+	u, err := auth.Get(uid)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+	if err := admin.Get().RemoveAdmin(u); err != nil {
+		c.JSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusAccepted, "user "+u.ID+" is now normal user")
 }
