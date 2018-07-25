@@ -29,8 +29,7 @@
 }
 
 #sidebar.active .navbar-toggler {
-  align-self: auto !important;
-  margin-bottom: 1em;
+  /*align-self: auto !important;*/
 }
 
 #sidebar .navbar-nav {

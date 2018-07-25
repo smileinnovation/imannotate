@@ -1,5 +1,5 @@
 <nav id="sidebar" *ngIf="user && user.username" class="navbar-dark bg-dark d-flex flex-column align-items-center" [class.active]="show">
-  <button class="navbar-toggler align-self-end"
+  <button class="navbar-toggler align-self-center mb-4"
     type="button"
     aria-expanded="false"
     aria-label="Toggle navigation"
@@ -32,7 +32,10 @@
       </div>
     </li>
     <li *ngIf="admin" class="nav-item">
-      <a class="nav-link" routerlinkActive="active" routerLink="/admin"><i class="material-icons">security</i>Admin</a>
+      <a class="nav-link" routerlinkActive="active" routerLink="/admin">
+        <i class="material-icons" ngbTooltip="Admin" placement="right">security</i>
+        <span class="item-text">Admin</span>
+      </a>
     </li>
   </ul>
   <div class="navbar-bottom text-center">
