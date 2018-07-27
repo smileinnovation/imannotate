@@ -3,6 +3,7 @@
 UID=$(shell id -u) 
 GID=$(shell id -g) 
 
+TAG="latest"
 
 define usercompose
 version: "2.1"
@@ -25,7 +26,7 @@ run: .user.compose.yml
 
 build: containers/prod/app containers/prod/ui
 	docker-compose build
-	cd containers/prod/ && docker build -t smileinnovation/imannotate .
+	cd containers/prod/ && docker build -t smileinnovation/imannotate:$(TAG) .
 
 containers/prod/ui:
 	docker-compose run --rm ui ng build --prod
