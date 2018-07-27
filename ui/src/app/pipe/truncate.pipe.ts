@@ -14,7 +14,6 @@ export class TruncatePipe implements PipeTransform {
     if (completeWords) {
       const r = new RegExp(`[ ,;]+`, 'g');
       while(r.test(val)) {
-        console.log(val.substr(0,r.lastIndex))
         limit = r.lastIndex
       }
     }
