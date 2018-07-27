@@ -1,4 +1,4 @@
-<nav id="sidebar" *ngIf="user && user.username" class="navbar-dark bg-dark d-flex flex-column align-items-center" [class.active]="show">
+<nav id="sidebar" *ngIf="user && user.username" class="navbar-dark bg-dark d-flex flex-column align-items-center" [class.active]="show" (swipeleft)='onPan($event, "left")' (swiperight)='onPan($event, "right")'>
   <button class="navbar-toggler align-self-center mb-4"
     type="button"
     aria-expanded="false"
@@ -24,7 +24,7 @@
     </li>
     <li class="nav-item dropdown" *ngIf="user && user.username" ngbDropdown>
       <a class="nav-link dropdown-toggle" id="navbarDropdown" ngbDropdownToggle>
-        <i ngbTooltip="You" placement="right" class="material-icons">face</i>
+        <img [src]="avatar" class="gravatar" />
         <span class="item-text">{{ user.username }}</span>
       </a>
       <div ngbDropdownMenu aria-labelledby="navbarDropdown">

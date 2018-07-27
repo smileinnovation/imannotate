@@ -1,6 +1,8 @@
 package server
 
 import (
+	"crypto/md5"
+	"fmt"
 	"net/http"
 	"os"
 
@@ -68,6 +70,15 @@ func UserProtection(c *gin.Context) {
 	c.AbortWithStatus(http.StatusUnauthorized)
 }
 
+func Gravatar(c *gin.Context) {
+	uid := c.Param("name")
+	if u, err := auth.Get(uid); err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+	} else {
+		c.JSON(http.StatusOK, fmt.Sprintf("https://www.gravatar.com/avatar/%x", md5.Sum([]byte(u.Email))))
+	}
+}
+
 func Health(c *gin.Context) {
 	c.String(200, "ok")
 }
@@ -112,6 +123,7 @@ func GetServer() *gin.Engine {
 		v1.POST("/check/s3", Auth, handlers.CheckS3Credentials)
 
 		v1.HEAD("/isadmin", Auth, Admin)
+		v1.GET("/avatar/:name", Gravatar)
 
 	}
 	return router

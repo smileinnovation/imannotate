@@ -1,4 +1,4 @@
-.nav-item .material-icons {
+.nav-item .material-icons, .gravatar {
 	margin: -0.2em .2em 0 0;
 	position: relative;
 	float: left;
@@ -19,9 +19,24 @@
     min-height: 100vh;
 }
 
+@media (max-width: 768px) {
+  #sidebar {
+    position: absolute;
+    z-index: 1;
+    box-shadow: 16px 0 20px -4px rgba(0, 0, 0, 0.3);
+  }
+  #sidebar.active {
+    box-shadow: none;
+  }
+}
+
 #sidebar.active {
     min-width: 70px;
     max-width: 70px;
+}
+
+#sidebar.active ~ nav + main {
+  opacity: .5
 }
 
 .navbar-toggler {
@@ -56,4 +71,13 @@
 
 .navbar-bottom .material-icons {
   font-size: .9rem;
+}
+
+.gravatar {
+  border-radius: 100%;
+  max-width: 24px;
+}
+
+.nav-item {
+  z-index: 1;
 }

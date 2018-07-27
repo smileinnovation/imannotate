@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { UserService } from '../../../services/user.service';
 import { ProjectService } from "../../../services/project.service";
 import { ApiService } from "../../../services/api.service";
+import { User } from "../../../classes/user";
+import { md5 } from "../../../classes/md5";
 
 @Component({
   selector: 'project-miniview',
@@ -13,7 +15,9 @@ import { ApiService } from "../../../services/api.service";
 export class MiniviewComponent implements OnInit {
 
   @Input('project') project: Project;
-  public owner: boolean;
+  public isOwner: boolean;
+  public owner: User;
+  avatar = "";
 
   constructor(
     private user: UserService,
@@ -21,14 +25,25 @@ export class MiniviewComponent implements OnInit {
     private router: Router,
     private api: ApiService,
   ) {
-    this.owner = false;
+    this.isOwner = false;
+    this.owner = new User();
   }
 
   ngOnInit() {
     if (this.project.banner === "") {
       this.project.banner = "/assets/logo-dark.svg";
     }
-    this.owner = this.project.owner === this.user.currentUser.id;
+    this.isOwner = this.project.owner === this.user.currentUser.id;
+    if (!this.isOwner) {
+      this.user.getUser(this.project.owner).subscribe( user => {
+          this.owner = user;
+          this.api.get<string>(`/v1/avatar/${user.id}`).subscribe(av => this.avatar = av);
+      });
+    } else {
+      // calculate gravatar ourself
+      console.log(this.user.currentUser)
+      this.avatar = "https://www.gravatar.com/avatar/" + md5(this.user.currentUser.email);
+    }
   }
 
   gotoProject(p: Project) {

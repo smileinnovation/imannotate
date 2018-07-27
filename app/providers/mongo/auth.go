@@ -61,7 +61,7 @@ func (ma *MongoAuth) Login(u *user.User) error {
 	if ss, err := token.SignedString(SigningKey); err != nil {
 		return err
 	} else {
-		u.ID = real.ID
+		*u = *real
 		u.Token = "Bearer " + ss
 		fixUserId(u)
 	}

@@ -9,3 +9,20 @@ main {
   height: 100vh;
 }
 
+
+@media (max-width: 768px) {
+  main {
+    margin-left: 74px;
+  }
+  main ~ .overlay {
+    height: 100vh;
+    width: 100vw;
+    background-color: var(--gray-dark);
+    position: absolute;
+    display: none;
+    opacity: .5;
+  }
+  main.disable ~ .overlay {
+    display: block;
+  }
+}
