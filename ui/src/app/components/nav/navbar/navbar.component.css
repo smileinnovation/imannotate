@@ -1,4 +1,4 @@
-.nav-item .material-icons {
+.nav-item .material-icons, .gravatar {
 	margin: -0.2em .2em 0 0;
 	position: relative;
 	float: left;
@@ -9,19 +9,35 @@
 }
 
 #sidebar .logo img {
-  max-width: 80%;
+  max-width: 50%;
 }
-
 
 #sidebar {
     min-width: 250px;
     max-width: 250px;
     min-height: 100vh;
+    position: absolute;
+    z-index: 1;
+    box-shadow: 16px 0 20px -4px rgba(0, 0, 0, 0.3);
 }
 
 #sidebar.active {
-    min-width: 70px;
-    max-width: 70px;
+  transform: translate(-100%);
+  box-shadow: none;
+}
+
+@media (min-width: 768px) {
+  #sidebar {
+    box-shadow: none;
+    margin-left: -100%;
+    max-width: 0
+  }
+  #sidebar.active {
+    transform: translate(0%);
+    margin-left: 0%;
+    position: relative;
+    box-shadow: none;
+  }
 }
 
 .navbar-toggler {
@@ -32,22 +48,6 @@
   /*align-self: auto !important;*/
 }
 
-#sidebar .navbar-nav {
-  opacity: 1;
-}
-
-#sidebar.active .navbar-nav {
-  opacity: 1;
-}
-
-#sidebar.active .item-text {
-  opacity: 0
-}
-
-#sidebar.active .made-by {
-  display: none;
-}
-
 
 .navbar-bottom a, .navbar-bottom .material-icons {
   color: var(--yellow);
@@ -56,4 +56,12 @@
 
 .navbar-bottom .material-icons {
   font-size: .9rem;
+}
+
+.gravatar {
+  max-width: 24px;
+}
+
+.nav-item {
+  z-index: 1;
 }

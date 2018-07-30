@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/smileinnovation/imannotate/api/admin"
 	"github.com/smileinnovation/imannotate/api/auth"
 	"github.com/smileinnovation/imannotate/api/user"
 )
@@ -18,6 +19,7 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, err.Error())
 		return
 	}
+	log.Println(u)
 	u.Password = ""
 	c.JSON(http.StatusOK, u)
 }
@@ -70,6 +72,14 @@ func UpdateUser(c *gin.Context) {
 func GetUser(c *gin.Context) {
 	un := c.Param("name")
 	us, err := auth.Get(un)
+	cu := auth.GetCurrentUser(c.Request)
+
+	if !admin.Get().IsAdmin(cu) {
+		if cu.ID != us.ID {
+			us.Email = ""
+			us.Password = ""
+		}
+	}
 	if err != nil {
 		c.JSON(http.StatusNotFound, "user not found")
 		return

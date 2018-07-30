@@ -13,21 +13,18 @@ import { ApiService } from "../../../services/api.service";
 export class NavbarComponent implements OnInit {
 
   @Input('title') title: string;
-  show = false;
+  show = true;
 
   constructor(
     private userService: UserService,
     private api: ApiService,
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+  }
 
   logout() {
     this.userService.logout();
-  }
-
-  toggleCollapse() {
-    this.show = !this.show;
   }
 
   get user() {
@@ -37,4 +34,9 @@ export class NavbarComponent implements OnInit {
   get admin() {
     return this.userService.isAdmin;
   }
+
+  get avatar() {
+    return this.userService.avatar;
+  }
+
 }

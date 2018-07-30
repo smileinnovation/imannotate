@@ -77,7 +77,7 @@ func (mpp *MongoProjectProvider) GetAll(u *user.User) []*project.Project {
 		for _, p := range projectacl {
 			owner := &user.User{}
 			db.C("user").FindId(bson.ObjectIdHex(p.Owner)).One(&owner)
-			p.Owner = owner.Username
+			//p.Owner = owner.Username
 		}
 
 		projects = append(projects, projectacl...)

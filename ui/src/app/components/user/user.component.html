@@ -1,9 +1,9 @@
-<div class="container">
+<div class="user-form">
 
   <div class="row justify-content-center">
     <div class="col col-md-6">
       <div class="mt-2">
-        <h2><img class="gravatar mr-2" [src]="gravatar" />{{ user.username }}</h2>
+        <h2><img class="gravatar mr-2 rounded-circle" [src]="gravatar" />{{ user.username }}</h2>
       </div>
       <div class="alert alert-success" *ngIf="saved">
         user saved !
@@ -26,6 +26,13 @@
         </div>
         <button type="submit" class="btn btn-success">Save</button>
       </form>
+      <div>
+        <p>You may choose a theme</p>
+        <select class="form-control" [(ngModel)]="chosenTheme" (change)="themeChosen()">
+          <option value="">Default</option>
+          <option class="form-control"*ngFor="let t of themeService.list"> {{ t }}</option>
+        </select>
+      </div>
     </div>
   </div>
 </div>

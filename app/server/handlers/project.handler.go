@@ -189,3 +189,20 @@ func DeleteProject(c *gin.Context) {
 	c.JSON(http.StatusOK, pname+" deleted")
 
 }
+
+func ProjectInfo(c *gin.Context) {
+	pname := c.Param("name")
+	prj := project.Get(pname)
+
+	if prj == nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	count := project.GetStats().CountAnnotations(prj)
+	ctrb := len(project.GetContributors(prj))
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"annotations":  count,
+		"contributors": ctrb,
+	})
+}

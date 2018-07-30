@@ -1,7 +1,22 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <div class="wrapper">
-<navbar title="{{title}}"></navbar>
-<main class="container-fluid">
-  <router-outlet></router-outlet>
-</main>
+
+
+  <navbar id="#navbar" title="{{title}}" (pan)="onSwipe($event)" [class.hidden]="!show"></navbar>
+  <main class="container-fluid" (pan)="onSwipe($event)" [class.overlayed]="!show">
+    <router-outlet></router-outlet>
+  </main>
+  <button class="navbar-toggler"
+    *ngIf="userservice && userservice.currentUser"
+    type="button"
+    aria-expanded="false"
+    (click)="showNav(!this.show)">
+    <span class="material-icons">menu</span>
+  </button>
+  <div
+    (pan)="onSwipe($event)"
+    class="overlay"
+    *ngIf="userservice && userservice.currentUser"
+    ></div>
+
 </div>

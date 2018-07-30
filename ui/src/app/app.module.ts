@@ -27,6 +27,7 @@ import { AdminService } from "./services/admin.service";
 import { AdminProjectComponent } from './components/admin/admin-project/admin-project.component';
 import { AdminUserComponent } from './components/admin/admin-user/admin-user.component';
 import { UserComponent } from './components/user/user.component';
+import { TruncatePipe } from './pipe/truncate.pipe';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { UserComponent } from './components/user/user.component';
     AdminProjectComponent,
     AdminUserComponent,
     UserComponent,
+    TruncatePipe,
   ],
   imports: [
     BrowserModule,
