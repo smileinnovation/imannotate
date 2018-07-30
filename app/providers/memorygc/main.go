@@ -1,7 +1,6 @@
 package memorygc
 
 import (
-	"log"
 	"time"
 
 	"github.com/smileinnovation/imannotate/api/providers"
@@ -28,16 +27,12 @@ func (gc *MemoryGC) Collect(name string, data string) {
 	go func(name, data string) {
 		time.Sleep(gc.ttl)
 		if _, ok := gc.mem[name]; ok {
-			log.Println("The image", name, "should be reinjected")
 			gc.ImageProvider.AddImage(name, data)
-		} else {
-			log.Println("The image", name, "not found in GC, do NOT reinject")
 		}
 	}(name, data)
 }
 
 func (gc *MemoryGC) Delete(name string) error {
-	log.Println("Remove", name, "from GC")
 	delete(gc.mem, name)
 	return nil
 }

@@ -22,7 +22,6 @@ func CheckS3Credentials(c *gin.Context) {
 		return
 	}
 	svc := s3.New(sess, aws.NewConfig().WithRegion(s3opt["region"]))
-	log.Println(*svc)
 
 	bl := s3.ListBucketsInput{}
 	out, err := svc.ListBuckets(&bl)
@@ -31,8 +30,5 @@ func CheckS3Credentials(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
-	log.Println(out)
-
 	c.JSON(http.StatusOK, out.Buckets)
-
 }

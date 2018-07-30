@@ -1,8 +1,6 @@
 package mongo
 
 import (
-	"log"
-
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
 	"github.com/smileinnovation/imannotate/api/auth"
@@ -73,8 +71,6 @@ func (ma *MongoAdmin) GetProjects(user ...*user.User) []*project.Project {
 func (ma *MongoAdmin) DeleteUser(u *user.User) error {
 	db := getMongo()
 	defer db.Session.Close()
-
-	log.Println("Deleting", u)
 
 	// remove references in ACL
 	db.C("project_acl").RemoveAll(bson.M{

@@ -19,7 +19,6 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, err.Error())
 		return
 	}
-	log.Println(u)
 	u.Password = ""
 	c.JSON(http.StatusOK, u)
 }

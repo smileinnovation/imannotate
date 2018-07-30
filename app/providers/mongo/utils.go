@@ -29,7 +29,6 @@ func getMongo() *mgo.Database {
 	if sess == nil || sess.Ping() != nil {
 		var err error
 		c := fmt.Sprintf("%s:%s@%s:27017/%s", dbu, dbp, db, admdb)
-		log.Println(c)
 		sess, err = mgo.Dial(c)
 		if err != nil {
 			log.Fatal("DB connection error:", err)

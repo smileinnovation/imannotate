@@ -3,7 +3,6 @@ package qwant
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 	"path"
@@ -75,7 +74,6 @@ func (q *Qwant) provide() {
 	for {
 		u := fmt.Sprintf(searchUrl, q.req, q.page)
 		q.page += 10
-		log.Println("Getting", u)
 		resp, err := http.Get(u)
 
 		if err != nil {
@@ -97,7 +95,6 @@ func (q *Qwant) provide() {
 			if len(res.Data.Result.Items) < 1 {
 				// Maybe no more results, close all
 				close(q.hit)
-				log.Println("End of result")
 				return
 			}
 			for _, img := range res.Data.Result.Items {

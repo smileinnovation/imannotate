@@ -48,7 +48,6 @@ func (mpp *MongoProjectProvider) GetAll(u *user.User) []*project.Project {
 
 	projects := []*project.Project{}
 
-	log.Println("Fetching project for user", u)
 	if err := db.C("project").Find(bson.M{
 		"owner": u.ID,
 	}).All(&projects); err != nil {
@@ -134,7 +133,6 @@ func (mpp *MongoProjectProvider) New(p *project.Project) error {
 func (mpp *MongoProjectProvider) Update(p *project.Project) error {
 	db := getMongo()
 	defer db.Session.Close()
-	log.Println("updating", p)
 
 	projCopy := project.Get(p.Id)
 	p.Owner = projCopy.Owner // strong owner protection
