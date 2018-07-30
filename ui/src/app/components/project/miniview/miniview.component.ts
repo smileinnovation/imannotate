@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Project } from '../../../classes/project';
+import { Project, ProjectStat } from '../../../classes/project';
 import { Router } from '@angular/router';
 import { UserService } from '../../../services/user.service';
 import { ProjectService } from "../../../services/project.service";
@@ -17,6 +17,7 @@ export class MiniviewComponent implements OnInit {
   @Input('project') project: Project;
   public isOwner: boolean;
   public owner: User;
+  public stats : ProjectStat;
   avatar = "";
 
   constructor(
@@ -27,6 +28,7 @@ export class MiniviewComponent implements OnInit {
   ) {
     this.isOwner = false;
     this.owner = new User();
+    this.stats = new ProjectStat();
   }
 
   ngOnInit() {
@@ -41,9 +43,12 @@ export class MiniviewComponent implements OnInit {
       });
     } else {
       // calculate gravatar ourself
-      console.log(this.user.currentUser)
       this.avatar = "https://www.gravatar.com/avatar/" + md5(this.user.currentUser.email);
     }
+
+    this.projectService.getInfo(this.project).subscribe(stat => {
+      this.stats = stat;
+    });
   }
 
   gotoProject(p: Project) {

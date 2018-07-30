@@ -10,6 +10,7 @@ export class UserService {
 
   private userSource = new Subject<User>();
   public currentUser = new User();
+  public avatar = "";
   public isAdmin = false;
   user$ = this.userSource.asObservable();
 
@@ -24,7 +25,6 @@ export class UserService {
         console.log('login ok', new Date().toString());
         this.setCurrentUser(u)
         localStorage.setItem('user', JSON.stringify(u));
-
       },
       error => {
         console.log('login failed',  new Date().toString());
@@ -72,6 +72,10 @@ export class UserService {
       () => this.isAdmin = false
     );
     this.userSource.next(user);
+    this.getAvatar().subscribe(img => this.avatar = img);
   }
 
+  getAvatar(): Observable<string>{
+    return this.api.get(`/v1/avatar/${this.currentUser.id}`);
+  }
 }

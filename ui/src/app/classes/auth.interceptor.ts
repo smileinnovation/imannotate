@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../services/api.service';
 import { UserService } from '../services/user.service';
+import { tap } from "rxjs/operators";
 
 
 @Injectable()
@@ -22,6 +23,13 @@ export class AuthInterceptor implements HttpInterceptor {
         },
       });
     }
-    return next.handle(req);
+    return next.handle(req).pipe(tap(
+      () => {},
+      error => {
+        if (error.error == "Token is expired") {
+          this.user.logout();
+        }
+      })
+    );
   }
 }

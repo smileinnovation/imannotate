@@ -14,7 +14,7 @@
     <tr *ngFor="let stat of stats">
       <th scope="row">
         <p>
-        <img class="img gravatar m-2" [src]="gravatar(stat.user)" />{{ stat.user.username }}
+        <img class="img gravatar m-2 rounded-circle" [src]="gravatar(stat.user)" />{{ stat.user.username }}
         <i class="material-icons" *ngIf="stat.isAdmin">security</i>
         </p>
       </th>

@@ -3,6 +3,7 @@ package server
 import (
 	"crypto/md5"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
@@ -20,11 +21,16 @@ func unlisted(c *gin.Context) {
 
 func Auth(c *gin.Context) {
 	if err := auth.Allowed(c.Request); err != nil {
-		c.AbortWithStatus(http.StatusUnauthorized)
+		log.Println("Auth error", err)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, err.Error())
 	}
 }
 
 func Admin(c *gin.Context) {
+	Auth(c)
+	if c.IsAborted() {
+		return
+	}
 	u := auth.GetCurrentUser(c.Request)
 	if !admin.Get().IsAdmin(u) {
 		c.AbortWithStatus(http.StatusUnauthorized)
@@ -98,7 +104,7 @@ func GetServer() *gin.Engine {
 		v1.POST("/signin", handlers.Login)
 		v1.POST("/signup", handlers.Signup)
 		v1.PUT("/user/:name", Auth, UserProtection, handlers.UpdateUser)
-		v1.GET("/user/:name", Auth, UserProtection, handlers.GetUser)
+		v1.GET("/user/:name", Auth, handlers.GetUser)
 
 		v1.GET("/projects", Auth, handlers.GetProjects)
 		v1.POST("/project", Auth, handlers.NewProject)
@@ -111,6 +117,7 @@ func GetServer() *gin.Engine {
 		v1.POST("/project/:name/annotate", Auth, AnnotationProtection, handlers.SaveAnnotation)
 		v1.GET("/project/:name", Auth, handlers.GetProject)
 		v1.DELETE("/project/:name", Auth, ProjectProtection, handlers.DeleteProject)
+		v1.GET("/project/:name/info", Auth, handlers.ProjectInfo)
 
 		v1.DELETE("/user/:name", Auth, Admin, handlers.DeleteUser)
 

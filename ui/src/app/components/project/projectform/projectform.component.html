@@ -1,4 +1,4 @@
-<div class="container">
+<div class="project-form">
   <div class="row justify-content-md-center">
     <div class="col col-md-6">
       <h1 innerHTML="{{ title }}"></h1>
@@ -10,7 +10,7 @@
         </div>
         <div class="form-group">
           <label for="Banner">Illustration image for your project</label>
-          <input class="form-control" type="file" (change)="setBanner($event)" />
+          <input class="form-control-file" type="file" (change)="setBanner($event)" />
           <img src="{{ project.banner }}" style="max-width: 90%" />
         </div>
 

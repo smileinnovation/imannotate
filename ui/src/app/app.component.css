@@ -7,22 +7,58 @@
 main {
   overflow: auto;
   height: 100vh;
+  padding-top: 2em;
+  touch-action: pan-y !important;
 }
 
+main ~ .overlay {
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--gray-dark);
+  position: absolute;
+  display: none;
+  opacity: .5;
+}
 
-@media (max-width: 768px) {
+main.overlayed ~ .overlay {
+  display: block;
+}
+
+.navbar-toggler {
+  position: absolute;
+  z-index: 2;
+  color: var(--gray-dark);
+}
+
+.navbar-toggler:focus, .navbar-toggler:active {
+  border: none !important;
+  outline: none;
+}
+
+main.overlayed ~ .navbar-toggler {
+  color: var(--white) !important;
+}
+
+@media (min-width: 768px) {
   main {
-    margin-left: 74px;
+    padding-top: initial;
   }
-  main ~ .overlay {
-    height: 100vh;
-    width: 100vw;
-    background-color: var(--gray-dark);
-    position: absolute;
+
+  main.overlayed {
+    padding-top: 2em;
+  }
+
+  main.overlayed ~ .overlay {
     display: none;
-    opacity: .5;
   }
-  main.disable ~ .overlay {
-    display: block;
+
+  .navbar-toggler {
+    position: absolute;
+    z-index: 2;
+    color: var(--white);
+  }
+
+  main.overlayed ~ .navbar-toggler {
+    color: var(--gray-dark) !important;
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
-import { Project } from '../classes/project';
+import { Project, ProjectStat } from '../classes/project';
 import { Observable } from 'rxjs';
 import { UserService } from './user.service';
 import { tap } from 'rxjs/operators';
@@ -71,9 +71,12 @@ export class ProjectService {
     });
   }
 
-
   deleteProject(p: Project): Observable<any>{
     return this.api.delete(`/v1/project/${p.id}`);
+  }
+
+  getInfo(p: Project): Observable<ProjectStat> {
+    return this.api.get<ProjectStat>(`/v1/project/${p.id}/info`);
   }
 
 }
