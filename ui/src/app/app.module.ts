@@ -28,6 +28,8 @@ import { AdminProjectComponent } from './components/admin/admin-project/admin-pr
 import { AdminUserComponent } from './components/admin/admin-user/admin-user.component';
 import { UserComponent } from './components/user/user.component';
 import { TruncatePipe } from './pipe/truncate.pipe';
+import { HAMMER_GESTURE_CONFIG } from "@angular/platform-browser";
+import { HammerConfig } from './classes/hammer-config';
 
 @NgModule({
   declarations: [
@@ -60,6 +62,10 @@ import { TruncatePipe } from './pipe/truncate.pipe';
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true,
+    },
+    {
+      provide: HAMMER_GESTURE_CONFIG,
+      useClass: HammerConfig
     },
     ApiService,
     UserService,

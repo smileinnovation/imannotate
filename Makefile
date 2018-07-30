@@ -43,8 +43,13 @@ clean: clean-container-dist
 	rm -rf ui/dist
 	rm -f gin-bin app.bin
 
-clean-container-dist:
-	rm -rf containers/prod/ui containers/prod/app
+clean-container-dist: clean-ui-container-dist clean-api-container-dist
+
+clean-ui-container-dist:
+	rm -rf containers/prod/ui 
+
+clean-api-container-dist:
+	rm -rf  containers/prod/app
 
 clean-docker:
 	docker-compose down --remove-orphans
