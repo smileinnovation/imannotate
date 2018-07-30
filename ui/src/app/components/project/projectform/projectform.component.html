@@ -1,0 +1,99 @@
+<div class="project-form">
+  <div class="row justify-content-md-center">
+    <div class="col col-md-6">
+      <h1 innerHTML="{{ title }}"></h1>
+      <div class="alert alert-success" *ngIf="projectWasSaved">Project successfuly saved</div>
+      <form #f="ngForm" (submit)="create()">
+        <div class="form-group">
+          <label for="name">Project name</label>
+          <input class="form-control" required type="text" placeholder="Project name" [(ngModel)]="project.name" name="name" />
+        </div>
+        <div class="form-group">
+          <label for="Banner">Illustration image for your project</label>
+          <input class="form-control-file" type="file" (change)="setBanner($event)" />
+          <img src="{{ project.banner }}" style="max-width: 90%" />
+        </div>
+
+        <div class="form-group">
+          <label for="tags">Applicable tags for annotation</label>
+          <input class="form-control" required type="text" placeholder="Coma separated list of classes to annotate" (keyup)="onTagChange()" [(ngModel)]="tags" name="tags" />
+        </div>
+        <div class="form-group">
+          <label for="description">Description text</label>
+          <textarea class="form-control" required placeholder="Type a description about the project" [(ngModel)]="project.description" name="description"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="imageProvider">Choose an image provider that will fetch image to annotate</label>
+          <select (change)="onProviderChange()" name="imageProvider" class="form-control" [(ngModel)]="project.imageProvider">
+             <option value="s3">Amazon S3</option>
+             <option value="qwant">Qwant image search</option>
+           </select>
+        </div>
+
+        <div class="form-group" name="fs-options" *ngIf="project.imageProvider == 's3'">
+          <label for="id">Your amazon id</label>
+          <input type="text" class="form-control"
+            name="id" [(ngModel)]="project.imageProviderOptions.id"
+            (keyup)="checkS3Credentials()" required />
+
+          <label for="secret">AWS Secret</label>
+          <input type="password" class="form-control"
+            name="secret" [(ngModel)]="project.imageProviderOptions.secret"
+            (keyup)="checkS3Credentials()" required />
+
+          <label for="region">AWS Region</label>
+          <input type="text" class="form-control"
+            name="region" [(ngModel)]="project.imageProviderOptions.region"
+            (keyup)="checkS3Credentials()" required />
+
+          <div class="alert alert-danger" *ngIf="!s3Valid">
+            S3 authentication problem: {{ s3Error }}
+          </div>
+
+          <label for="bucket">Bucket name</label>
+          <select [(ngModel)]="project.imageProviderOptions.bucket" required name="bucket" class="form-control">
+            <option *ngFor="let b of bucketList" value="{{b.Name}}" type="option">{{ b.Name }}</option>
+          </select>
+
+          <label for="prefix">Prefix in that bucket</label>
+          <input type="text" class="form-control" name="prefix" [(ngModel)]="project.imageProviderOptions.prefix" required />
+        </div>
+
+        <div class="form-group" name="qwant-options" *ngIf="project.imageProvider == 'qwant'">
+          <label for="qwant-query">Qwant search query string</label>
+          <input type="text" name="qwant-query" class="form-control" placeholder="Qwant query, eg. Dog Cat" [(ngModel)]="project.imageProviderOptions.qwantQuery" required/>
+        </div>
+
+        <div class="form-group">
+          <button class="btn btn-success" type="submit" [disabled]="f.status == 'INVALID' || !formIsValid()">Save</button>
+        </div>
+      </form>
+
+      <div *ngIf="!edit">
+        <p>You'll be able to share the project with other user as soon as you created the project</p>
+      </div>
+
+      <div *ngIf="edit">
+        <p>You may propose to other to annotate the project with you</p>
+        <input type="text" class="form-control"
+          [(ngModel)]="contribSearch"
+          [inputFormatter]="searchFormatter"
+          [resultTemplate]="rt"
+          [ngbTypeahead]="searchContributor"/><button class="btn btn-success" (click)="addContributor()">add</button>
+        <span *ngIf="searching"><i class="material-icons rotating" style="float: right; margin-top: -2.2rem; margin-right: 1rem;">refresh</i></span>
+        <ngb-alert [type]="alertType" [dismissible]="false" (close)="successMessage = null" *ngIf="successMessage">
+          {{ successMessage }}
+        </ngb-alert>
+        <ul>
+          <li *ngFor="let c of contributors">{{ c.username }} <button class="btn btn-danger material-icons" (click)="removeContributor(c)">delete</button></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<ng-template #rt let-r="result" let-t="term">
+  {{ r.username}}
+</ng-template>

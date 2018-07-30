@@ -1,0 +1,27 @@
+
+<div class="col">
+  <h2>Projects</h2>
+  <table class="table table-striped table-hover">
+    <thead>
+    <tr class="table-head">
+      <th scope="col">Name</th>
+      <th scope="col">Owner</th>
+      <th scope="col">Annotations</th>
+      <th scope="col">Contributors</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let proj of stats">
+      <th scope="row">{{ proj.project.name }}</th>
+      <td scope="row">{{ proj.project.owner }}</td>
+      <td scope="row">{{ proj.annotations }}</td>
+      <td scope="row">{{ proj.contributors }}</td>
+      <td scope="row">
+        <button class="btn btn-sm btn-danger" (click)="deleteProject(proj.project)"><i class="material-icons">delete</i></button>
+        <button class="btn btn-sm btn-info" (click)="editProject(proj.project)"><i class="material-icons">edit</i></button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

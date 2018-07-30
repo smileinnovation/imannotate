@@ -1,0 +1,9 @@
+.user.compose.yml
+gin-bin
+./imannotate
+vendor
+vendor/*
+out
+out/*
+containers/prod/app
+containers/prod/ui

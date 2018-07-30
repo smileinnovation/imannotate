@@ -1,0 +1,17 @@
+version: "2.1"
+
+services:
+
+  app:
+    image: smileinnovation/imannotate
+    ports:
+    - 8000:8000
+
+  database:
+    image: mongo
+    volumes:
+      - db-prod:/data/db
+    privileged: true
+
+volumes:
+  db-prod:

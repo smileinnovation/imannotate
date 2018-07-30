@@ -1,0 +1,32 @@
+
+
+<div class="col">
+  <h2>Users</h2>
+  <table class="table table-striped table-hover">
+    <thead>
+      <th scope="col">Username</th>
+      <th scope="col">Email</th>
+      <th scope="col">NB. of projects</th>
+      <th scope="col"></th>
+    </thead>
+
+    <tbody>
+    <tr *ngFor="let stat of stats">
+      <th scope="row">
+        <p>
+        <img class="img gravatar m-2 rounded-circle" [src]="gravatar(stat.user)" />{{ stat.user.username }}
+        <i class="material-icons" *ngIf="stat.isAdmin">security</i>
+        </p>
+      </th>
+      <td scope="row">{{ stat.user.email }}</td>
+      <td scope="row">{{ stat.projects }}</td>
+      <td scope="row">
+        <button class="btn btn-sm btn-danger" ngbTooltip="Delete that user" (click)="deleteUser(stat.user)"><i class="material-icons">delete</i></button>
+        <a class="btn btn-sm btn-info" ngbTooltip="Edit that user" routerLink="/user/edit/{{ stat.user.id }}"><i class="material-icons">edit</i></a>
+        <button (click)="setAdmin(stat.user)" *ngIf="!stat.isAdmin" class="btn btn-sm btn-warning" ngbTooltip="Set user as admin"><i class="material-icons">security</i></button>
+        <button (click)="removeAdmin(stat.user)" *ngIf="stat.isAdmin" [disabled]="this.currentUser.id == stat.user.id" class="btn btn-sm btn-warning" ngbTooltip="Remove admin"><i class="material-icons">close</i></button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

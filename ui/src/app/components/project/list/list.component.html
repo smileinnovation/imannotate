@@ -1,0 +1,16 @@
+<h2>Select a project</h2>
+<div>
+  <p>
+    You may use an existing project, edit it if you're the project owner,
+    or <a routerLink="/project/create" class="btn btn-success">create a new project</a>
+  </p>
+  <div>
+    <p [hidden]="projects?.length > 0">No project yet</p>
+    <p><strong [hidden]="projects?.length == 0">You participate on {{ projects?.length }} projects</strong></p>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6 col-lg-4 col-xl-3 col-sm-12 mb-4" *ngFor="let p of projects">
+    <project-miniview  [project]=p></project-miniview>
+  </div>
+</div>

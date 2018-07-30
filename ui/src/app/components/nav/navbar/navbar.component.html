@@ -1,0 +1,40 @@
+<nav id="sidebar" *ngIf="user && user.username" class="navbar-dark bg-dark d-flex flex-column align-items-center" [class.active]="show">
+  <a routerLink="/" class="logo align-self-center text-center"><img src="/assets/logo.svg" class="p-0 m-0 navbar-brand"/></a>
+
+  <ul class="navbar-nav p-4 align-self-stretch">
+    <li class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="/dashboard">
+        <i ngbTooltip="Home" placement="right" class="material-icons">home</i>
+        <span class="item-text">Home</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLinkActive="active" routerLink="/about">
+        <i ngbTooltip="About" placement="right" class="material-icons">info</i>
+        <span class="item-text">About</span>
+      </a>
+    </li>
+    <li class="nav-item dropdown" *ngIf="user && user.username" ngbDropdown>
+      <a class="nav-link dropdown-toggle" id="navbarDropdown" ngbDropdownToggle>
+        <img [src]="avatar" class="gravatar rounded-circle" />
+        <span class="item-text">{{ user.username }}</span>
+      </a>
+      <div ngbDropdownMenu aria-labelledby="navbarDropdown">
+        <a class="dropdown-item" routerLink="/user/edit/{{ user.id }}" >Profile</a>
+        <a class="dropdown-item" (click)="logout()">Logout</a>
+      </div>
+    </li>
+    <li *ngIf="admin" class="nav-item">
+      <a class="nav-link" routerlinkActive="active" routerLink="/admin">
+        <i class="material-icons" ngbTooltip="Admin" placement="right">security</i>
+        <span class="item-text">Admin</span>
+      </a>
+    </li>
+  </ul>
+  <div class="navbar-bottom text-center">
+    <p class="made-by p-3">
+      Made with <i class="material-icons">favorite</i> by <a href="https://www.smile.eu/en/innovation" target="_blank">Smile Innovation</a>
+    </p>
+    <a href="https://www.smile.eu/en/innovation" target="_blank"><img src="/assets/smile.png" style="max-width: 90%" /></a>
+  </div>
+</nav>
