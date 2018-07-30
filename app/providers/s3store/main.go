@@ -55,7 +55,7 @@ func NewS3ImageProvider(id, secret, region, bucket, prefix string) *S3ImageProvi
 func (sss *S3ImageProvider) GetImage() (string, string, error) {
 	if i, ok := <-sss.hit; ok {
 		// copy stream
-		im, s, err := image.Decode(i.Reader)
+		im, _, err := image.Decode(i.Reader)
 		if err != nil {
 			log.Println(err)
 		}
