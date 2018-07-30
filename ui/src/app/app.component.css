@@ -8,7 +8,7 @@ main {
   overflow: auto;
   height: 100vh;
   padding-top: 2em;
-  touch-action: pan-y !important;
+  /* touch-action: pan-y !important; */
 }
 
 main ~ .overlay {

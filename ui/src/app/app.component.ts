@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
   title = 'Imannotate' + (environment.production ? '' : ' -- testing');
 
   constructor(
-    private userservice: UserService,
+    public userservice: UserService,
     private router: Router,
     private themeService: ThemeService,
   ) { }
@@ -66,9 +66,7 @@ export class AppComponent implements OnInit {
     if (evt.target["tagName"] == "CANVAS") {
       return
     }
-    if (Math.abs(evt["deltaX"]) < 80 ){
-      return;
-    }
+
     switch(evt["additionalEvent"]) {
       case "panleft":
         this.showNav(window.innerWidth < 768)

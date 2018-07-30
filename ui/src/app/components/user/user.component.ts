@@ -21,7 +21,7 @@ export class UserComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private userService: UserService,
-    private themeService: ThemeService,
+    public themeService: ThemeService,
   ) { }
 
   ngOnInit() {
