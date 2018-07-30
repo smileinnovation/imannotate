@@ -72,7 +72,6 @@ func DeleteUser(c *gin.Context) {
 		c.JSON(http.StatusNotFound, "User not found")
 		return
 	}
-	log.Println("Delete", u)
 
 	if err = admin.Get().DeleteUser(u); err != nil {
 		log.Println(err)

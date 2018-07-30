@@ -33,7 +33,6 @@ func RemoveProvider(prj *project.Project) {
 }
 
 func createImageProvider(prj *project.Project) {
-	log.Println("Provider for project", prj.Id, prj.ImageProvider, prj.ImageProviderOptions)
 	opt := prj.ImageProviderOptions
 
 	switch prj.ImageProvider {

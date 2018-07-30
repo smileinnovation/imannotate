@@ -1,7 +1,6 @@
 package providers
 
 import (
-	"log"
 	"path/filepath"
 )
 
@@ -37,7 +36,6 @@ func NewFileSystemImageProvider(path string) *FileSystemImageProvider {
 
 func next(f *FileSystemImageProvider) {
 	if list, err := filepath.Glob(f.BaseRoot); err != nil {
-		log.Println(list)
 		close(f.Hit)
 	} else {
 		for _, file := range list {

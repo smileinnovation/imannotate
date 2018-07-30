@@ -39,7 +39,6 @@ func NewS3ImageProvider(id, secret, region, bucket, prefix string) *S3ImageProvi
 		log.Println(err)
 	}
 	svc := s3.New(sess, aws.NewConfig().WithRegion(region))
-	log.Println(*svc)
 
 	sss := &S3ImageProvider{
 		id:     id,
@@ -49,7 +48,6 @@ func NewS3ImageProvider(id, secret, region, bucket, prefix string) *S3ImageProvi
 		prefix: prefix,
 		hit:    make(chan *s3res),
 	}
-	log.Println(*sss)
 	go sss.fetch(svc)
 	return sss
 }
@@ -57,8 +55,7 @@ func NewS3ImageProvider(id, secret, region, bucket, prefix string) *S3ImageProvi
 func (sss *S3ImageProvider) GetImage() (string, string, error) {
 	if i, ok := <-sss.hit; ok {
 		// copy stream
-		im, s, err := image.Decode(i.Reader)
-		log.Println(s)
+		im, _, err := image.Decode(i.Reader)
 		if err != nil {
 			log.Println(err)
 		}
@@ -67,7 +64,6 @@ func (sss *S3ImageProvider) GetImage() (string, string, error) {
 		png.Encode(&buff, im)
 		return i.Name, "data:image/png;base64," + base64.StdEncoding.EncodeToString(buff.Bytes()), nil
 	}
-	log.Println("no new file")
 	return "", "", errors.New("No new file")
 }
 
@@ -95,13 +91,10 @@ func (sss *S3ImageProvider) fetch(svc *s3.S3) {
 func (sss *S3ImageProvider) listThat(svc *s3.S3, buck *s3.ListObjectsV2Input) {
 	prefixes := []string{}
 	page := 0
-	log.Println("Getting S3 images")
 	err := svc.ListObjectsV2Pages(buck, func(p *s3.ListObjectsV2Output, lastPage bool) bool {
 		page++
-		log.Println("S3 p", p)
 		for _, cc := range p.Contents {
 			isImage := false
-			log.Println(cc)
 			for _, ext := range []string{".jpg", ".jpeg", ".png"} {
 				k := strings.ToLower(*cc.Key)
 				if strings.HasSuffix(k, ext) {

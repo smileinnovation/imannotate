@@ -16,13 +16,11 @@ import (
 
 func GetProjects(c *gin.Context) {
 	u := auth.GetCurrentUser(c.Request)
-	log.Println("USER::", u)
 	if u == nil {
 		c.JSON(http.StatusUnauthorized, errors.New("No user found"))
 		return
 	}
 	projects := project.GetAll(u)
-	log.Println("Handler projects", projects, "for user", u)
 	if len(projects) == 0 {
 		c.JSON(http.StatusNotFound, projects)
 		return
@@ -55,7 +53,6 @@ func NewProject(c *gin.Context) {
 func UpdateProject(c *gin.Context) {
 	p := &project.Project{}
 	c.Bind(p)
-	log.Println("Handler, update project", p.Id)
 	id := p.Id
 
 	registry.RemoveProvider(p)
@@ -93,7 +90,6 @@ func SaveAnnotation(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, errors.New("You're not allowed to annotate image on that project"))
 		return
 	}
-	log.Println("Should save", ann)
 	if err := annotation.Save(prj, ann); err != nil {
 		c.JSON(http.StatusNotAcceptable, err.Error())
 		return
@@ -118,9 +114,7 @@ func AddContributor(c *gin.Context) {
 	pid := c.Param("name")
 	uid := c.Param("user")
 	prj := project.Get(pid)
-	log.Println("Prject::", prj)
 	user, err := auth.Get(uid)
-	log.Println("User::", user)
 
 	if err != nil {
 		log.Println(err)
@@ -141,9 +135,7 @@ func RemoveContributor(c *gin.Context) {
 	pid := c.Param("name")
 	uid := c.Param("user")
 	prj := project.Get(pid)
-	log.Println("Prject::", prj)
 	user, err := auth.Get(uid)
-	log.Println("User::", user)
 
 	if err != nil {
 		log.Println(err)
@@ -174,8 +166,7 @@ func ExportProject(c *gin.Context) {
 	reader := exp.Export(ann)
 
 	c.Status(200)
-	log.Println(reader)
-	log.Println(io.Copy(c.Writer, reader))
+	io.Copy(c.Writer, reader)
 }
 
 func DeleteProject(c *gin.Context) {

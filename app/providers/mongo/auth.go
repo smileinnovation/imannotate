@@ -134,7 +134,6 @@ func (ma *MongoAuth) GetCurrentUser(req *http.Request) *user.User {
 		return nil
 	}
 	claim := token.Claims.(*CustomClaim)
-	log.Println("claim", claim)
 	db := getMongo()
 	defer db.Session.Close()
 
