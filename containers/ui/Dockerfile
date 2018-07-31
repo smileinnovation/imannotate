@@ -1,6 +1,6 @@
 FROM node:10-alpine
 
-RUN npm install -g @angular/cli
+RUN npm install -g @angular/cli@6.1.1
 
 RUN apk add --no-cache python git build-base
 
