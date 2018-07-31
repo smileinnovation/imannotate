@@ -49,8 +49,12 @@
 }
 
 
+.navbar-bottom p {
+  color: var(--white);
+}
+
 .navbar-bottom a, .navbar-bottom .material-icons {
-  color: var(--yellow);
+  color: var(--orange);
 }
 
 
