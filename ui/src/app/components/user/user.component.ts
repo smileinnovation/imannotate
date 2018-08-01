@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
-import { UserService } from "../../services/user.service";
-import { ThemeService } from "../../services/theme.service";
-import { User } from "../../classes/user";
 
-import { md5 } from '../../classes/md5';
+import { UserService } from "@app/services/user.service";
+import { ThemeService } from "@app/services/theme.service";
+import { User } from "@app/classes/user";
+import { md5 } from '@app/classes/md5';
 
 @Component({
   selector: 'app-user',
@@ -34,11 +34,9 @@ export class UserComponent implements OnInit {
             this.user.password = ""; // protection
             this.onEmail();
           }
-        )
+        );
       }
     });
-
-
   }
 
   onEmail() {

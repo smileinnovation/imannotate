@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ProjectService } from '../../../services/project.service';
-import { Project } from '../../../classes/project';
-import { Annotator } from '../../../classes/annotator';
-import { BoundingBox } from '../../../classes/boundingbox';
-import { Annotation } from '../../../classes/annotation';
-import { ImageResult } from "../../../classes/imageresult";
+import { ProjectService } from '@app/services/project.service';
+import { Project } from '@app/classes/project';
+import { Annotator } from '@app/classes/annotator';
+import { BoundingBox } from '@app/classes/boundingbox';
+import { Annotation } from '@app/classes/annotation';
+import { ImageResult } from "@app/classes/imageresult";
 
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 
