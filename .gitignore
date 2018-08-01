@@ -7,3 +7,5 @@ out
 out/*
 containers/prod/app
 containers/prod/ui
+ui/.npm
+ui/.config
