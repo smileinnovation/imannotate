@@ -1,7 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { User } from '../../../classes/user';
-import { UserService } from '../../../services/user.service';
-import { ApiService } from "../../../services/api.service";
+
+import { User } from '@app/classes/user';
+import { UserService } from '@app/services/user.service';
+import { ApiService } from "@app/services/api.service";
 
 
 
