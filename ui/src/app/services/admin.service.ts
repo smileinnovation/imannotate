@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from "./api.service";
-import { ProjectStat } from "../classes/project";
 import { Observable } from 'rxjs';
-import { User } from "../classes/user";
+import { ApiService } from "@app/services/api.service";
+import { ProjectStat } from "@app/classes/project";
+import { User } from "@app/classes/user";
 
 @Injectable()
 export class AdminService {

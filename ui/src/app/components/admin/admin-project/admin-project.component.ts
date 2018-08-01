@@ -1,9 +1,9 @@
-import { Project, ProjectStat } from "../../../classes/project";
 import { Component, OnInit } from '@angular/core';
-import { AdminService } from "../../../services/admin.service";
-import { ProjectService } from "../../../services/project.service";
 import { Router } from "@angular/router";
 
+import { Project, ProjectStat } from "@app/classes/project";
+import { AdminService } from "@app/services/admin.service";
+import { ProjectService } from "@app/services/project.service";
 
 
 @Component({
