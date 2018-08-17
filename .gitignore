@@ -10,8 +10,6 @@ containers/prod/ui
 ui/.npm
 ui/.config
 
-# Created by https://www.gitignore.io/api/go,osx,node,linux,angular,textmate
-
 ### Angular ###
 ## Angular ##
 # compiled output
