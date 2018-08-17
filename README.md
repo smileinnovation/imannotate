@@ -1,4 +1,4 @@
-![](ui/src/assets/Logo.png)
+![](ui/src/assets/Logo.svg)
 
 # Image annotation for Machine Learning
 
