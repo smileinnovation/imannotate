@@ -1,18 +1,18 @@
-# Imannotate - Image annotation for Machine Learning
+![](ui/src/assets/Logo.svg)
 
-![](ui/src/assets/logo-dark.svg)
+# Image annotation for Machine Learning
 
-Recurrent Neural Networks needs to have annotated images to learn how to get object to recognize in images, that means that you need to give image and "bounding boxes" of each object to recognize when you train your model. And you will need **a lot** of annotations to ensure a good train !
+Recurrent Neural Networks needs to have annotated images to learn how to get object to recognize in images, that means that you need to give image and _bounding boxes_ of each object to recognize when you train your model. And you will need **a lot** of annotations to ensure a good train!
 
 Imannotate is an API and Web interface built to help to create that dataset. You will be able to manage projects and users to participate to annotation.
 
 ## Installation
 
-### Docker-compose "built" mode
+### Docker-compose _built_ mode
 
-We provide a way to launch a "built" Imannotate instance. This one build the Application (in Go) + UI with Angular, and provides a Docker image named "smileinnovation/imannotate".
+We provide a way to launch a _built_ Imannotate instance. This one build the Application (in Go) + UI with Angular, and provides a Docker image named `smileinnovation/imannotate`.
 
-The quick method is to use our "docker-compose-prod.yml" file with Docker-Compose to startup the service:
+The quick method is to use our `docker-compose-prod.yml` file with Docker-Compose to startup the service:
 
 ```
 make build
@@ -65,7 +65,7 @@ npm install -g @angular/cli
 ```
 
 
-To compile a "production" distribution, go in "ui" directory and type:
+To compile a _production_ distribution, go in `/ui` directory and type:
 
 ```
 npm install
@@ -73,11 +73,11 @@ ng build --prod
 ```
 
 
-**You may now copy "dist" directory somewhere else, for example "/var/www/imannotate/ui"**
+**You may now copy `dist` directory somewhere else, for example `/var/www/imannotate/ui`**
 
 #### Launch imannotate
 
-First, check if everything is ok by serving Imannotate in "full stand alone mode" (that means that imannotate can serve Angular application):
+First, check if everything is ok by serving Imannotate in _full stand alone mode_ (that means that imannotate can serve Angular application):
 
 ```
 SERVE_STATICS=true ./imannatote
@@ -132,13 +132,13 @@ If you want to develop with us, let's take that repository and type:
 make
 ```
 
-That will use docker-compose to build images and start containers. Your uid:gid is written in a "base compose file" named .user.compose.yml to bind them inside the containers, to not have any rights problems when process writes files.
+That will use docker-compose to build images and start containers. Your uid:gid is written in a _base compose file_ named `.user.compose.yml` to bind them inside the containers, to not have any rights problems when process writes files.
 
 You may visit http://localhost:8080 to navigate application.
 
 To simplify development:
 
-- each change in Golang sources rebuild API (using "gin")
+- each change in Golang sources rebuild API (using _gin_)
 - each change in Angular sources refreshes the view in browser (live-reload)
 
 You may now use docker-compose to add Angular component, install packages, or Golang packages (with glide):
@@ -151,7 +151,7 @@ docker-compose exec api glide get github.com/package/to/vendor
 
 ```
 
-Sometimes, "gin" doesn't want to rebuild the binary, so restart "api" container to fix:
+Sometimes, _gin_ doesn't want to rebuild the binary, so restart _api_ container to fix:
 
 ```
 docker-compose restart api
