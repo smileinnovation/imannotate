@@ -38,7 +38,6 @@ containers/prod/app:
 	mv app.bin containers/prod/app
 	rm builder.sh
 
-
 clean: clean-container-dist
 	rm -rf ui/dist
 	rm -f gin-bin app.bin
@@ -56,6 +55,9 @@ clean-docker:
 
 clean-volumes:
 	docker-compose down -v --remove-orphans
+
+clean-images:
+	docker rmi $(shell docker image ls -q $(notdir $(shell pwd))*)
 
 test:
 	go test -v ./api/... ./app/server/...
