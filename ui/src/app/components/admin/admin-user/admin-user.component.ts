@@ -1,20 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { AdminService } from "../../../services/admin.service";
-import { User } from "../../../classes/user";
-import { md5 } from "../../../classes/md5";
-import { UserService } from "../../../services/user.service";
+import { AdminService } from "@app/services/admin.service";
+import { User } from "@app/classes/user";
+import { md5 } from "@app/classes/md5";
+import { UserService } from "@app/services/user.service";
+
 
 class userStat {
   projets: number
 }
-
 
 class UserStat {
   user: User
   stat: userStat
   isAdmin: boolean
 }
-
 
 @Component({
   selector: 'admin-user',

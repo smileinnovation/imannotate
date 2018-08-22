@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { environment } from '../environments/environment';
-import { UserService } from './services/user.service';
-import { User } from './classes/user';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { ThemeService } from "./services/theme.service";
-import { NavbarComponent } from "./components/nav/navbar/navbar.component";
-import { ViewChild } from "@angular/core";
+import { UserService } from '@app/services/user.service';
+import { User } from '@app/classes/user';
+import { ThemeService } from "@app/services/theme.service";
+import { NavbarComponent } from "@app/components/nav/navbar/navbar.component";
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'app-root',
