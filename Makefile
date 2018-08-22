@@ -24,7 +24,7 @@ run: .user.compose.yml
 	@echo "$$usercompose" > $@
 	echo $@ created
 
-build: containers/prod/app containers/prod/ui
+build: .user.compose.yml containers/prod/app containers/prod/ui
 	docker-compose build
 	cd containers/prod/ && docker build -t smileinnovation/imannotate:$(TAG) .
 
