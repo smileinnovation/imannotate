@@ -9,13 +9,13 @@ services:
     build: 
       context: containers/ui
 
-    working_dir: /home/node/ui
+    working_dir: /home/node
     volumes:
-      - ./ui:/home/node/ui
+      - ./ui:/home/node
     command: ng serve --host=0.0.0.0
     privileged: true
     depends_on:
-      - database
+      - api
 
   api:
     extends:

@@ -24,7 +24,7 @@ run: .user.compose.yml
 	@echo "$$usercompose" > $@
 	echo $@ created
 
-build: containers/prod/app containers/prod/ui
+build: .user.compose.yml containers/prod/app containers/prod/ui
 	docker-compose build
 	cd containers/prod/ && docker build -t smileinnovation/imannotate:$(TAG) .
 
@@ -37,7 +37,6 @@ containers/prod/app:
 	docker-compose run --rm api sh ./builder.sh
 	mv app.bin containers/prod/app
 	rm builder.sh
-
 
 clean: clean-container-dist
 	rm -rf ui/dist
@@ -56,6 +55,9 @@ clean-docker:
 
 clean-volumes:
 	docker-compose down -v --remove-orphans
+
+clean-images:
+	docker rmi $(shell docker image ls -q $(notdir $(shell pwd))*)
 
 test:
 	go test -v ./api/... ./app/server/...

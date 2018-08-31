@@ -7,8 +7,7 @@
 main {
   overflow: auto;
   height: 100vh;
-  padding-top: 2em;
-  /* touch-action: pan-y !important; */
+  margin-top: 2em;
 }
 
 main ~ .overlay {
@@ -42,10 +41,11 @@ main.overlayed ~ .navbar-toggler {
 @media (min-width: 768px) {
   main {
     padding-top: initial;
+    margin-top: 0;
   }
 
   main.overlayed {
-    padding-top: 2em;
+    margin-top: 2em;
   }
 
   main.overlayed ~ .overlay {

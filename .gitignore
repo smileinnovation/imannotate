@@ -7,6 +7,9 @@ out
 out/*
 containers/prod/app
 containers/prod/ui
+ui/.npm
+ui/.config
+
 
 # Created by https://www.gitignore.io/api/go,osx,node,linux,angular,textmate
 
@@ -180,6 +183,5 @@ Temporary Items
 *.tmproj
 *.tmproject
 tmtags
-
 
 # End of https://www.gitignore.io/api/go,osx,node,linux,angular,textmate
