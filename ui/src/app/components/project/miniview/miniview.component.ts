@@ -33,7 +33,7 @@ export class MiniviewComponent implements OnInit {
 
   ngOnInit() {
     if (this.project.banner === "") {
-      this.project.banner = "/assets/logo-dark.svg";
+      this.project.banner = "/assets/logo.svg";
     }
     this.isOwner = this.project.owner === this.user.currentUser.id;
     if (!this.isOwner) {
