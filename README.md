@@ -15,8 +15,7 @@ We provide a way to launch a "built" Imannotate instance. This one build the App
 The quick method is to use our "docker-compose-prod.yml" file with Docker-Compose to startup the service:
 
 ```
-make build
-docker-compose -f docker-compose-prod.yml up
+make prod
 # then navigate to http://localhost:8000
 ```
 
@@ -129,7 +128,7 @@ server {
 If you want to develop with us, let's take that repository and type:
 
 ```
-make
+make dev
 ```
 
 That will use docker-compose to build images and start containers. Your uid:gid is written in a "base compose file" named .user.compose.yml to bind them inside the containers, to not have any rights problems when process writes files.

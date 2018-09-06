@@ -17,16 +17,19 @@ endef
 export usercompose
 
 
-run: .user.compose.yml
-	docker-compose up --remove-orphans --build 
+prod: build
+	docker-compose -f docker-compose-prod.yml up
 
-.user.compose.yml:
-	@echo "$$usercompose" > $@
-	echo $@ created
+dev: .user.compose.yml
+	docker-compose up --remove-orphans --build 
 
 build: .user.compose.yml containers/prod/app containers/prod/ui
 	docker-compose build
 	cd containers/prod/ && docker build -t smileinnovation/imannotate:$(TAG) .
+
+.user.compose.yml:
+	@echo "$$usercompose" > $@
+	echo $@ created
 
 containers/prod/ui:
 	docker-compose run --rm ui ng build --prod
@@ -37,6 +40,8 @@ containers/prod/app:
 	docker-compose run --rm api sh ./builder.sh
 	mv app.bin containers/prod/app
 	rm builder.sh
+
+clean-all: clean-volumes clean clean-images
 
 clean: clean-container-dist
 	rm -rf ui/dist
