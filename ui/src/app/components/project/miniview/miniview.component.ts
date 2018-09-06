@@ -1,11 +1,11 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Project, ProjectStat } from '../../../classes/project';
 import { Router } from '@angular/router';
-import { UserService } from '../../../services/user.service';
-import { ProjectService } from "../../../services/project.service";
-import { ApiService } from "../../../services/api.service";
-import { User } from "../../../classes/user";
-import { md5 } from "../../../classes/md5";
+import { Project, ProjectStat } from '@app/classes/project';
+import { UserService } from '@app/services/user.service';
+import { ProjectService } from "@app/services/project.service";
+import { ApiService } from "@app/services/api.service";
+import { User } from "@app/classes/user";
+import { md5 } from "@app/classes/md5";
 
 @Component({
   selector: 'project-miniview',
@@ -33,7 +33,7 @@ export class MiniviewComponent implements OnInit {
 
   ngOnInit() {
     if (this.project.banner === "") {
-      this.project.banner = "/assets/logo-dark.svg";
+      this.project.banner = "/assets/logo.svg";
     }
     this.isOwner = this.project.owner === this.user.currentUser.id;
     if (!this.isOwner) {
