@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApiService } from './api.service';
-import { User } from '../classes/user';
 import { Subject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { ApiService } from '@app/services/api.service';
+import { User } from '@app/classes/user';
 
 @Injectable()
 export class UserService {

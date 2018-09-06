@@ -1,5 +1,5 @@
 {
-  "name": "ui",
+  "name": "imannotate-ui",
   "version": "1.0.0",
   "description": "UI for Imannotate tool",
   "dependencies": {
@@ -48,6 +48,6 @@
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
-  "author": "",
+  "author": "Smile Innovation",
   "license": "MIT"
 }

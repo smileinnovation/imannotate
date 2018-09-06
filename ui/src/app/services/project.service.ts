@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from './api.service';
-import { Project, ProjectStat } from '../classes/project';
-import { Observable } from 'rxjs';
-import { UserService } from './user.service';
 import { tap } from 'rxjs/operators';
-import { Annotation } from "../classes/annotation";
-import { User } from "../classes/user";
-import { ImageResult } from "../classes/imageresult";
+
+import { Observable } from 'rxjs';
+import { ApiService } from '@app/services/api.service';
+import { Project, ProjectStat } from '@app/classes/project';
+import { UserService } from '@app/services/user.service';
+import { Annotation } from "@app/classes/annotation";
+import { User } from "@app/classes/user";
+import { ImageResult } from "@app/classes/imageresult";
 
 @Injectable()
 export class ProjectService {
