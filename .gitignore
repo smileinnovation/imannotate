@@ -9,6 +9,7 @@ containers/prod/app
 containers/prod/ui
 ui/.npm
 ui/.config
+ui/.node-gyp
 
 ### Angular ###
 ## Angular ##
