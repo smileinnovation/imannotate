@@ -12,7 +12,7 @@ services:
       DB_HOST: database
       DB_NAME: imannotate
       DB_AUTH: admin
-        
+
 
   database:
     image: mongo
@@ -22,7 +22,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongouser
       MONGO_INITDB_ROOT_PASSWORD: mongopwd
-        
+
 
 volumes:
   db-prod:

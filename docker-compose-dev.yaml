@@ -6,7 +6,7 @@ services:
       file: .user.compose.yml
       service: base_config
 
-    build: 
+    build:
       context: containers/ui
 
     working_dir: /home/node
