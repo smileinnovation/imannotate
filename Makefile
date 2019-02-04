@@ -70,6 +70,7 @@ clean-volumes:
 
 clean-images:
 	docker rmi $(shell docker image ls -q $(notdir $(shell pwd))*) || :
+	docker rmi smileinnovation/imannotate:$(TAG)
 
 test:
 	go test -v ./api/... ./app/server/...
