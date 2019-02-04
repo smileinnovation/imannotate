@@ -14,7 +14,7 @@ We provide a way to launch a _built_ Imannotate instance. This one build the App
 
 The quick method is to use our `docker-compose.yml` file with Docker-Compose to startup the service - use the Makefile at least one time to let the build process to be done:
 
-```
+```bash
 make
 # or make prod (that is the default)
 
@@ -25,6 +25,19 @@ Next time, you can only use "docker-compose up" command.
 
 If you want to rebuild images for production, use `make build` then you can use "docker-compose up". Or, the easiest way is to call `make` that rebuild and start the service.
 
+
+### Cleaning up
+
+If something goes wrong or if you want to remove images and/or data, you can use:
+
+```bash
+# that removes binaries, compiled ui, containers and images
+make clean
+
+# that removes binaries, compiled ui, containers, images and **volumes**
+# so the databases will be empty !
+make clean-all
+```
 
 ### Build your own
 
