@@ -12,12 +12,19 @@ Imannotate is an API and Web interface built to help to create that dataset. You
 
 We provide a way to launch a _built_ Imannotate instance. This one build the Application (in Go) + UI with Angular, and provides a Docker image named `smileinnovation/imannotate`.
 
-The quick method is to use our `docker-compose-prod.yml` file with Docker-Compose to startup the service:
+The quick method is to use our `docker-compose.yml` file with Docker-Compose to startup the service - use the Makefile at least one time to let the build process to be done:
 
 ```
-make prod
+make
+# or make prod (that is the default)
+
 # then navigate to http://localhost:8000
 ```
+
+Next time, you can only use "docker-compose up" command.
+
+If you want to rebuild images for production, use `make build` then you can use "docker-compose up". Or, the easiest way is to call `make` that rebuild and start the service.
+
 
 ### Build your own
 
@@ -144,14 +151,14 @@ You may now use docker-compose to add Angular component, install packages, or Go
 
 
 ```
-docker-compose exec ui ng g component src/app/components/myview --dry-run
-docker-compose exec ui npm install --save-dev package/to/install
-docker-compose exec api glide get github.com/package/to/vendor
+docker-compose -f docker-compose-dev.yaml exec ui ng g component src/app/components/myview --dry-run
+docker-compose -f docker-compose-dev.yaml exec ui npm install --save-dev package/to/install
+docker-compose -f docker-compose-dev.yaml exec api glide get github.com/package/to/vendor
 
 ```
 
 Sometimes, _gin_ doesn't want to rebuild the binary, so restart _api_ container to fix:
 
 ```
-docker-compose restart api
+docker-compose -f docker-compose-dev.yaml restart api
 ```
