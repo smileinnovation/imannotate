@@ -18,6 +18,12 @@ build: containers/prod/app containers/prod/ui
 	# tag imannotate image
 	cd containers/prod/ && docker build -t smileinnovation/imannotate:$(TAG) .
 
+enter-api:
+	$(CC) $(DEVDC) exec api sh
+
+enter-ui:
+	$(CC) $(DEVDC) exec ui sh
+
 containers/prod/ui:
 	$(CC) $(DEVDC) run --rm ui ng build --prod
 	mv ui/dist containers/prod/ui
