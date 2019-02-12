@@ -5,6 +5,7 @@ export class Annotator {
   public canvas: any;
   public boxes: Observable<BoundingBox>;
   public removeBox: Observable<BoundingBox>;
+  public padding: number;
 
   private canvasRescale: boolean;
   private image: HTMLImageElement;
@@ -16,6 +17,7 @@ export class Annotator {
   private boxInProgress: boolean;
   private isMobile: boolean;
   private removeBoxSubject: Subject<BoundingBox>;
+  
 
   constructor(element) {
     this.isMobile = false;
@@ -23,6 +25,7 @@ export class Annotator {
     this.boxInProgress = false;
     this.boxeSubject = new Subject<BoundingBox>();
     this.boxes = this.boxeSubject.asObservable();
+    this.padding = 20;
 
     this.removeBoxSubject = new Subject<BoundingBox>();
     this.removeBox = this.removeBoxSubject.asObservable();
@@ -68,7 +71,6 @@ export class Annotator {
       if (canvas.height > canvas.parentElement.offsetHeight) {
         canvas.height = canvas.parentElement.offsetHeight;
         canvas.width = canvas.height * ratio;
-
       }
     }
     this.drawBoundingBoxes();
@@ -81,28 +83,31 @@ export class Annotator {
       return;
     }
     const canvas = document.createElement('canvas');
-    const ratio = this.image.naturalWidth / this.image.naturalHeight;
+    // const ratio = this.image.naturalWidth / this.image.naturalHeight;
     this.element.appendChild(canvas);
     this.ctx = canvas.getContext('2d');
     this.canvas = canvas;
     this.rescaleCanvas()
 
-    let ecx=0, ecy=0;
+    let ecx = 0, ecy = 0;
 
-    let x, y = null;
+    let x: number, y: number = null;
     let down = false;
 
-    ["mousedown", "touchstart"].forEach( evname => {
+    ["mousedown", "touchstart"].forEach(evname => {
       // keep the start event position to be able to draw
       // box from that point.
       this.canvas.addEventListener(evname, (evt) => {
         evt.preventDefault();
-        if(evt["touches"]) {
+        if (evt["touches"]) {
           this.isMobile = true;
         }
         const rect = evt.target.getBoundingClientRect();
-        const ecx = evt.clientX ? evt.clientX : evt.touches[0].clientX;
-        const ecy = evt.clientY ? evt.clientY : evt.touches[0].clientY;
+        let ecx = evt.clientX ? evt.clientX : evt.touches[0].clientX;
+        let ecy = evt.clientY ? evt.clientY : evt.touches[0].clientY;
+
+        [ecx, ecy] = this.fixupPadding(ecx, ecy, rect);
+
         x = ecx - rect.left;
         y = ecy - rect.top;
         down = true;
@@ -114,7 +119,7 @@ export class Annotator {
       // draw box or highlight (for mouse only) to display controls
       this.canvas.addEventListener(evname, (evt) => {
         evt.preventDefault();
-        if(evt.touches && evt.touches.length > 1) {
+        if (evt.touches && evt.touches.length > 1) {
           // two fingers on canvas, drop
           return
         }
@@ -122,6 +127,9 @@ export class Annotator {
         const rect = evt.target.getBoundingClientRect();
         ecx = evt.clientX ? evt.clientX : evt.touches[0].clientX;
         ecy = evt.clientY ? evt.clientY : evt.touches[0].clientY;
+
+        [ecx, ecy] = this.fixupPadding(ecx, ecy, rect);
+
         if (!down) {
           // mouse event and not drawing box, so the mouse is "hover"
           // so we will check if mouse position is "over" a box
@@ -180,6 +188,9 @@ export class Annotator {
         ecy = evt.clientY ? evt.clientY : ecy;
 
         const rect = evt.target.getBoundingClientRect();
+
+        [ecx, ecy] = this.fixupPadding(ecx, ecy, rect);
+
         const bx = Math.min(x, ecx - rect.left) / this.canvas.clientWidth,
           by = Math.min(y, ecy - rect.top) / this.canvas.clientHeight,
           bw = Math.max(x, ecx - rect.left) / this.canvas.clientWidth,
@@ -280,9 +291,15 @@ export class Annotator {
 
   // draw boxes that are in "this.boxesList"
   drawBoundingBoxes() {
-    // draw old boxes
+    // draw old boxes, using the padding
     // tslint:disable-next-line:no-unused-expression
-    this.ctx.drawImage(this.image, 0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.drawImage(this.image,
+      this.padding,
+      this.padding,
+      this.canvas.width - (this.padding * 2),
+      this.canvas.height - (this.padding * 2)
+    );
+
     this.boxesList.forEach(box => {
       const path = this.drawRect(
         box.x * this.canvas.clientWidth,
@@ -315,18 +332,26 @@ export class Annotator {
   }
 
 
-  // TODO: useless now
-  toJson() {
+  // returns a fixed list of bounding boxes according the padding
+  getFixedBoxes(): Array<object> {
     const boxes = [];
+    // for each box, recompute relative coordinates using the padding.
     this.boxesList.forEach((box) => {
       boxes.push({
         label: box.label,
-        x: box.x,
-        y: box.y,
-        w: box.width,
-        h: box.height,
+        x: box.x - (this.padding / this.canvas.clientWidth),
+        y: box.y - (this.padding / this.canvas.clientHeight),
+        w: box.width + (this.padding / this.canvas.clientWidth),
+        h: box.height + (this.padding / this.canvas.clientHeight),
       });
     });
+    return boxes;
+  }
+
+  // TODO: useless now
+  toJson() {
+    const boxes = this.getFixedBoxes();
+
     return JSON.stringify({
       image: this.image.src,
       boxes: boxes,
@@ -366,4 +391,28 @@ export class Annotator {
     this.clearCanvas();
     this.drawBoundingBoxes();
   }
+
+
+  // fixup coordinates using the padding
+  fixupPadding(x, y, rect): Array<number> {
+    // remove the padding if needed
+    if (x - rect.left < this.padding) {
+      x = rect.left + this.padding;
+    }
+    if (y - rect.top < this.padding) {
+      y = rect.top + this.padding;
+    }
+
+    if (rect.bottom - y < this.padding) {
+      y = rect.bottom - this.padding;
+    }
+
+    if (rect.right - x < this.padding) {
+      x = rect.right - this.padding;
+    }
+
+    return [x, y];
+  }
+
+
 }

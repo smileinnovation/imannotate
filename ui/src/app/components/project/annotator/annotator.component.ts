@@ -8,6 +8,7 @@ import { Annotation } from '@app/classes/annotation';
 import { ImageResult } from "@app/classes/imageresult";
 
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+import { browser } from 'protractor';
 
 @Component({
   selector: 'app-annotator',
@@ -68,10 +69,14 @@ export class AnnotatorComponent implements OnInit {
 
 
   saveAnnotation() {
+    // fixup padding
+    this.fixBoxes()
     console.log(this.boxes);
+
     const annotation = new Annotation();
     annotation.image = this.image.name;
     annotation.boxes = this.boxes;
+    
     console.log(annotation);
     this.projectService.saveAnnotation(this.project, annotation).subscribe(ann => {
       console.log("saved:", ann);
@@ -97,6 +102,16 @@ export class AnnotatorComponent implements OnInit {
       this.image = image;
       this.boxes = new Array<BoundingBox>();
       this.annotator.loadImage(image.url);
+    });
+  }
+
+
+  fixBoxes(){
+    this.boxes.forEach(box => {
+      box.x -= (this.annotator.padding / this.annotator.canvas.clientWidth),
+      box.y -= (this.annotator.padding / this.annotator.canvas.clientHeight),
+      box.width += (this.annotator.padding / this.annotator.canvas.clientWidth),
+      box.height += (this.annotator.padding / this.annotator.canvas.clientHeight)
     });
   }
 }
