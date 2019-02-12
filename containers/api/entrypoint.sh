@@ -1,5 +1,5 @@
 #!/bin/sh
-$(fixuid -s)
+$(fixuid -q)
 
 echo "----------> WORKING DIR: $PWD"
 echo "----------> Getting packages"
