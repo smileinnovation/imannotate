@@ -12,6 +12,14 @@ services:
       DB_HOST: database
       DB_NAME: imannotate
       DB_AUTH: admin
+    # if you are using docker-auto-dnsmasq or
+    # if you want to be sure that current hostname
+    # in the docker container is set, you can
+    # uncomment the "hostname" attribute and modify it.
+    #
+    # See https://github.com/metal3d/docker-auto-dnsmasq
+    #
+    # hostname: imannotate.docker
         
 
   database:
