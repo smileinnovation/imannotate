@@ -173,7 +173,7 @@ export class ProjectformComponent implements OnInit {
       reader.readAsDataURL(file);
 
       reader.onload = () => {
-        this.project.banner = reader.result;
+        this.project.banner = reader.result as string;
       };
     }
   }

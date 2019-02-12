@@ -18,7 +18,7 @@ The quick method is to use our `docker-compose.yml` file with Docker-Compose to 
 make
 # or make prod (that is the default)
 
-# then navigate to http://localhost:8000
+# then navigate to http://localhost:8080
 ```
 
 Next time, you can only use "docker-compose up" command.
