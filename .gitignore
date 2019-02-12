@@ -3,6 +3,8 @@ gin-bin
 ./imannotate
 vendor
 vendor/*
+app/vendor
+app/vendor/*
 out
 out/*
 containers/prod/app

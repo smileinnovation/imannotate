@@ -1,4 +1,6 @@
 #!/bin/sh
+$(fixuid)
+
 echo "----------> WORKING DIR: $PWD"
 echo "----------> Getting packages"
 glide install
