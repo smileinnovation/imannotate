@@ -7,7 +7,7 @@ RUN set -xe; \
 
 RUN set -xe;\
     addgroup -g 1000 gouser; \
-    adduser -u 1000 -G gouser -h /home/gouser -s /bin/sh -D gouser
+    adduser -u 1000 -G gouser -D gouser
 
 RUN set -xe; \
     USER=gouser; \
@@ -23,6 +23,7 @@ RUN set -xe; \
 ADD entrypoint.sh /entrypoint.sh
 USER 1000
 ENV GOPATH /go
+ENV HOME /home/gouser
 EXPOSE 3000
 ENTRYPOINT ["/entrypoint.sh"]
 # Assume that workdir is set in docker-compose.yml
