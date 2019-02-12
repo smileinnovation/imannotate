@@ -1,4 +1,4 @@
-package: github.com/smileinnovation/imannotate
+package: github.com/smileinnovation/imannotate/app
 import:
 - package: github.com/gin-gonic/gin
   version: ^1.2.0

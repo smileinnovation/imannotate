@@ -1,33 +1,26 @@
-version: "2.1"
+version: "3"
 
 services:
   ui:
-    extends:
-      file: .user.compose.yml
-      service: base_config
+    image: metal3d/ng
+    user: ${_UID}:${_GID}
+    environment:
+        ANGULAR_HOST_CHECK: "false"
 
-    build: 
-      context: containers/ui
-
-    working_dir: /home/node
     volumes:
-      - ./ui:/home/node
-    command: ng serve --host=0.0.0.0
-    privileged: true
+        - ./ui:/app:Z
     depends_on:
-      - api
+        - api
 
   api:
-    extends:
-      file: .user.compose.yml
-      service: base_config
-    build:
-      context: ./containers/api
-
+    build: containers/api
     volumes:
-      - ./:/go/src/github.com/smileinnovation/imannotate
+        - ./app:/go/src/github.com/smileinnovation/imannotate/app:Z
+        - ./api:/go/src/github.com/smileinnovation/imannotate/api:Z
 
-    working_dir: /go/src/github.com/smileinnovation/imannotate
+    user: ${_UID}:${_GID}
+
+    working_dir: /go/src/github.com/smileinnovation/imannotate/app
     environment:
       BIN_APP_PORT: 8000
       DB_USER: mongouser
@@ -35,12 +28,11 @@ services:
       DB_HOST: database
       DB_NAME: imannotate
       DB_AUTH: admin
-    privileged: true
 
   database:
     image: mongo
     volumes:
-      - db:/data/db
+        - db:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongouser
       MONGO_INITDB_ROOT_PASSWORD: mongopwd
@@ -49,13 +41,12 @@ services:
   http:
     image: nginx:alpine
     volumes:
-      - ./containers/nginx/conf.d:/etc/nginx/conf.d:ro
+        - ./containers/nginx/conf.d:/etc/nginx/conf.d:Z
     ports:
-      - 8080:80
+        - 8080:80
     depends_on:
-      - api
-      - ui
-    privileged: true
+        - api
+        - ui
 
 volumes:
   db:
