@@ -1,18 +1,22 @@
 UID = $(shell id -u)
 GID = $(shell id -g)
-CC  = _UID=$(UID) _GID=$(GID) docker-compose
+CC  = docker-compose
 
 TAG="latest"
 DEVDC=-f docker-compose-dev.yaml
 
 
-prod: build
+prod: .env build
 	docker-compose up
 
-dev:
+dev: .env
 	$(CC) $(DEVDC) up --remove-orphans --build 
 
-build: containers/prod/app containers/prod/ui
+.env:
+	echo "_GID=$(_GID)" >  $@
+	echo "_UID=$(_UID)" >> $@
+
+build: .env containers/prod/app containers/prod/ui
 	# build the needed images to build ui and go binary
 	$(CC) $(DEVDC) build
 	# tag imannotate image
