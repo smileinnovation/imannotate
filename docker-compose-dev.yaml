@@ -3,7 +3,7 @@ version: "3"
 services:
   ui:
     image: metal3d/ng
-    user: ${UID}:${GID}
+    user: ${_UID}:${_GID}
     environment:
         ANGULAR_HOST_CHECK: "false"
 
@@ -18,7 +18,7 @@ services:
         - ./app:/go/src/github.com/smileinnovation/imannotate/app:Z
         - ./api:/go/src/github.com/smileinnovation/imannotate/api:Z
 
-    user: ${UID}:${GID}
+    user: ${_UID}:${_GID}
 
     working_dir: /go/src/github.com/smileinnovation/imannotate/app
     environment:
