@@ -5,7 +5,7 @@ services:
   app:
     image: smileinnovation/imannotate
     ports:
-    - 8000:8000
+    - 8080:8000
     environment:
       DB_USER: mongouser
       DB_PASS: mongopwd
