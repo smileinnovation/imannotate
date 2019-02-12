@@ -1,43 +1,38 @@
-<div class="col miniview">
-  <div class="card shadow-lg">
 
-    <img class="card-img-top" [src]="project?.banner">
-    <div class="card-body">
-      <h5 class="card-title">{{ project.name }}</h5>
-      <p class="card-text">{{project.description | truncate:80 }}</p>
-      <ul class="stats">
-        <li>Annotated images: {{ stats.annotations }}</li>
-        <li>Contributors: {{ stats.contributors }}</li>
-      </ul>
-      <p class="tags">
-        <span *ngFor="let tag of project.tags" class="badge badge-pill badge-success">{{ tag }}</span>
-      </p>
-    </div>
-
-    <div class="card-footer">
-      <div class="row text-center d-flex">
-        <div class="text-center col-xl-4 col-lg-12 col-md-12 col-sm-12">
-          <img class="gravatar m-1 rounded-circle" [src]="avatar" />
-        </div>
-        <div *ngIf="!isOwner" class="col-xl-8 col-lg-12 d-flex align-items-center">
-          <i>Project owned by {{ owner.username }}</i>
-        </div>
-        <div *ngIf="isOwner" class="col-xl-8 col-lg-12 d-flex align-items-center justify-content-center">
-          <i>You are the owner</i>
-        </div>
-      </div>
-    </div>
-
-      <div class="card-footer">
-        <div class="row">
-        <button *ngIf="isOwner" class="col-md-4 btn btn-primary btn-sm" (click)="edit()">
-          <i class="material-icons">edit</i><br />Edit</button>
-        <button class="col-md-4 btn btn-success btn-sm" (click)="gotoProject(project)">
-          <i class="material-icons">border_color</i><br />Annotate</button>
-        <button class="col-md-4 btn btn-warning btn-sm" (click)="exportProject()">
-          <i class="material-icons">save_alt</i><br />Export</button>
-        </div>
-      </div>
-
+  <img class="card-img-top" [src]="project?.banner">
+  <div class="card-body">
+    <h5 class="card-title">{{ project.name }}</h5>
+    <p class="card-text">{{project.description | truncate:80 }}</p>
+    <ul class="stats">
+      <li>Annotated images: {{ stats.annotations }}</li>
+      <li>Contributors: {{ stats.contributors }}</li>
+    </ul>
+    <p class="tags">
+      <span *ngFor="let tag of project.tags" class="badge badge-pill badge-success">{{ tag }}</span>
+    </p>
   </div>
-</div>
+
+  <div class="card-footer">
+    <div class="row text-center d-flex">
+      <div class="text-center col-xl-4 col-lg-12 col-md-12 col-sm-12">
+        <img class="gravatar m-1 rounded-circle" [src]="avatar" />
+      </div>
+      <div *ngIf="!isOwner" class="col-xl-8 col-lg-12 d-flex align-items-center">
+        <i>Project owned by {{ owner.username }}</i>
+      </div>
+      <div *ngIf="isOwner" class="col-xl-8 col-lg-12 d-flex align-items-center justify-content-center">
+        <i>You are the owner</i>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <div class="row">
+      <button *ngIf="isOwner" class="col-md-4 btn btn-primary btn-sm" (click)="edit()">
+        <i class="material-icons">edit</i><br />Edit</button>
+      <button class="col-md-4 btn btn-success btn-sm" (click)="gotoProject(project)">
+        <i class="material-icons">border_color</i><br />Annotate</button>
+      <button class="col-md-4 btn btn-warning btn-sm" (click)="exportProject()">
+        <i class="material-icons">save_alt</i><br />Export</button>
+    </div>
+  </div>
