@@ -63,6 +63,7 @@ services:
     depends_on:
         - api
         - ui
+    hostname: imannotate.docker
 
 volumes:
   db:
