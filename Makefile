@@ -1,8 +1,6 @@
-
-
 UID=$(shell id -u)
 GID=$(shell id -g)
-
+CC=UID=$(UID) GID=$(GID) docker-compose
 
 TAG="latest"
 
@@ -23,26 +21,22 @@ export usercompose
 prod: build
 	docker-compose up
 
-dev: .user.compose.yml
-	docker-compose $(DEVDC) up --remove-orphans --build 
+dev:
+	$(CC) $(DEVDC) up --remove-orphans --build 
 
-build: .user.compose.yml containers/prod/app containers/prod/ui
+build: containers/prod/app containers/prod/ui
 	# build the needed images to build ui and go binary
-	docker-compose $(DEVDC) build
+	$(CC) $(DEVDC) build
 	# tag imannotate image
 	cd containers/prod/ && docker build -t smileinnovation/imannotate:$(TAG) .
 
-.user.compose.yml:
-	@echo "$$usercompose" > $@
-	echo $@ created
-
 containers/prod/ui:
-	docker-compose $(DEVDC) run --rm ui ng build --prod
+	UID=$(UID) GID=$(GID) docker-compose $(DEVDC) run --rm ui ng build --prod
 	mv ui/dist containers/prod/ui
 
 containers/prod/app:
 	echo 'go build -ldflags "-linkmode external -extldflags -static" -o app.bin' > builder.sh
-	docker-compose $(DEVDC) run --rm api sh ./builder.sh
+	$(CC) $(DEVDC) run --rm api sh ./builder.sh
 	mv app.bin containers/prod/app
 	rm builder.sh
 
@@ -62,11 +56,11 @@ clean-api-container-dist:
 
 clean-docker:
 	docker-compose down --remove-orphans
-	docker-compose $(DEVDC) down --remove-orphans
+	$(CC) $(DEVDC) down --remove-orphans
 
 clean-volumes:
 	docker-compose down -v --remove-orphans
-	docker-compose $(DEVDC) down -v --remove-orphans
+	$(CC) $(DEVDC) down -v --remove-orphans
 
 clean-images:
 	docker rmi $(shell docker image ls -q $(notdir $(shell pwd))*) || :
