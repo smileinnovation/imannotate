@@ -3,7 +3,15 @@ version: "3"
 services:
   ui:
     image: metal3d/ng
-    user: ${_UID}:${_GID}
+    user: ${_UID?
+                You must provide a _UID environment variable containing
+                your user id in .env file or in command line,
+                eg _UID=1000
+           }:${_GID?
+                You must provide a _GID environment variable 
+                containing your group id in .env file or 
+                in command line,
+                eg _GID=1000}
     environment:
         ANGULAR_HOST_CHECK: "false"
 
@@ -18,7 +26,15 @@ services:
         - ./app:/go/src/github.com/smileinnovation/imannotate/app:Z
         - ./api:/go/src/github.com/smileinnovation/imannotate/api:Z
 
-    user: ${_UID}:${_GID}
+    user: ${_UID?
+                You must provide a _UID environment variable containing
+                your user id in .env file or in command line,
+                eg _UID=1000
+          }:${_GID?
+                You must provide a _GID environment variable 
+                containing your group id in .env file or 
+                in command line,
+                eg _GID=1000}
 
     working_dir: /go/src/github.com/smileinnovation/imannotate/app
     environment:
