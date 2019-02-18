@@ -35,6 +35,7 @@ export class ProjectformComponent implements OnInit {
   s3Valid = true;
   s3Error = "";
   projectWasSaved = false;
+  badBannerType: boolean = null;
 
   constructor(
     private userservice: UserService,
@@ -170,15 +171,30 @@ export class ProjectformComponent implements OnInit {
 
     if(event.target.files && event.target.files.length) {
       const [file] = event.target.files;
+      if (file.type.split('/')[0] !== 'image') {
+        this.badBannerType = true;
+        return;
+      }
+      this.badBannerType = false;
       reader.readAsDataURL(file);
-
       reader.onload = () => {
         this.project.banner = reader.result as string;
       };
     }
   }
 
+
+  removeBanner() {
+    this.project.banner = null;
+    this.badBannerType = null;
+    let file: HTMLInputElement = document.querySelector('input[name=banner]');
+    file.value = '';
+  }
+
   formIsValid() {
+    if (this.badBannerType) {
+      return false;
+    }
     switch(this.project.imageProvider) {
       case 's3':
         if (!this.s3Valid) {
