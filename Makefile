@@ -64,5 +64,12 @@ clean-images:
 	docker rmi $(shell docker image ls -q $(notdir $(shell pwd))*) || :
 	docker rmi smileinnovation/imannotate:$(TAG)
 
+
+virtualenv:
+	mkdir -p ./src/github.com/imannotate
+	ln -sf $$PWD/app ./src/github.com/imannotate/app
+	ln -sf $$PWD/api ./src/github.com/imannotate/api
+	@echo "Environment ready to be used with goswitch or with GOPATH=\$$GOPATH:\$$PWD and PATH=\$$PATH:\$$PWD/bin"
+
 test:
 	go test -v ./api/... ./app/server/...

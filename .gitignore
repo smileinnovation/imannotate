@@ -13,6 +13,18 @@ ui/.npm
 ui/.config
 ui/.node-gyp
 
+
+# to use local environment with goswitch for example
+bin
+bin/*
+src
+src/*
+pkg
+pkg/*
+
+
+# Created by https://www.gitignore.io/api/go,osx,node,linux,angular,textmate
+
 ### Angular ###
 ## Angular ##
 # compiled output
