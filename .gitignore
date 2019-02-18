@@ -5,6 +5,7 @@ vendor
 vendor/*
 app/vendor
 app/vendor/*
+app/builder.sh
 out
 out/*
 containers/prod/app
