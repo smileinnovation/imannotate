@@ -155,12 +155,82 @@ That will use docker-compose to build images and start containers. Your uid:gid 
 
 You may visit http://localhost:8080 to navigate application.
 
+
+**Important**
+Because you probably want to be able to work in another directory than inside the GOPATH, you can use go-switch tool https://github.com/metal3d/goswitch
+
+
+### Using GoSwitch
+
+Install Goswitch and prepare environment to use "activate" script. Goswitch is more or less an equivalent to "Python Virtualenv".
+
+```bash
+# Install goswitch once
+bash <(curl -sSL https://raw.githubusercontent.com/metal3d/goswitch/master/install.sh)
+
+# prepare the environment inside the project
+cd /path/to/imannoate
+goswitch local-project .
+
+# be able to use real github paths
+make virtualenv
+
+# to activate the environment each time you want to develop, launch tests...
+source bin/activate
+```
+
+
+Now, everythin will be installed inside `pkg` and `src` directories.
+
+
+### Or, create environment
+
+If you want to make the environment by hand, do tha following:
+
+```
+cd /path/to/imannoate
+goswitch local-project .
+make virtualenv
+```
+
+Then, you need to change GOPATH and PATH each time you want to work in the project to avoid the installation outside the current project:
+```
+export GOPATH=$PWD:$GOPATH
+export PATH=$PWD/bin:$PATH
+```
+
+
+### Configure your IDE/Editor
+
+Using an IDE other that "vim" (in the current terminal session), you should set environment:
+
+- GOPATH to imannotate directory + "src"
+- PATH to imannotate directory + "bin"
+
+
+### Use containers to install components
+
+
 To simplify development:
 
 - each change in Golang sources rebuild API (using _gin_)
 - each change in Angular sources refreshes the view in browser (live-reload)
 
-You may now use docker-compose to add Angular component, install packages, or Golang packages (with glide):
+
+To enter inside a container:
+
+```bash
+# entering "ui" container where Angular resides
+make enter ui
+(here, you can use "ng" to create components, install packages...)
+
+
+# entering "api" container where API resides
+make enter api
+(here you can use glide to install packages)
+```
+
+You may also use docker-compose to add Angular component, install packages, or Golang packages (with glide):
 
 
 ```
