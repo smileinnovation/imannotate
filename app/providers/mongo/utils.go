@@ -76,7 +76,8 @@ func canAnnotateProject(u *user.User, p *project.Project) bool {
 		"projectId": bson.ObjectIdHex(p.Id),
 		"userId":    bson.ObjectIdHex(u.ID),
 	}).Count(); err != nil || i < 1 {
+		log.Println("Can NOT annotate", err, i)
 		return false
 	}
-	return false
+	return true
 }
