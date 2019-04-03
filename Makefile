@@ -38,12 +38,18 @@ containers/prod/app:
 	mv app/app.bin containers/prod/app
 	rm app/builder.sh
 
+
+# remove all, volumes, dist, binaries and images
 clean-all: clean-volumes clean clean-images
 
+
+# remove dists and binariez
 clean: clean-container-dist
+	rm -f app/builder.sh
 	rm -rf ui/dist
 	rm -f app/gin-bin app/app.bin
 
+# remove containers to build dis
 clean-container-dist: clean-ui-container-dist clean-api-container-dist
 
 clean-ui-container-dist:
@@ -52,17 +58,29 @@ clean-ui-container-dist:
 clean-api-container-dist:
 	rm -rf  containers/prod/app
 
+
+# remove containers (not images) and orphanss
 clean-docker:
 	docker-compose down --remove-orphans
 	$(CC) $(DEVDC) down --remove-orphans
 
+# remove containers (not images) and orphans + volumes
 clean-volumes:
 	docker-compose down -v --remove-orphans
 	$(CC) $(DEVDC) down -v --remove-orphans
 
+
+# remove images
 clean-images:
 	docker rmi $(shell docker image ls -q $(notdir $(shell pwd))*) || :
 	docker rmi smileinnovation/imannotate:$(TAG)
+
+
+virtualenv:
+	mkdir -p ./src/github.com/imannotate
+	ln -sf $$PWD/app ./src/github.com/imannotate/app
+	ln -sf $$PWD/api ./src/github.com/imannotate/api
+	@echo "Environment ready to be used with goswitch or with GOPATH=\$$GOPATH:\$$PWD and PATH=\$$PATH:\$$PWD/bin"
 
 test:
 	go test -v ./api/... ./app/server/...
