@@ -4,7 +4,17 @@
 
 Recurrent Neural Networks needs to have annotated images to learn how to get object to recognize in images, that means that you need to give image and _bounding boxes_ of each object to recognize when you train your model. And you will need **a lot** of annotations to ensure a good train!
 
-Imannotate is an API and Web interface built to help to create that dataset. You will be able to manage projects and users to participate to annotation.
+Imannotate is a tool to help you to create those kind of dataset by spreading a dataset of non annotated pictures across several users and let them annonate them. Once done, you can export a CSV with all your annotations to train your model.
+
+## Features
+
+- Manage multiple project
+- Assign multiple users to one or multiple projects
+- Annonate (indeed) by drawing bounding boxes and choose a tag
+- Support "nothing to tag" on a picture
+- Support "Pass" a picture
+- S3 connector for the pictures source
+- Qwant demo connector included (not suitable for production)
 
 ## Installation
 
