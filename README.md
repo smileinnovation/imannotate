@@ -24,7 +24,13 @@ There's just not one way to contribute to a project and you don't have to be a d
 
 ![](https://cl.ly/f66c139391df/non-coding-contributions-signed.png)
 
+## Licence
+
+The license [can be seen here][license]. Please note that we'll enforce signed-off committed and [DCO](https://github.com/integration/dco). 
+
+
 
 [contributing-dev]: https://github.com/smileinnovation/imannotate/wiki/Contributing
 [installation]: https://github.com/smileinnovation/imannotate/wiki/Installation
 [issues]: https://github.com/smileinnovation/imannotate/issues
+[license]: /LICENSE
