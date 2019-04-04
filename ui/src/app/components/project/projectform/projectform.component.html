@@ -10,41 +10,49 @@
         </div>
         <div class="form-group">
           <label for="Banner">Illustration image for your project</label>
-          <input class="form-control-file" type="file" (change)="setBanner($event)" />
+          <div class="input-group">
+            <div class="btn-group col-12">
+              <input class="form-control-file" name="banner" type="file" (change)="setBanner($event)" />
+              <button class="btn btn-danger btn-sm" [disabled]="!project.banner || project.banner.length == 0" (click)="removeBanner()">
+                <i class="delete-button material-icons">delete</i>
+              </button>
+            </div>
+          </div>
           <img src="{{ project.banner }}" style="max-width: 90%" />
+          <div class="alert alert-danger" *ngIf="badBannerType === true">Bad file type for image, only image types are
+            accepted</div>
         </div>
 
         <div class="form-group">
           <label for="tags">Applicable tags for annotation</label>
-          <input class="form-control" required type="text" placeholder="Coma separated list of classes to annotate" (keyup)="onTagChange()" [(ngModel)]="tags" name="tags" />
+          <input class="form-control" required type="text" placeholder="Coma separated list of classes to annotate"
+            (keyup)="onTagChange()" [(ngModel)]="tags" name="tags" />
         </div>
         <div class="form-group">
           <label for="description">Description text</label>
-          <textarea class="form-control" required placeholder="Type a description about the project" [(ngModel)]="project.description" name="description"></textarea>
+          <textarea class="form-control" required placeholder="Type a description about the project" [(ngModel)]="project.description"
+            name="description"></textarea>
         </div>
 
         <div class="form-group">
           <label for="imageProvider">Choose an image provider that will fetch image to annotate</label>
           <select (change)="onProviderChange()" name="imageProvider" class="form-control" [(ngModel)]="project.imageProvider">
-             <option value="s3">Amazon S3</option>
-             <option value="qwant">Qwant image search</option>
-           </select>
+            <option value="s3">Amazon S3</option>
+            <option value="qwant">Qwant image search</option>
+          </select>
         </div>
 
         <div class="form-group" name="fs-options" *ngIf="project.imageProvider == 's3'">
           <label for="id">Your amazon id</label>
-          <input type="text" class="form-control"
-            name="id" [(ngModel)]="project.imageProviderOptions.id"
-            (keyup)="checkS3Credentials()" required />
+          <input type="text" class="form-control" name="id" [(ngModel)]="project.imageProviderOptions.id" (keyup)="checkS3Credentials()"
+            required />
 
           <label for="secret">AWS Secret</label>
-          <input type="password" class="form-control"
-            name="secret" [(ngModel)]="project.imageProviderOptions.secret"
+          <input type="password" class="form-control" name="secret" [(ngModel)]="project.imageProviderOptions.secret"
             (keyup)="checkS3Credentials()" required />
 
           <label for="region">AWS Region</label>
-          <input type="text" class="form-control"
-            name="region" [(ngModel)]="project.imageProviderOptions.region"
+          <input type="text" class="form-control" name="region" [(ngModel)]="project.imageProviderOptions.region"
             (keyup)="checkS3Credentials()" required />
 
           <div class="alert alert-danger" *ngIf="!s3Valid">
@@ -57,12 +65,14 @@
           </select>
 
           <label for="prefix">Prefix in that bucket</label>
-          <input type="text" class="form-control" name="prefix" [(ngModel)]="project.imageProviderOptions.prefix" required />
+          <input type="text" class="form-control" name="prefix" [(ngModel)]="project.imageProviderOptions.prefix"
+            required />
         </div>
 
         <div class="form-group" name="qwant-options" *ngIf="project.imageProvider == 'qwant'">
           <label for="qwant-query">Qwant search query string</label>
-          <input type="text" name="qwant-query" class="form-control" placeholder="Qwant query, eg. Dog Cat" [(ngModel)]="project.imageProviderOptions.qwantQuery" required/>
+          <input type="text" name="qwant-query" class="form-control" placeholder="Qwant query, eg. Dog Cat" [(ngModel)]="project.imageProviderOptions.qwantQuery"
+            required />
         </div>
 
         <div class="form-group">
@@ -76,11 +86,8 @@
 
       <div *ngIf="edit">
         <p>You may propose to other to annotate the project with you</p>
-        <input type="text" class="form-control"
-          [(ngModel)]="contribSearch"
-          [inputFormatter]="searchFormatter"
-          [resultTemplate]="rt"
-          [ngbTypeahead]="searchContributor"/><button class="btn btn-success" (click)="addContributor()">add</button>
+        <input type="text" class="form-control" [(ngModel)]="contribSearch" [inputFormatter]="searchFormatter"
+          [resultTemplate]="rt" [ngbTypeahead]="searchContributor" /><button class="btn btn-success" (click)="addContributor()">add</button>
         <span *ngIf="searching"><i class="material-icons rotating" style="float: right; margin-top: -2.2rem; margin-right: 1rem;">refresh</i></span>
         <ngb-alert [type]="alertType" [dismissible]="false" (close)="successMessage = null" *ngIf="successMessage">
           {{ successMessage }}
