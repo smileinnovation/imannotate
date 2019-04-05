@@ -2,7 +2,7 @@
 
 # Image annotation for Machine Learning
 
-Recurrent Neural Networks needs to have annotated images to learn how to get object to recognize in images, that means that you need to give image and _bounding boxes_ of each object to recognize when you train your model. And you will need **a lot** of annotations to ensure a good train!
+Convolutional Neural Networks require annotated images to learn how to get recognize objects in images, which means that you need to give both the image and _bounding boxes_ of each object to recognize when you train your model. And you will need **a lot** of annotations to ensure a good train!
 
 Imannotate is a tool to help you to create those kind of dataset by spreading a dataset of non annotated pictures across several users and let them annonate them. Once done, you can export a CSV with all your annotations to train your model.
 
