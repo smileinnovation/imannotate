@@ -38,6 +38,9 @@ There's just not one way to contribute to a project and you don't have to be a d
 
 The license [can be seen here][license]. Please note that we'll enforce signed-off commits and [DCO](https://github.com/integration/dco).
 
+![](https://cl.ly/d1720d2e0243/sponsoredby_smileinovation%252520-%252520small.png)
+
+Opensourced by [Smile](http://smile.eu) with ❤️, made by all our wonderfull contributors.
 
 
 [contributing-dev]: https://github.com/smileinnovation/imannotate/wiki/Contributing
