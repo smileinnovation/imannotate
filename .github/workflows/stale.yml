@@ -28,4 +28,4 @@ jobs:
         # The label to apply when a pr is stale
         stale-pr-label: "Stale" # optional, default is Stale
         # The maximum number of operations per run, used to control rate limiting
-        operations-per-run: # optional, default is 30
+        operations-per-run: 30 # optional, default is 30
