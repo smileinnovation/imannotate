@@ -24,8 +24,8 @@ jobs:
         # The number of days to wait to close an issue or pr after it being marked stale
         days-before-close: 30 # optional, default is 7
         # The label to apply when an issue is stale
-        stale-issue-label: # optional, default is Stale
+        stale-issue-label: "Stale" # optional, default is Stale
         # The label to apply when a pr is stale
-        stale-pr-label: # optional, default is Stale
+        stale-pr-label: "Stale" # optional, default is Stale
         # The maximum number of operations per run, used to control rate limiting
         operations-per-run: # optional, default is 30
