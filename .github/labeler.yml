@@ -1,0 +1,7 @@
+frontend:
+  - ui/**/*
+  - ui/*
+
+api:
+  - api/*
+  - api/**/*
